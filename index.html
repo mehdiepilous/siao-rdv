@@ -1,427 +1,839 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIAO - Prise de rendez-vous</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background: #07111f;
-            color: #fff;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .card {
-            background: #0d1e30;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #1a3550;
-        }
-        button {
-            background: #1a6bdb;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover {
-            background: #3b82f6;
-        }
-        input, select {
-            background: #07111f;
-            border: 1px solid #1a3550;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 5px 0;
-            width: 100%;
-        }
-        .hidden {
-            display: none;
-        }
-        .creneau {
-            background: #0d1e30;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid #1a6bdb;
-            border-radius: 5px;
-        }
-        .badge {
-            background: #1a6bdb;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-        .flex {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .sidebar {
-            width: 200px;
-            background: #0d1e30;
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-        }
-        .content {
-            margin-left: 220px;
-            padding: 20px;
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-            }
-            .content {
-                margin-left: 0;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIAO — Prise de rendez-vous</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07111f;--bg2:#0d1e30;--bg3:#132840;
+  --blue:#1a6bdb;--blueL:#3b82f6;--accent:#38bdf8;
+  --green:#10b981;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
+  --white:#e8f4ff;--gray:#64748b;--grayL:#94a3b8;--border:#1a3550;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
+.screen{display:none;min-height:100vh}.screen.active{display:flex}
+
+/* LOGIN */
+#s-login{align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
+#s-login::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0,rgba(26,107,219,.2),transparent);pointer-events:none}
+.login-card{background:rgba(13,30,48,.92);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:100%;max-width:400px;position:relative;backdrop-filter:blur(10px)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .tag{color:var(--accent);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
+.login-logo h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-top:6px}
+.login-logo p{color:var(--grayL);font-size:12px;margin-top:6px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:22px}
+.tab{background:transparent;border:none;border-radius:8px;padding:9px;color:var(--gray);font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+.tab.active{background:var(--bg3);color:var(--accent)}
+.field{margin-bottom:13px;position:relative}
+.field label{display:block;color:var(--grayL);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.field input:focus,.field select:focus{border-color:var(--blueL)}
+.field select option{background:var(--bg2)}
+.pwd-toggle{position:absolute;right:12px;bottom:10px;background:none;border:none;color:var(--gray);cursor:pointer;font-size:14px;padding:0}
+.pwd-toggle:hover{color:var(--accent)}
+.btn-main{width:100%;background:var(--blue);color:#fff;border:none;border-radius:11px;padding:12px;font-size:14px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;transition:all .2s;margin-top:4px}
+.btn-main:hover{background:var(--blueL);transform:translateY(-1px)}
+.btn-main:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 13px;color:#fca5a5;font-size:12px;margin-bottom:12px;display:none}
+.err.show{display:block}
+.loading-bar{text-align:center;color:var(--grayL);font-size:13px;padding:12px;display:none}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* LAYOUT */
+#s-admin,#s-struct{flex-direction:row;width:100%}
+.sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;bottom:0;left:0;z-index:50;overflow-y:auto;transition:transform .25s}
+.main{margin-left:220px;flex:1;padding:28px 32px;min-height:100vh}
+.sb-logo{padding:20px 18px;border-bottom:1px solid var(--border)}
+.sb-logo .tag{color:var(--accent);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-family:'Syne',sans-serif}
+.sb-logo .org{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;margin-top:4px}
+.sb-logo .sub{color:var(--gray);font-size:10px;margin-top:2px}
+.sb-nav{flex:1;padding:12px 8px}
+.sb-sec{color:#1e4a6a;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:12px 10px 4px}
+.sb-btn{display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border-radius:9px;border:none;background:transparent;color:var(--gray);cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;margin-bottom:2px;text-align:left;transition:all .15s}
+.sb-btn:hover{background:var(--bg3);color:var(--grayL)}
+.sb-btn.active{background:rgba(26,107,219,.15);color:var(--accent);font-weight:600}
+.sb-foot{padding:12px 16px;border-top:1px solid var(--border)}
+.sb-foot .who{color:var(--grayL);font-size:12px;font-weight:600}
+.sb-foot .lbl{color:var(--gray);font-size:10px}
+.realtime-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:5px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.logout{width:100%;background:transparent;border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--gray);font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:8px;transition:all .2s}
+.logout:hover{border-color:var(--red);color:#fca5a5}
+
+/* MOBILE MENU */
+.menu-toggle{display:none;position:fixed;top:12px;left:12px;z-index:100;background:var(--bg2);border:1px solid var(--border);border-radius:9px;width:38px;height:38px;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
+
+/* INACTIVITY */
+#inactivity-warn{display:none;position:fixed;top:0;left:0;right:0;background:rgba(245,158,11,.15);border-bottom:1px solid rgba(245,158,11,.3);padding:10px 20px;text-align:center;font-size:12px;color:var(--orange);z-index:300;font-weight:600}
+#inactivity-warn.show{display:block}
+
+/* TABS */
+.tp{display:none}.tp.active{display:block}
+.ph{margin-bottom:24px}
+.ph h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+.ph p{color:var(--gray);font-size:12px;margin-top:3px}
+.ph-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;gap:12px;flex-wrap:wrap}
+
+/* COMPOSANTS */
+.btn{border:none;border-radius:9px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-p{background:var(--blue);color:#fff}
+.btn-g{background:var(--bg3);color:var(--grayL);border:1px solid var(--border)}
+.btn-s{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.btn-d{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}
+.btn-o{background:rgba(245,158,11,.15);color:var(--orange);border:1px solid rgba(245,158,11,.25)}
+.btn-sm{padding:4px 10px;font-size:11px;border-radius:6px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:18px}
+.badge{padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;display:inline-block}
+.b-blue{background:rgba(56,189,248,.1);color:var(--accent)}
+.b-green{background:rgba(16,185,129,.1);color:var(--green)}
+.b-orange{background:rgba(245,158,11,.1);color:var(--orange)}
+.b-red{background:rgba(239,68,68,.1);color:#fca5a5}
+.b-gray{background:rgba(100,116,139,.1);color:var(--grayL)}
+.b-purple{background:rgba(139,92,246,.1);color:var(--purple)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:2px solid var(--c,var(--blue))}
+.stat-v{font-family:'DM Mono',monospace;font-size:26px;color:var(--white);margin-bottom:3px}
+.stat-l{color:var(--gray);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+
+/* CRÉNEAUX */
+.cr-card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-bottom:8px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;border-left:3px solid var(--c,var(--blue));transition:box-shadow .2s}
+.cr-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.cr-date{text-align:center;min-width:46px}
+.cr-day{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1}
+.cr-mon{font-size:10px;font-weight:600;text-transform:uppercase;color:var(--gray);letter-spacing:.06em}
+.cr-info h3{font-size:13px;font-weight:600;margin-bottom:3px}
+.cr-meta{display:flex;flex-wrap:wrap;gap:6px}
+.cr-meta span{font-size:11px;color:var(--grayL)}
+.cr-act{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap}
+
+/* FORM */
+.fg{margin-bottom:12px}
+.fg label{display:block;color:var(--grayL);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--white);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blueL)}
+.fg select option{background:var(--bg2)}
+.fg-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:16px}
+.ov.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:480px;max-height:86vh;overflow-y:auto}
+.mh{padding:18px 20px 0;display:flex;justify-content:space-between;align-items:center}
+.mh h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:800}
+.mb{padding:16px 20px 20px}
+.cls{background:var(--bg3);border:none;border-radius:7px;width:28px;height:28px;cursor:pointer;color:var(--gray);font-size:14px;display:flex;align-items:center;justify-content:center}
+.cls:hover{color:var(--white)}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:1px solid var(--green);border-radius:10px;padding:10px 18px;color:var(--green);font-size:12px;font-weight:600;z-index:999;opacity:0;transform:translateY(6px);transition:all .25s;pointer-events:none;max-width:280px}
+#toast.show{opacity:1;transform:translateY(0)}
+
+/* STRUCTURE VIEW */
+.hero{background:linear-gradient(135deg,rgba(26,107,219,.15),rgba(14,165,233,.08));border:1px solid rgba(56,189,248,.15);border-radius:14px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.av{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--accent));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;flex-shrink:0}
+.rdv-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:14px;border-left:3px solid var(--c,var(--purple))}
+.rdv-db{text-align:center;min-width:42px;flex-shrink:0}
+.rdv-day{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;line-height:1}
+.rdv-mon{font-size:9px;text-transform:uppercase;font-weight:700;color:var(--gray);letter-spacing:.06em}
+.empty{text-align:center;padding:48px 20px;color:var(--gray)}
+.empty .ei{font-size:40px;margin-bottom:12px;opacity:.35}
+.empty p{font-size:13px}
+
+/* TABLE */
+.struct-tbl{width:100%;border-collapse:collapse}
+.struct-tbl th{background:var(--bg3);color:var(--gray);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
+.struct-tbl td{padding:11px 13px;border-bottom:1px solid var(--border);font-size:12px;color:var(--grayL)}
+.struct-tbl tr:hover td{background:rgba(26,107,219,.03)}
+.struct-tbl tr:last-child td{border-bottom:none}
+.link-chip{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);background:rgba(56,189,248,.06);padding:4px 9px;border-radius:5px;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
+.link-chip:hover{background:rgba(56,189,248,.14)}
+
+/* FILTRES */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.fb{background:var(--bg2);color:var(--gray);border:1px solid var(--border);border-radius:7px;padding:5px 12px;cursor:pointer;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all .15s}
+.fb.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+.drow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.drow:last-child{border-bottom:none}
+.drow-l{color:var(--gray);font-size:12px;min-width:140px;flex-shrink:0}
+.drow-v{color:var(--white);font-size:12px}
+
+/* MOT DE PASSE */
+.pwd-strength{height:4px;border-radius:2px;margin-top:6px;transition:all .3s;background:var(--border);width:0}
+.pwd-strength.weak{background:var(--red);width:33%}
+.pwd-strength.medium{background:var(--orange);width:66%}
+.pwd-strength.strong{background:var(--green);width:100%}
+.pwd-hint{font-size:10px;color:var(--gray);margin-top:4px}
+
+/* RESPONSIVE MOBILE */
+@media(max-width:768px){
+  .menu-toggle{display:flex}
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.open{display:block}
+  .main{margin-left:0;padding:16px;padding-top:60px}
+  .stats{grid-template-columns:1fr 1fr}
+  .cr-card{grid-template-columns:auto 1fr;gap:10px}
+  .cr-act{grid-column:1/-1;justify-content:flex-end}
+  .ph-row{flex-direction:column}
+  .struct-tbl{display:block;overflow-x:auto}
+  #s-login{padding:16px}
+  .login-card{padding:28px 20px}
+  .fg-row{grid-template-columns:1fr}
+  .drow{flex-direction:column;gap:2px}
+  .drow-l{min-width:unset;font-size:10px}
+}
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr}
+  .ph h2{font-size:17px}
+}
+</style>
 </head>
 <body>
+<div id="toast"></div>
+<div id="inactivity-warn">⚠️ Déconnexion automatique dans <span id="countdown">60</span>s pour inactivité — <button onclick="resetInactivity()" style="background:var(--orange);border:none;color:#000;border-radius:5px;padding:2px 8px;cursor:pointer;font-size:11px;font-weight:700;margin-left:6px">Rester connecté</button></div>
 
-<!-- ÉCRAN DE CONNEXION -->
-<div id="loginScreen">
-    <div class="container" style="max-width: 400px; margin-top: 100px;">
-        <div class="card">
-            <h1 style="text-align: center;">SIAO Prise de RDV</h1>
-            <div style="display: flex; gap: 10px; margin: 20px 0;">
-                <button id="btnSiao" onclick="showSiaoLogin()" style="flex: 1;">🏛 SIAO</button>
-                <button id="btnStruct" onclick="showStructLogin()" style="flex: 1;">🏠 Structure</button>
-            </div>
-            
-            <div id="siaoLogin">
-                <input type="password" id="siaoPassword" placeholder="Mot de passe SIAO">
-                <button onclick="loginSiao()" style="width: 100%; margin-top: 10px;">Se connecter</button>
-            </div>
-            
-            <div id="structLogin" class="hidden">
-                <select id="structSelect"></select>
-                <input type="password" id="structCode" placeholder="Code d'accès">
-                <button onclick="loginStructure()" style="width: 100%; margin-top: 10px;">Se connecter</button>
-            </div>
-            
-            <div id="errorMsg" style="color: #ef4444; margin-top: 10px; text-align: center;"></div>
+<!-- LOGIN -->
+<div class="screen active" id="s-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="tag">SIAO — Système RDV</div>
+      <h1>Prise de rendez-vous</h1>
+      <p><span class="realtime-dot"></span>Données partagées en temps réel</p>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="setTab('siao',this)">🏛 SIAO</button>
+      <button class="tab" onclick="setTab('struct',this)">🏠 Structure</button>
+    </div>
+    <div id="login-err" class="err"></div>
+    <div id="login-loading" class="loading-bar"><span class="spinner"></span>Connexion à la base de données…</div>
+    <div id="pnl-siao">
+      <div class="field">
+        <label>Mot de passe SIAO</label>
+        <input type="password" id="siao-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginSIAO()">
+        <button class="pwd-toggle" onclick="togglePwd('siao-pwd',this)" tabindex="-1">👁</button>
+      </div>
+      <button class="btn-main" id="btn-siao-login" onclick="loginSIAO()">Accéder →</button>
+    </div>
+    <div id="pnl-struct" style="display:none">
+      <div class="field"><label>Votre structure</label>
+        <select id="struct-sel"><option value="">— Chargement… —</option></select>
+      </div>
+      <div class="field">
+        <label>Code d'accès</label>
+        <input type="password" id="struct-pwd" placeholder="Code transmis par le SIAO" onkeydown="if(event.key==='Enter')loginStruct()">
+        <button class="pwd-toggle" onclick="togglePwd('struct-pwd',this)" tabindex="-1">👁</button>
+      </div>
+      <button class="btn-main" id="btn-struct-login" onclick="loginStruct()">Accéder →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN SIAO -->
+<div class="screen" id="s-admin">
+  <button class="menu-toggle" onclick="toggleSidebar('admin')">☰</button>
+  <div class="sidebar-overlay" id="ov-admin" onclick="toggleSidebar('admin')"></div>
+  <div class="sidebar" id="admin-sidebar">
+    <div class="sb-logo"><div class="tag">Administration</div><div class="org">SIAO</div><div class="sub"><span class="realtime-dot"></span>Temps réel · Supabase</div></div>
+    <div class="sb-nav">
+      <div class="sb-sec">Planification</div>
+      <button class="sb-btn active" onclick="aTab('ens',this)"><span>📊</span>Vue d'ensemble</button>
+      <button class="sb-btn" onclick="aTab('cren',this)"><span>📅</span>Créneaux</button>
+      <div class="sb-sec">Structures</div>
+      <button class="sb-btn" onclick="aTab('str',this)"><span>🏠</span>Structures & accès</button>
+      <button class="sb-btn" onclick="aTab('res',this)"><span>✅</span>Réservations</button>
+      <div class="sb-sec">Paramètres</div>
+      <button class="sb-btn" onclick="aTab('cfg',this)"><span>🔐</span>Mot de passe</button>
+    </div>
+    <div class="sb-foot">
+      <div class="who">Administrateur SIAO</div>
+      <div class="lbl">Accès complet</div>
+      <button class="logout" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="tp active" id="a-ens">
+      <div class="ph"><h2>Vue d'ensemble</h2><p id="a-date-lbl"></p></div>
+      <div class="stats" id="a-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card"><div style="color:var(--grayL);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Prochains créneaux libres</div><div id="a-next"></div></div>
+        <div class="card"><div style="color:var(--grayL);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Dernières réservations</div><div id="a-resa-r"></div></div>
+      </div>
+    </div>
+    <div class="tp" id="a-cren">
+      <div class="ph-row">
+        <div class="ph"><h2>Gérer les créneaux</h2><p>Publiez les créneaux disponibles</p></div>
+        <button class="btn btn-p" onclick="openMC()">+ Nouveau créneau</button>
+      </div>
+      <div class="filters">
+        <button class="fb active" onclick="setCF('tous',this)">Tous</button>
+        <button class="fb" onclick="setCF('libre',this)">Libres</button>
+        <button class="fb" onclick="setCF('reserve',this)">Réservés</button>
+      </div>
+      <div id="a-cren-list"></div>
+    </div>
+    <div class="tp" id="a-str">
+      <div class="ph-row">
+        <div class="ph"><h2>Structures & accès</h2><p>Gérez les structures partenaires</p></div>
+        <button class="btn btn-p" onclick="openMS()">+ Nouvelle structure</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden"><table class="struct-tbl" id="a-str-tbl"></table></div>
+    </div>
+    <div class="tp" id="a-res">
+      <div class="ph-row">
+        <div class="ph"><h2>Toutes les réservations</h2><p>Visible uniquement par le SIAO</p></div>
+        <button class="btn btn-o" onclick="exportCSV()">⬇ Exporter CSV</button>
+      </div>
+      <div class="filters" id="a-res-filters"></div>
+      <div id="a-res-list"></div>
+    </div>
+    <div class="tp" id="a-cfg">
+      <div class="ph"><h2>Changer le mot de passe SIAO</h2><p>Modifiez le mot de passe administrateur</p></div>
+      <div class="card" style="max-width:400px">
+        <div class="fg"><label>Mot de passe actuel</label><input type="password" id="cfg-old" placeholder="••••••••"></div>
+        <div class="fg">
+          <label>Nouveau mot de passe</label>
+          <input type="password" id="cfg-new" placeholder="Min. 8 caractères" oninput="checkPwdStrength(this.value)">
+          <div class="pwd-strength" id="pwd-bar"></div>
+          <div class="pwd-hint" id="pwd-hint">Entrez un nouveau mot de passe</div>
         </div>
+        <div class="fg"><label>Confirmer</label><input type="password" id="cfg-confirm" placeholder="••••••••"></div>
+        <button class="btn btn-p" onclick="changePwd()" style="width:100%;justify-content:center;margin-top:4px">🔐 Mettre à jour le mot de passe</button>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- ÉCRAN ADMIN -->
-<div id="adminScreen" class="hidden">
-    <div class="sidebar">
-        <h3>SIAO Admin</h3>
-        <hr style="margin: 10px 0;">
-        <button onclick="showDashboard()" style="width: 100%; margin: 5px 0;">📊 Dashboard</button>
-        <button onclick="showCreneaux()" style="width: 100%; margin: 5px 0;">📅 Créneaux</button>
-        <button onclick="showStructures()" style="width: 100%; margin: 5px 0;">🏢 Structures</button>
-        <button onclick="showReservations()" style="width: 100%; margin: 5px 0;">✅ Réservations</button>
-        <button onclick="logout()" style="width: 100%; margin-top: 20px; background: #ef4444;">Déconnexion</button>
+<!-- STRUCTURE -->
+<div class="screen" id="s-struct">
+  <button class="menu-toggle" onclick="toggleSidebar('struct')">☰</button>
+  <div class="sidebar-overlay" id="ov-struct" onclick="toggleSidebar('struct')"></div>
+  <div class="sidebar" id="struct-sidebar">
+    <div class="sb-logo"><div class="tag">Espace structure</div><div class="org" id="st-org">—</div><div class="sub"><span class="realtime-dot"></span>Mes rendez-vous SIAO</div></div>
+    <div class="sb-nav">
+      <div class="sb-sec">Planning</div>
+      <button class="sb-btn active" onclick="sTab('rdv',this)"><span>📅</span>Mes rendez-vous</button>
+      <button class="sb-btn" onclick="sTab('dispo',this)"><span>🟢</span>Créneaux disponibles</button>
     </div>
-    <div class="content" id="adminContent"></div>
+    <div class="sb-foot">
+      <div class="who" id="st-foot">—</div>
+      <div class="lbl">Accès restreint à votre structure</div>
+      <button class="logout" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="tp active" id="st-rdv">
+      <div class="hero">
+        <div class="av" id="st-av">?</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800" id="st-hero-nm">—</div>
+          <p style="color:var(--grayL);font-size:12px;margin-top:3px">Vos rendez-vous · visibles uniquement par vous</p>
+        </div>
+      </div>
+      <div class="ph"><h2>Mes rendez-vous confirmés</h2></div>
+      <div id="st-rdv-list"></div>
+    </div>
+    <div class="tp" id="st-dispo">
+      <div class="ph"><h2>Créneaux disponibles</h2><p>Réservez un créneau proposé par le SIAO</p></div>
+      <div id="st-dispo-list"></div>
+    </div>
+  </div>
 </div>
 
-<!-- ÉCRAN STRUCTURE -->
-<div id="structureScreen" class="hidden">
-    <div class="sidebar">
-        <h3 id="structName">Structure</h3>
-        <hr style="margin: 10px 0;">
-        <button onclick="showMesRdv()" style="width: 100%; margin: 5px 0;">📅 Mes RDV</button>
-        <button onclick="showDisponibles()" style="width: 100%; margin: 5px 0;">🟢 Créneaux dispo</button>
-        <button onclick="logout()" style="width: 100%; margin-top: 20px;">Déconnexion</button>
+<!-- MODAL CRÉNEAU -->
+<div class="ov" id="m-cren">
+  <div class="modal">
+    <div class="mh"><h3>Nouveau créneau</h3><button class="cls" onclick="closeM('m-cren')">✕</button></div>
+    <div class="mb">
+      <div class="fg-row">
+        <div class="fg"><label>Date</label><input type="date" id="c-date"></div>
+        <div class="fg"><label>Heure</label><input type="time" id="c-heure" value="09:00"></div>
+        <div class="fg"><label>Durée</label>
+          <select id="c-duree"><option value="30">30 min</option><option value="45">45 min</option><option value="60" selected>1h</option><option value="90">1h30</option><option value="120">2h</option></select>
+        </div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Type</label>
+          <select id="c-type"><option>Bilan d'activité</option><option>Visite terrain</option><option>Réunion partenariale</option><option>Point de suivi</option><option>Formation SI SIAO</option><option>Autre</option></select>
+        </div>
+        <div class="fg"><label>Modalité</label>
+          <select id="c-mod"><option>Présentiel — SIAO</option><option>Présentiel — Structure</option><option>Visioconférence</option><option>Téléphone</option></select>
+        </div>
+      </div>
+      <div class="fg"><label>Structure ciblée (vide = toutes)</label>
+        <select id="c-dest"><option value="">Toutes les structures</option></select>
+      </div>
+      <div class="fg"><label>Notes internes SIAO</label>
+        <textarea id="c-notes" rows="2" style="resize:vertical" placeholder="Ordre du jour, documents à préparer…"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+        <button class="btn btn-g" onclick="closeM('m-cren')">Annuler</button>
+        <button class="btn btn-p" id="btn-save-cren" onclick="saveCren()">Publier</button>
+      </div>
     </div>
-    <div class="content" id="structureContent"></div>
+  </div>
+</div>
+
+<!-- MODAL STRUCTURE -->
+<div class="ov" id="m-str">
+  <div class="modal">
+    <div class="mh"><h3>Nouvelle structure</h3><button class="cls" onclick="closeM('m-str')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Nom</label><input type="text" id="s-nom" placeholder="Ex : CHRS La Boussole"></div>
+      <div class="fg-row">
+        <div class="fg"><label>Type</label>
+          <select id="s-type"><option>CHRS</option><option>Foyer</option><option>CADA</option><option>ALT</option><option>Résidence accueil</option><option>Autre</option></select>
+        </div>
+        <div class="fg"><label>Ville</label><input type="text" id="s-ville"></div>
+      </div>
+      <div class="fg"><label>Code d'accès</label>
+        <div style="display:flex;gap:7px">
+          <input type="text" id="s-code" placeholder="Ex : CHRS2025" style="flex:1">
+          <button class="btn btn-g btn-sm" onclick="genCode()">🎲 Générer</button>
+        </div>
+        <div style="color:var(--gray);font-size:10px;margin-top:4px">Ce code sera transmis à la structure pour se connecter</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+        <button class="btn btn-g" onclick="closeM('m-str')">Annuler</button>
+        <button class="btn btn-s" id="btn-save-str" onclick="saveStr()">Créer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RÉSERVER -->
+<div class="ov" id="m-res">
+  <div class="modal">
+    <div class="mh"><h3>Confirmer la réservation</h3><button class="cls" onclick="closeM('m-res')">✕</button></div>
+    <div class="mb">
+      <div id="m-res-detail" style="background:var(--bg3);border-radius:9px;padding:14px;margin-bottom:16px"></div>
+      <div class="fg"><label>Message pour le SIAO (optionnel)</label>
+        <textarea id="r-msg" rows="2" style="resize:vertical"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn btn-g" onclick="closeM('m-res')">Annuler</button>
+        <button class="btn btn-s" id="btn-confirm-res" onclick="confirmRes()">✅ Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DÉTAIL -->
+<div class="ov" id="m-det">
+  <div class="modal">
+    <div class="mh"><h3>Détail du créneau</h3><button class="cls" onclick="closeM('m-det')">✕</button></div>
+    <div class="mb" id="m-det-body"></div>
+  </div>
 </div>
 
 <script>
-// Configuration Supabase
-const SUPABASE_URL = 'https://elzhfqxysirwqzgihkve.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsemhmcXh5c2lyd3F6Z2loa3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDkzMzMsImV4cCI6MjA4OTkyNTMzM30._nz3MIUxjmabyShRS2x8k5l7HSfIxsgv-Ct8-wQaL0Y';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL  = 'https://elzhfqxysirwqzgihkve.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsemhmcXh5c2lyd3F6Z2loa3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDkzMzMsImV4cCI6MjA4OTkyNTMzM30._nz3MIUxjmabyShRS2x8k5l7HSfIxsgv-Ct8-wQaL0Y';
+let SIAO_PWD = localStorage.getItem('siao_pwd') || 'siao2025';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON);
+let structures = [], creneaux = [], currentUser = null, cfilt = 'tous', rfilt = 'tous', pendingId = null;
 
-let structures = [];
-let creneaux = [];
-let currentUser = null;
+// ── DÉCONNEXION AUTOMATIQUE (15 min) ──
+const INACTIVITY_LIMIT = 15 * 60 * 1000;
+const WARN_BEFORE = 60 * 1000;
+let inactivityTimer, warnTimer, countdownInterval;
 
-// Chargement initial
-async function chargerDonnees() {
-    try {
-        const { data: s } = await supabase.from('structures').select('*');
-        const { data: c } = await supabase.from('creneaux').select('*');
-        structures = s || [];
-        creneaux = c || [];
-        
-        // Mettre à jour le select des structures
-        const select = document.getElementById('structSelect');
-        if (select) {
-            select.innerHTML = '<option value="">Sélectionner une structure</option>' + 
-                structures.map(s => `<option value="${s.id}">${s.nom}</option>`).join('');
-        }
-    } catch(e) {
-        console.error('Erreur chargement:', e);
-    }
+function resetInactivity() {
+  if (!currentUser) return;
+  clearTimeout(inactivityTimer); clearTimeout(warnTimer); clearInterval(countdownInterval);
+  document.getElementById('inactivity-warn').classList.remove('show');
+  warnTimer = setTimeout(() => {
+    let remaining = 60;
+    document.getElementById('countdown').textContent = remaining;
+    document.getElementById('inactivity-warn').classList.add('show');
+    countdownInterval = setInterval(() => {
+      remaining--;
+      document.getElementById('countdown').textContent = remaining;
+      if (remaining <= 0) clearInterval(countdownInterval);
+    }, 1000);
+  }, INACTIVITY_LIMIT - WARN_BEFORE);
+  inactivityTimer = setTimeout(() => { toast('🔒 Déconnexion automatique'); setTimeout(logout, 1500); }, INACTIVITY_LIMIT);
+}
+['mousemove','keydown','click','scroll','touchstart'].forEach(e => document.addEventListener(e, resetInactivity, { passive: true }));
+
+// ── MOBILE SIDEBAR ──
+function toggleSidebar(type) {
+  const sb = document.getElementById((type||'admin')+'-sidebar');
+  const ov = document.getElementById('ov-'+(type||'admin'));
+  sb.classList.toggle('open'); ov.classList.toggle('open');
 }
 
-// Affichage des écrans
-function showSiaoLogin() {
-    document.getElementById('siaoLogin').classList.remove('hidden');
-    document.getElementById('structLogin').classList.add('hidden');
-    document.getElementById('errorMsg').innerHTML = '';
+// ── DONNÉES ──
+async function loadAll() {
+  const [{ data: str }, { data: cren }] = await Promise.all([
+    db.from('structures').select('*').order('nom'),
+    db.from('creneaux').select('*').order('date').order('heure')
+  ]);
+  structures = str || []; creneaux = cren || [];
 }
 
-function showStructLogin() {
-    document.getElementById('siaoLogin').classList.add('hidden');
-    document.getElementById('structLogin').classList.remove('hidden');
-    document.getElementById('errorMsg').innerHTML = '';
+function subscribeRealtime() {
+  db.channel('rdv-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'creneaux' }, async () => {
+      const { data } = await db.from('creneaux').select('*').order('date').order('heure');
+      creneaux = data || []; refreshCurrentView(); toast('🔄 Données mises à jour');
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'structures' }, async () => {
+      const { data } = await db.from('structures').select('*').order('nom');
+      structures = data || []; populateStructSel(); populateDestSel(); refreshCurrentView();
+    })
+    .subscribe();
 }
 
-// Connexion SIAO
-async function loginSiao() {
-    const pwd = document.getElementById('siaoPassword').value;
-    if (pwd === 'siao2025') {
-        currentUser = { role: 'admin' };
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('adminScreen').classList.remove('hidden');
-        showDashboard();
-    } else {
-        document.getElementById('errorMsg').innerHTML = 'Mot de passe incorrect';
-    }
+function refreshCurrentView() {
+  if (!currentUser) return;
+  if (currentUser.role === 'siao') {
+    const active = document.querySelector('#s-admin .tp.active'); if (!active) return;
+    const id = active.id;
+    if (id==='a-ens') renderEns(); if (id==='a-cren') renderCren();
+    if (id==='a-str') renderStr(); if (id==='a-res')  renderRes();
+  } else {
+    const active = document.querySelector('#s-struct .tp.active'); if (!active) return;
+    if (active.id==='st-rdv') renderMesRDV(); if (active.id==='st-dispo') renderDispo();
+  }
 }
 
-// Connexion Structure
-async function loginStructure() {
-    const structId = document.getElementById('structSelect').value;
-    const code = document.getElementById('structCode').value;
-    
-    const structure = structures.find(s => s.id == structId);
-    if (structure && structure.code === code) {
-        currentUser = { role: 'structure', id: structure.id, nom: structure.nom };
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('structureScreen').classList.remove('hidden');
-        document.getElementById('structName').innerHTML = structure.nom;
-        showMesRdv();
-    } else {
-        document.getElementById('errorMsg').innerHTML = 'Code incorrect';
-    }
+// ── INIT ──
+(async () => {
+  showLoading(true);
+  try { await loadAll(); populateStructSel(); }
+  catch(e) { showErr('Impossible de contacter la base de données. Vérifiez votre connexion.'); }
+  showLoading(false);
+  const h = location.hash.slice(1);
+  if (h.startsWith('s-')) {
+    const parts = h.slice(2).split('-code-');
+    const s = structures.find(x => x.id === parts[0] && x.code.toUpperCase() === (parts[1]||'').toUpperCase());
+    if (s) { currentUser = { role: 'struct', id: s.id, nom: s.nom }; showScreen('s-struct'); initStruct(s); subscribeRealtime(); resetInactivity(); return; }
+  }
+  showScreen('s-login');
+})();
+
+function showLoading(v) {
+  document.getElementById('login-loading').style.display = v ? 'block' : 'none';
+  document.getElementById('pnl-siao').style.display = v ? 'none' : 'block';
 }
 
-// Déconnexion
+// ── LOGIN ──
+function togglePwd(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+function setTab(t, btn) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+  document.getElementById('pnl-siao').style.display = t==='siao' ? 'block' : 'none';
+  document.getElementById('pnl-struct').style.display = t==='struct' ? 'block' : 'none';
+  document.getElementById('login-err').classList.remove('show');
+}
+
+function populateStructSel() {
+  const sel = document.getElementById('struct-sel');
+  sel.innerHTML = '<option value="">— Sélectionner —</option>';
+  structures.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.nom}</option>`);
+}
+
+function loginSIAO() {
+  if (document.getElementById('siao-pwd').value === SIAO_PWD) {
+    currentUser = { role: 'siao' }; showScreen('s-admin'); initAdmin(); subscribeRealtime(); resetInactivity();
+  } else showErr('Mot de passe incorrect.');
+}
+
+function loginStruct() {
+  const id = document.getElementById('struct-sel').value;
+  const pwd = document.getElementById('struct-pwd').value.trim();
+  if (!id) { showErr('Sélectionnez votre structure.'); return; }
+  const s = structures.find(x => x.id === id);
+  if (s && pwd.toUpperCase() === s.code.toUpperCase()) {
+    currentUser = { role: 'struct', id: s.id, nom: s.nom }; showScreen('s-struct'); initStruct(s); subscribeRealtime(); resetInactivity();
+  } else showErr('Code d\'accès incorrect.');
+}
+
+function showErr(m) { const e = document.getElementById('login-err'); e.textContent = m; e.classList.add('show'); }
+
 function logout() {
-    currentUser = null;
-    document.getElementById('adminScreen').classList.add('hidden');
-    document.getElementById('structureScreen').classList.add('hidden');
-    document.getElementById('loginScreen').classList.remove('hidden');
-    document.getElementById('siaoPassword').value = '';
-    document.getElementById('structCode').value = '';
+  currentUser = null; location.hash = '';
+  clearTimeout(inactivityTimer); clearTimeout(warnTimer); clearInterval(countdownInterval);
+  document.getElementById('inactivity-warn').classList.remove('show');
+  document.getElementById('siao-pwd').value = ''; document.getElementById('struct-pwd').value = '';
+  showScreen('s-login');
 }
 
-// Admin - Dashboard
-function showDashboard() {
-    const libres = creneaux.filter(c => c.statut === 'libre').length;
-    const reserves = creneaux.filter(c => c.statut === 'reserve').length;
-    document.getElementById('adminContent').innerHTML = `
-        <h2>Dashboard</h2>
-        <div class="flex">
-            <div class="card" style="flex:1">
-                <h3>${creneaux.length}</h3>
-                <p>Total créneaux</p>
-            </div>
-            <div class="card" style="flex:1">
-                <h3>${libres}</h3>
-                <p>Disponibles</p>
-            </div>
-            <div class="card" style="flex:1">
-                <h3>${reserves}</h3>
-                <p>Réservés</p>
-            </div>
-            <div class="card" style="flex:1">
-                <h3>${structures.length}</h3>
-                <p>Structures</p>
-            </div>
-        </div>
-    `;
+// ── MOT DE PASSE ──
+function checkPwdStrength(v) {
+  const bar = document.getElementById('pwd-bar'), hint = document.getElementById('pwd-hint');
+  if (!v) { bar.className = 'pwd-strength'; hint.textContent = 'Entrez un nouveau mot de passe'; return; }
+  const strong = v.length >= 12 && /[A-Z]/.test(v) && /[0-9]/.test(v) && /[^a-zA-Z0-9]/.test(v);
+  const medium = v.length >= 8 && (/[A-Z]/.test(v) || /[0-9]/.test(v));
+  if (strong) { bar.className = 'pwd-strength strong'; hint.textContent = '✅ Mot de passe fort'; }
+  else if (medium) { bar.className = 'pwd-strength medium'; hint.textContent = '⚠️ Correct — ajoutez chiffres et majuscules'; }
+  else { bar.className = 'pwd-strength weak'; hint.textContent = '❌ Trop faible — min. 8 caractères'; }
 }
 
-// Admin - Créneaux
-async function showCreneaux() {
-    const content = `
-        <h2>Gestion des créneaux</h2>
-        <button onclick="ajouterCreneau()">+ Nouveau créneau</button>
-        <div id="creneauxList">
-            ${creneaux.map(c => `
-                <div class="creneau">
-                    <strong>${c.type || 'Réunion'}</strong> - ${c.date} à ${c.heure} (${c.duree || 60} min)<br>
-                    <span class="badge">${c.statut}</span>
-                    ${c.reserve_par_nom ? `<span class="badge">👤 ${c.reserve_par_nom}</span>` : ''}
-                    <br><button onclick="supprimerCreneau(${c.id})" style="margin-top: 10px; background:#ef4444;">Supprimer</button>
-                </div>
-            `).join('') || '<p>Aucun créneau</p>'}
-        </div>
-    `;
-    document.getElementById('adminContent').innerHTML = content;
+function changePwd() {
+  const old = document.getElementById('cfg-old').value;
+  const nw  = document.getElementById('cfg-new').value;
+  const con = document.getElementById('cfg-confirm').value;
+  if (old !== SIAO_PWD) { toast('❌ Mot de passe actuel incorrect'); return; }
+  if (nw.length < 8)   { toast('❌ Nouveau mot de passe trop court (min. 8 caractères)'); return; }
+  if (nw !== con)      { toast('❌ Les mots de passe ne correspondent pas'); return; }
+  SIAO_PWD = nw; localStorage.setItem('siao_pwd', nw);
+  ['cfg-old','cfg-new','cfg-confirm'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pwd-bar').className = 'pwd-strength';
+  document.getElementById('pwd-hint').textContent = 'Entrez un nouveau mot de passe';
+  toast('✅ Mot de passe mis à jour !');
 }
 
-async function ajouterCreneau() {
-    const date = prompt("Date (YYYY-MM-DD) :");
-    const heure = prompt("Heure (HH:MM) :");
-    if (date && heure) {
-        await supabase.from('creneaux').insert([{
-            date: date,
-            heure: heure,
-            duree: 60,
-            type: "Réunion",
-            modalite: "Présentiel",
-            statut: "libre"
-        }]);
-        const { data: c } = await supabase.from('creneaux').select('*');
-        creneaux = c;
-        showCreneaux();
-    }
+// ── NAVIGATION ──
+function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+function aTab(t, btn) {
+  document.querySelectorAll('#s-admin .tp').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#s-admin .sb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('a-' + t).classList.add('active'); btn && btn.classList.add('active');
+  ({ ens: renderEns, cren: renderCren, str: renderStr, res: renderRes })[t]?.();
+  if (window.innerWidth <= 768) toggleSidebar('admin');
 }
 
-async function supprimerCreneau(id) {
-    if (confirm('Supprimer ce créneau ?')) {
-        await supabase.from('creneaux').delete().eq('id', id);
-        const { data: c } = await supabase.from('creneaux').select('*');
-        creneaux = c;
-        showCreneaux();
-    }
+function sTab(t, btn) {
+  document.querySelectorAll('#s-struct .tp').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#s-struct .sb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('st-' + t).classList.add('active'); btn && btn.classList.add('active');
+  if (t==='rdv') renderMesRDV(); if (t==='dispo') renderDispo();
+  if (window.innerWidth <= 768) toggleSidebar('struct');
 }
 
-// Admin - Structures
-async function showStructures() {
-    const content = `
-        <h2>Gestion des structures</h2>
-        <button onclick="ajouterStructure()">+ Nouvelle structure</button>
-        <div>
-            ${structures.map(s => `
-                <div class="card">
-                    <strong>${s.nom}</strong><br>
-                    Type: ${s.type || 'CHRS'}<br>
-                    Code: <code>${s.code}</code><br>
-                    <button onclick="supprimerStructure(${s.id})" style="background:#ef4444; margin-top:10px;">Supprimer</button>
-                </div>
-            `).join('') || '<p>Aucune structure</p>'}
-        </div>
-    `;
-    document.getElementById('adminContent').innerHTML = content;
+// ── ADMIN INIT ──
+function initAdmin() {
+  document.getElementById('a-date-lbl').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  populateDestSel(); renderEns();
+}
+function populateDestSel() {
+  const sel = document.getElementById('c-dest');
+  sel.innerHTML = '<option value="">Toutes les structures</option>';
+  structures.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.nom}</option>`);
 }
 
-async function ajouterStructure() {
-    const nom = prompt("Nom de la structure :");
-    if (nom) {
-        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-        await supabase.from('structures').insert([{ nom: nom, code: code, type: "CHRS" }]);
-        const { data: s } = await supabase.from('structures').select('*');
-        structures = s;
-        showStructures();
-    }
+// ── VUE D'ENSEMBLE ──
+function renderEns() {
+  const lib = creneaux.filter(c => c.statut==='libre').length;
+  const res = creneaux.filter(c => c.statut==='reserve').length;
+  document.getElementById('a-stats').innerHTML = [
+    { c:'--blue',   v: creneaux.length,   l:'Créneaux total' },
+    { c:'--green',  v: lib,               l:'Disponibles' },
+    { c:'--orange', v: res,               l:'Réservés' },
+    { c:'--accent', v: structures.length, l:'Structures' },
+  ].map(s => `<div class="stat" style="--c:var(${s.c})"><div class="stat-v">${s.v}</div><div class="stat-l">${s.l}</div></div>`).join('');
+  const next = creneaux.filter(c => c.statut==='libre').sort((a,b) => new Date(a.date+' '+a.heure)-new Date(b.date+' '+b.heure)).slice(0,4);
+  document.getElementById('a-next').innerHTML = next.length ? next.map(c => miniRow(c)).join('') : `<div class="empty"><div class="ei">📅</div><p>Aucun créneau libre</p></div>`;
+  const resas = creneaux.filter(c => c.statut==='reserve').sort((a,b) => new Date(b.date+' '+b.heure)-new Date(a.date+' '+a.heure)).slice(0,4);
+  document.getElementById('a-resa-r').innerHTML = resas.length ? resas.map(c => {
+    const s = structures.find(x => x.id===c.par);
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><div><div style="color:var(--white);font-size:12px;font-weight:600">${s?.nom||'—'}</div><div style="color:var(--gray);font-size:11px">${c.type} · ${fd(c.date)}</div></div><span class="badge b-green">Réservé</span></div>`;
+  }).join('') : `<div style="color:var(--gray);font-size:12px;padding:10px 0">Aucune réservation</div>`;
 }
 
-async function supprimerStructure(id) {
-    if (confirm('Supprimer cette structure ?')) {
-        await supabase.from('structures').delete().eq('id', id);
-        const { data: s } = await supabase.from('structures').select('*');
-        structures = s;
-        showStructures();
-    }
+function miniRow(c) {
+  const d = new Date(c.date+'T00:00:00');
+  return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="text-align:center;min-width:36px"><div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800">${d.getDate()}</div><div style="font-size:9px;color:var(--gray);text-transform:uppercase">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div><div style="flex:1"><div style="color:var(--white);font-size:12px;font-weight:500">${c.type}</div><div style="color:var(--gray);font-size:11px">${c.heure} · ${c.mod}</div></div><span class="badge b-blue">${c.duree}m</span></div>`;
 }
 
-// Admin - Réservations
-function showReservations() {
-    const reserves = creneaux.filter(c => c.statut === 'reserve');
-    document.getElementById('adminContent').innerHTML = `
-        <h2>Toutes les réservations</h2>
-        ${reserves.map(r => `
-            <div class="creneau">
-                <strong>${r.type || 'Réunion'}</strong> - ${r.date} à ${r.heure}<br>
-                Réservé par: ${r.reserve_par_nom || 'Anonyme'}<br>
-                <button onclick="annulerReservation(${r.id})" style="background:#ef4444;">Annuler</button>
-            </div>
-        `).join('') || '<p>Aucune réservation</p>'}
-    `;
+// ── CRÉNEAUX ──
+function setCF(f, btn) { cfilt=f; document.querySelectorAll('#a-cren .fb').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderCren(); }
+
+function renderCren() {
+  const list = creneaux.filter(c => cfilt==='tous' || c.statut===cfilt).sort((a,b) => new Date(a.date+' '+a.heure)-new Date(b.date+' '+b.heure));
+  document.getElementById('a-cren-list').innerHTML = list.length ? list.map(c => {
+    const d=new Date(c.date+'T00:00:00'), s=c.par?structures.find(x=>x.id===c.par):null, dest=c.dest?structures.find(x=>x.id===c.dest):null;
+    const col = c.statut==='reserve'?'var(--green)':'var(--blue)';
+    return `<div class="cr-card" style="--c:${col}"><div class="cr-date"><div class="cr-day">${d.getDate()}</div><div class="cr-mon">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div><div class="cr-info"><h3>${c.type} <span class="badge ${c.statut==='reserve'?'b-green':'b-blue'}">${c.statut==='reserve'?'Réservé':'Libre'}</span></h3><div class="cr-meta"><span>🕐 ${c.heure} · ${c.duree}min</span><span>📍 ${c.mod}</span>${dest?`<span>🏠 ${dest.nom}</span>`:'<span style="color:var(--green)">🌐 Toutes</span>'}${s?`<span style="color:var(--green)">✅ ${s.nom}</span>`:''}</div></div><div class="cr-act"><button class="btn btn-g btn-sm" onclick="showDet('${c.id}')">Détail</button><button class="btn btn-d btn-sm" onclick="delCren('${c.id}')">🗑</button></div></div>`;
+  }).join('') : `<div class="empty"><div class="ei">📅</div><p>Aucun créneau</p></div>`;
 }
 
-async function annulerReservation(id) {
-    if (confirm('Annuler cette réservation ?')) {
-        await supabase.from('creneaux').update({ statut: 'libre', reserve_par: null, reserve_par_nom: null }).eq('id', id);
-        const { data: c } = await supabase.from('creneaux').select('*');
-        creneaux = c;
-        showReservations();
-    }
+function openMC() { document.getElementById('c-date').value=new Date().toISOString().split('T')[0]; document.getElementById('c-heure').value='09:00'; document.getElementById('c-notes').value=''; openM('m-cren'); }
+
+async function saveCren() {
+  const dt = document.getElementById('c-date').value;
+  if (!dt) { toast('⚠️ Date requise'); return; }
+  setBtnLoading('btn-save-cren', true);
+  const c = { id:'c'+Date.now(), date:dt, heure:document.getElementById('c-heure').value, duree:+document.getElementById('c-duree').value, type:document.getElementById('c-type').value, mod:document.getElementById('c-mod').value, dest:document.getElementById('c-dest').value, notes:document.getElementById('c-notes').value, statut:'libre', par:null, msg:'' };
+  const { error } = await db.from('creneaux').insert(c);
+  setBtnLoading('btn-save-cren', false);
+  if (error) { toast('❌ Erreur : '+error.message); return; }
+  creneaux.push(c); closeM('m-cren'); renderCren(); renderEns(); toast('✅ Créneau publié');
 }
 
-// Structure - Mes RDV
-function showMesRdv() {
-    const mesRdv = creneaux.filter(c => c.reserve_par == currentUser.id);
-    document.getElementById('structureContent').innerHTML = `
-        <h2>Mes rendez-vous</h2>
-        ${mesRdv.map(r => `
-            <div class="creneau">
-                <strong>${r.type || 'Réunion'}</strong> - ${r.date} à ${r.heure}<br>
-                Modalité: ${r.modalite || 'Présentiel'}<br>
-                <button onclick="annulerMonRdv(${r.id})" style="background:#ef4444;">Annuler</button>
-            </div>
-        `).join('') || '<p>Aucun rendez-vous</p>'}
-    `;
+async function delCren(id) {
+  if (!confirm('Supprimer ce créneau ?')) return;
+  const { error } = await db.from('creneaux').delete().eq('id', id);
+  if (error) { toast('❌ Erreur : '+error.message); return; }
+  creneaux = creneaux.filter(c => c.id!==id); renderCren(); renderEns(); toast('🗑 Créneau supprimé');
 }
 
-async function annulerMonRdv(id) {
-    if (confirm('Annuler ce rendez-vous ?')) {
-        await supabase.from('creneaux').update({ statut: 'libre', reserve_par: null, reserve_par_nom: null }).eq('id', id);
-        const { data: c } = await supabase.from('creneaux').select('*');
-        creneaux = c;
-        showMesRdv();
-    }
+function showDet(id) {
+  const c = creneaux.find(x => x.id===id); if (!c) return;
+  const s=c.par?structures.find(x=>x.id===c.par):null, dest=c.dest?structures.find(x=>x.id===c.dest):null;
+  document.getElementById('m-det-body').innerHTML = `<div>${dr('📅 Date',fd(c.date))}${dr('🕐 Heure',`${c.heure} · ${c.duree} min`)}${dr('📋 Type',c.type)}${dr('📍 Modalité',c.mod)}${dr('🏠 Destinataire',dest?dest.nom:'Toutes les structures')}${dr('Statut',`<span class="badge ${c.statut==='reserve'?'b-green':'b-blue'}">${c.statut==='reserve'?'Réservé':'Libre'}</span>`)}${s?dr('✅ Réservé par',s.nom):''}${c.msg?dr('💬 Message',`<em>${c.msg}</em>`):''}${c.notes?dr('🔒 Notes SIAO',c.notes):''}</div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">${c.statut==='reserve'?`<button class="btn btn-d btn-sm" onclick="annulerResAdmin('${c.id}')">Annuler réservation</button>`:''}<button class="btn btn-g btn-sm" onclick="closeM('m-det')">Fermer</button></div>`;
+  openM('m-det');
 }
 
-// Structure - Créneaux disponibles
-function showDisponibles() {
-    const dispo = creneaux.filter(c => c.statut === 'libre');
-    document.getElementById('structureContent').innerHTML = `
-        <h2>Créneaux disponibles</h2>
-        ${dispo.map(d => `
-            <div class="creneau">
-                <strong>${d.type || 'Réunion'}</strong> - ${d.date} à ${d.heure} (${d.duree || 60} min)<br>
-                Modalité: ${d.modalite || 'Présentiel'}<br>
-                <button onclick="reserverCreneau(${d.id})">Réserver</button>
-            </div>
-        `).join('') || '<p>Aucun créneau disponible</p>'}
-    `;
+async function annulerResAdmin(id) {
+  if (!confirm('Annuler cette réservation ?')) return;
+  const { error } = await db.from('creneaux').update({ statut:'libre', par:null, msg:'' }).eq('id', id);
+  if (error) { toast('❌ Erreur'); return; }
+  creneaux = creneaux.map(c => c.id===id ? {...c, statut:'libre', par:null, msg:''} : c);
+  closeM('m-det'); renderCren(); renderEns(); toast('↩️ Réservation annulée');
 }
 
-async function reserverCreneau(id) {
-    const nom = prompt("Votre nom (prénom NOM) :");
-    if (nom) {
-        await supabase.from('creneaux').update({ 
-            statut: 'reserve', 
-            reserve_par: currentUser.id, 
-            reserve_par_nom: nom 
-        }).eq('id', id);
-        const { data: c } = await supabase.from('creneaux').select('*');
-        creneaux = c;
-        showMesRdv();
-    }
+// ── STRUCTURES ──
+function renderStr() {
+  document.getElementById('a-str-tbl').innerHTML = `<thead><tr><th>Structure</th><th>Type</th><th>Ville</th><th>Code accès</th><th>RDV</th><th>Lien secret</th><th></th></tr></thead><tbody>${structures.map(s => {
+    const nb=creneaux.filter(c=>c.par===s.id).length, link=buildLink(s);
+    return `<tr><td style="color:var(--white);font-weight:600">${s.nom}</td><td><span class="badge b-blue">${s.type}</span></td><td>${s.ville}</td><td><code style="background:var(--bg3);padding:3px 8px;border-radius:5px;font-size:11px;color:var(--accent)">${s.code}</code></td><td style="text-align:center"><span class="badge ${nb>0?'b-green':'b-gray'}">${nb}</span></td><td><span class="link-chip" onclick="copyLink('${link}')" title="Cliquer pour copier">#s-${s.id}-code-${s.code}</span></td><td><button class="btn btn-d btn-sm" onclick="delStr('${s.id}')">🗑</button></td></tr>`;
+  }).join('')}</tbody>`;
 }
 
-// Initialisation
-chargerDonnees();
+function buildLink(s) { return location.href.split('#')[0]+'#s-'+s.id+'-code-'+s.code; }
+function openMS() { document.getElementById('s-nom').value=''; document.getElementById('s-code').value=''; openM('m-str'); }
+function genCode() { const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; document.getElementById('s-code').value=Array.from({length:8},()=>c[Math.floor(Math.random()*c.length)]).join(''); }
+
+async function saveStr() {
+  const nom=document.getElementById('s-nom').value.trim(), code=document.getElementById('s-code').value.trim().toUpperCase();
+  if (!nom||!code) { toast('⚠️ Nom et code requis'); return; }
+  setBtnLoading('btn-save-str', true);
+  const s = { id:'s'+Date.now(), nom, type:document.getElementById('s-type').value, ville:document.getElementById('s-ville').value.trim(), code };
+  const { error } = await db.from('structures').insert(s);
+  setBtnLoading('btn-save-str', false);
+  if (error) { toast('❌ Erreur : '+error.message); return; }
+  structures.push(s); closeM('m-str'); renderStr(); populateStructSel(); populateDestSel();
+  toast(`✅ Structure "${nom}" créée`);
+}
+
+async function delStr(id) {
+  if (!confirm('Supprimer cette structure ?')) return;
+  await db.from('creneaux').update({ statut:'libre', par:null, msg:'' }).eq('par', id);
+  const { error } = await db.from('structures').delete().eq('id', id);
+  if (error) { toast('❌ Erreur'); return; }
+  structures=structures.filter(s=>s.id!==id); creneaux=creneaux.map(c=>c.par===id?{...c,statut:'libre',par:null,msg:''}:c);
+  renderStr(); renderEns(); toast('🗑 Structure supprimée');
+}
+
+function copyLink(link) { navigator.clipboard.writeText(link).then(()=>toast('🔗 Lien copié !')); }
+
+// ── RÉSERVATIONS + EXPORT CSV ──
+function renderRes() {
+  const bar = document.getElementById('a-res-filters');
+  bar.innerHTML = `<button class="fb ${rfilt==='tous'?'active':''}" onclick="setRF('tous',this)">Toutes</button>`;
+  structures.forEach(s => bar.innerHTML += `<button class="fb ${rfilt===s.id?'active':''}" onclick="setRF('${s.id}',this)">${s.nom.split(' ')[0]}</button>`);
+  const list = creneaux.filter(c => c.statut==='reserve' && (rfilt==='tous'||c.par===rfilt)).sort((a,b) => new Date(a.date+' '+a.heure)-new Date(b.date+' '+b.heure));
+  document.getElementById('a-res-list').innerHTML = list.length ? list.map(c => {
+    const s=structures.find(x=>x.id===c.par), d=new Date(c.date+'T00:00:00');
+    return `<div class="cr-card" style="--c:var(--green)"><div class="cr-date"><div class="cr-day">${d.getDate()}</div><div class="cr-mon">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div><div class="cr-info"><h3>${c.type} <span class="badge b-purple">${s?.nom||'—'}</span></h3><div class="cr-meta"><span>🕐 ${c.heure} · ${c.duree}min</span><span>📍 ${c.mod}</span>${c.msg?`<span>💬 "${c.msg}"</span>`:''}</div></div><div class="cr-act"><button class="btn btn-d btn-sm" onclick="annulerResAdmin('${c.id}')">Annuler</button></div></div>`;
+  }).join('') : `<div class="empty"><div class="ei">✅</div><p>Aucune réservation</p></div>`;
+}
+
+function setRF(f, btn) { rfilt=f; document.querySelectorAll('#a-res-filters .fb').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderRes(); }
+
+function exportCSV() {
+  const list = creneaux.filter(c => c.statut==='reserve').sort((a,b) => new Date(a.date+' '+a.heure)-new Date(b.date+' '+b.heure));
+  if (!list.length) { toast('⚠️ Aucune réservation à exporter'); return; }
+  const header = ['Structure','Type','Date','Heure','Durée (min)','Modalité','Message'];
+  const rows = list.map(c => {
+    const s = structures.find(x => x.id===c.par);
+    return [s?.nom||'—', c.type, fd(c.date), c.heure, c.duree, c.mod, c.msg||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(';');
+  });
+  const csv = '\uFEFF'+[header.join(';'),...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv;charset=utf-8;' }));
+  a.download = `reservations_siao_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click(); toast('⬇ Export CSV téléchargé !');
+}
+
+// ── VUE STRUCTURE ──
+function initStruct(s) {
+  document.getElementById('st-org').textContent = s.nom;
+  document.getElementById('st-foot').textContent = s.nom;
+  document.getElementById('st-hero-nm').textContent = s.nom;
+  document.getElementById('st-av').textContent = s.nom.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  renderMesRDV();
+}
+
+function renderMesRDV() {
+  const id = currentUser?.id;
+  const list = creneaux.filter(c=>c.par===id).sort((a,b)=>new Date(a.date+' '+a.heure)-new Date(b.date+' '+b.heure));
+  document.getElementById('st-rdv-list').innerHTML = list.length ? list.map(c => {
+    const d=new Date(c.date+'T00:00:00'), past=new Date(c.date+'T'+c.heure)<new Date();
+    return `<div class="rdv-item" style="--c:${past?'var(--gray)':'var(--purple)'}"><div class="rdv-db"><div class="rdv-day" style="color:${past?'var(--gray)':'var(--white)'}">${d.getDate()}</div><div class="rdv-mon">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div><div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:3px">${c.type} <span class="badge ${past?'b-gray':'b-purple'}">${past?'Passé':'Confirmé'}</span></div><div style="display:flex;gap:10px;flex-wrap:wrap"><span style="font-size:11px;color:var(--grayL)">🕐 ${c.heure} · ${c.duree}min</span><span style="font-size:11px;color:var(--grayL)">📍 ${c.mod}</span><span style="font-size:11px;color:var(--grayL)">📅 ${fd(c.date)}</span></div></div>${!past?`<button class="btn btn-d btn-sm" onclick="annulerMien('${c.id}')">Annuler</button>`:''}</div>`;
+  }).join('') : `<div class="empty"><div class="ei">📅</div><p>Aucun rendez-vous confirmé.<br>Consultez les créneaux disponibles.</p></div>`;
+}
+
+function renderDispo() {
+  const id = currentUser?.id;
+  const list = creneaux.filter(c=>c.statut==='libre'&&(c.dest===''||c.dest===id)&&new Date(c.date+'T'+c.heure)>=new Date()).sort((a,b)=>new Date(a.date+' '+a.heure)-new Date(b.date+' '+b.heure));
+  document.getElementById('st-dispo-list').innerHTML = list.length ? list.map(c => {
+    const d=new Date(c.date+'T00:00:00');
+    return `<div class="cr-card" style="--c:var(--accent)"><div class="cr-date"><div class="cr-day">${d.getDate()}</div><div class="cr-mon">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div><div class="cr-info"><h3>${c.type} <span class="badge b-blue">Disponible</span></h3><div class="cr-meta"><span>🕐 ${c.heure} · ${c.duree}min</span><span>📍 ${c.mod}</span></div></div><div class="cr-act"><button class="btn btn-s btn-sm" onclick="openRes('${c.id}')">Réserver</button></div></div>`;
+  }).join('') : `<div class="empty"><div class="ei">🟢</div><p>Aucun créneau disponible pour le moment.<br>Le SIAO publiera prochainement de nouveaux créneaux.</p></div>`;
+}
+
+function openRes(id) {
+  const c=creneaux.find(x=>x.id===id); if (!c) return;
+  pendingId=id;
+  document.getElementById('m-res-detail').innerHTML=`${dr('📋 Type',c.type)}${dr('📅 Date',fd(c.date))}${dr('🕐 Heure',`${c.heure} · ${c.duree}min`)}${dr('📍 Modalité',c.mod)}`;
+  document.getElementById('r-msg').value=''; openM('m-res');
+}
+
+async function confirmRes() {
+  if (!pendingId) return;
+  setBtnLoading('btn-confirm-res', true);
+  const msg=document.getElementById('r-msg').value;
+  const { error } = await db.from('creneaux').update({ statut:'reserve', par:currentUser.id, msg }).eq('id', pendingId);
+  setBtnLoading('btn-confirm-res', false);
+  if (error) { toast('❌ Erreur : '+error.message); return; }
+  creneaux=creneaux.map(c=>c.id===pendingId?{...c,statut:'reserve',par:currentUser.id,msg}:c);
+  closeM('m-res'); renderMesRDV(); renderDispo(); toast('✅ Rendez-vous confirmé !'); pendingId=null;
+}
+
+async function annulerMien(id) {
+  if (!confirm('Annuler ce rendez-vous ?')) return;
+  const { error } = await db.from('creneaux').update({ statut:'libre', par:null, msg:'' }).eq('id', id);
+  if (error) { toast('❌ Erreur'); return; }
+  creneaux=creneaux.map(c=>c.id===id?{...c,statut:'libre',par:null,msg:''}:c);
+  renderMesRDV(); toast('↩️ Rendez-vous annulé');
+}
+
+// ── UTILS ──
+function fd(d) { return d ? new Date(d+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—'; }
+function dr(l, v) { return `<div class="drow"><span class="drow-l">${l}</span><span class="drow-v">${v||'—'}</span></div>`; }
+function openM(id) { document.getElementById(id).classList.add('open'); }
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.ov').forEach(o => o.addEventListener('click', e => { if (e.target===o) o.classList.remove('open'); }));
+function setBtnLoading(id, loading) {
+  const btn=document.getElementById(id); if (!btn) return;
+  btn.disabled=loading; if (loading) btn.innerHTML=`<span class="spinner"></span>${btn.textContent}`;
+}
+let toastT;
+function toast(m) {
+  const el=document.getElementById('toast'); el.textContent=m; el.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),3200);
+}
 </script>
 </body>
 </html>
