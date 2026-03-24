@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIAO Prise de RDV</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #07111f;
+  --navy2: #0d1e30;
+  --navy3: #132840;
+  --blue: #1a6bdb;
+  --blueL: #3b82f6;
+  --accent: #38bdf8;
+  --teal: #0ea5e9;
+  --green: #10b981;
+  --orange: #f59e0b;
+  --red: #ef4444;
+  --purple: #8b5cf6;
+  --white: #f0f6ff;
+  --gray: #64748b;
+  --grayL: #94a3b8;
+  --border: #1a3550;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white)}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex}
+#screen-login{flex-direction:column;align-items:center;justify-content:center;padding:32px}
+.login-card{background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:20px;padding:48px 44px;width:100%;max-width:420px;backdrop-filter:blur(12px)}
+.login-logo{text-align:center;margin-bottom:36px}
+.login-logo .tag{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
+.login-logo h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--white)}
+.login-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--navy);border-radius:12px;padding:4px;margin-bottom:28px}
+.login-tab{background:transparent;border:none;border-radius:9px;padding:10px;color:var(--gray);font-size:13px;font-weight:600;cursor:pointer}
+.login-tab.active{background:var(--navy3);color:var(--accent)}
+.field{margin-bottom:16px}
+.field label{display:block;color:var(--grayL);font-size:11px;font-weight:600;text-transform:uppercase;margin-bottom:6px}
+.field input,.field select{width:100%;background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--white);font-size:14px}
+.btn-login{width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer}
+.btn-login:hover{background:var(--blueL)}
+.login-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:10px;color:#fca5a5;font-size:13px;display:none}
+.login-error.show{display:block}
+#screen-admin,#screen-structure{flex-direction:row}
+.sidebar{width:240px;min-height:100vh;background:var(--navy2);border-right:1px solid var(--border);position:fixed}
+.main-content{margin-left:240px;flex:1;padding:32px 36px}
+.sb-logo{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sb-logo .tag{color:var(--accent);font-size:10px;font-weight:700}
+.sb-logo .org{font-family:'Syne',sans-serif;font-size:15px;font-weight:800}
+.sb-nav{padding:14px 10px}
+.sb-section{color:#2d5a7a;font-size:10px;font-weight:700;padding:14px 12px 5px}
+.sb-btn{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:var(--gray);cursor:pointer;font-size:13px;text-align:left}
+.sb-btn.active{background:rgba(26,107,219,.15);color:var(--accent);font-weight:700}
+.sb-foot{padding:14px 18px;border-top:1px solid var(--border)}
+.logout-btn{width:100%;background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px;color:var(--gray);cursor:pointer;margin-top:10px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.page-head{margin-bottom:28px}
+.page-head h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+.btn{border:none;border-radius:10px;padding:9px 18px;cursor:pointer;font-size:13px;font-weight:600}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-success{background:var(--green);color:#fff}
+.btn-ghost{background:var(--navy3);color:var(--grayL);border:1px solid var(--border)}
+.btn-danger{background:rgba(239,68,68,.15);color:#fca5a5}
+.btn-sm{padding:5px 12px;font-size:12px}
+.card{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:20px}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
+.badge-blue{background:rgba(56,189,248,.12);color:var(--accent)}
+.badge-green{background:rgba(16,185,129,.12);color:var(--green)}
+.badge-purple{background:rgba(139,92,246,.12);color:var(--purple)}
+.form-group{margin-bottom:14px}
+.form-group label{color:var(--grayL);font-size:11px;font-weight:600;text-transform:uppercase;margin-bottom:5px;display:block}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--navy);border:1px solid var(--border);border-radius:8px;padding:9px 13px;color:var(--white)}
+.form-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:var(--navy2);border:1px solid var(--border);border-radius:14px;padding:18px 16px;position:relative}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c,var(--blue))}
+.stat-val{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:var(--white)}
+.stat-lbl{color:var(--gray);font-size:11px;font-weight:600;text-transform:uppercase}
+.creneau-card{background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;position:relative}
+.creneau-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c,var(--blue))}
+.creneau-date{text-align:center;min-width:58px}
+.creneau-day{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white)}
+.creneau-month{font-size:11px;font-weight:600;color:var(--gray)}
+.creneau-info h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.meta-item{font-size:12px;color:var(--grayL);display:inline-flex;align-items:center;gap:4px;margin-right:12px}
+.struct-table{width:100%;border-collapse:collapse}
+.struct-table th{background:var(--navy3);color:var(--gray);font-size:11px;font-weight:700;padding:10px 14px;text-align:left}
+.struct-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.link-cell{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);background:rgba(56,189,248,.06);padding:5px 10px;border-radius:6px;cursor:pointer;display:inline-block}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--navy2);border:1px solid var(--border);border-radius:18px;width:100%;max-width:520px}
+.modal-head{padding:22px 24px 0;display:flex;justify-content:space-between}
+.modal-body{padding:20px 24px 24px}
+.close-x{background:var(--navy3);border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;color:var(--gray)}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--navy3);border:1px solid var(--green);border-radius:12px;padding:12px 20px;color:var(--green);z-index:999;opacity:0;transition:all .3s}
+#toast.show{opacity:1}
+.struct-hero{background:linear-gradient(135deg,rgba(26,107,219,.2),rgba(14,165,233,.1));border-radius:16px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;gap:18px}
+.rdv-item{background:var(--navy2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;gap:16px;position:relative}
+.empty-state{text-align:center;padding:56px 20px;color:var(--gray)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filter-btn{background:var(--navy2);color:var(--gray);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer}
+.filter-btn.active{background:var(--blue);color:#fff}
+.agenda-wrap{background:var(--navy2);border:1px solid var(--border);border-radius:14px;overflow:auto}
+.agenda-header{display:grid;background:var(--navy3);min-width:600px}
+.agenda-col-head{padding:10px 12px;text-align:center;font-size:11px;border-right:1px solid var(--border)}
+.agenda-col-head .day-n{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--white);display:block}
+.agenda-body{display:grid;min-width:600px}
+.agenda-slot{border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-height:52px;padding:4px;cursor:pointer}
+.agenda-event{background:rgba(26,107,219,.18);border:1px solid rgba(56,189,248,.3);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--accent);margin-bottom:2px;cursor:pointer}
+.time-label{padding:6px 8px;font-size:10px;color:var(--gray);text-align:right;border-bottom:1px solid var(--border);height:52px}
+.agenda-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.agenda-nav button{background:var(--navy3);color:var(--grayL);border:1px solid var(--border);border-radius:8px;padding:7px 14px;cursor:pointer}
+.week-label{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white)}
+@media(max-width:700px){
+  .sidebar{width:100%;position:relative}
+  .main-content{margin-left:0}
+  .creneau-card{grid-template-columns:auto 1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ÉCRAN LOGIN -->
+<div class="screen active" id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="tag">SIAO — Prise de RDV</div>
+      <h1>SIAO<br>Prise de RDV</h1>
+    </div>
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="setLoginTab('siao',this)">🏛 SIAO</button>
+      <button class="login-tab" onclick="setLoginTab('structure',this)">🏠 Structure</button>
+    </div>
+    <div id="login-error" class="login-error"></div>
+    <div id="login-siao">
+      <div class="field"><label>Mot de passe SIAO</label><input type="password" id="siao-pwd" placeholder="siao2025"></div>
+      <button class="btn-login" onclick="loginSIAO()">Accéder →</button>
+    </div>
+    <div id="login-struct" style="display:none">
+      <div class="field"><label>Structure</label><select id="struct-select"><option value="">— Sélectionner —</option></select></div>
+      <div class="field"><label>Code d'accès</label><input type="password" id="struct-pwd" placeholder="Code"></div>
+      <button class="btn-login" onclick="loginStructure()">Accéder →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN SIAO -->
+<div class="screen" id="screen-admin">
+  <div class="sidebar">
+    <div class="sb-logo"><div class="tag">Administration</div><div class="org">SIAO Prise de RDV</div></div>
+    <div class="sb-nav">
+      <div class="sb-section">Planification</div>
+      <button class="sb-btn active" onclick="adminTab('vue-ensemble',this)"><span>📊</span> Vue d'ensemble</button>
+      <button class="sb-btn" onclick="adminTab('agenda',this)"><span>📅</span> Agenda semaine</button>
+      <button class="sb-btn" onclick="adminTab('creneaux',this)"><span>➕</span> Gérer les créneaux</button>
+      <div class="sb-section">Structures</div>
+      <button class="sb-btn" onclick="adminTab('structures',this)"><span>🏠</span> Structures & accès</button>
+      <button class="sb-btn" onclick="adminTab('reservations',this)"><span>✅</span> Réservations</button>
+    </div>
+    <div class="sb-foot">
+      <div class="who">Administrateur SIAO</div>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="tab-panel active" id="admin-vue-ensemble">
+      <div class="page-head"><h2>Vue d'ensemble</h2><p id="admin-today-lbl"></p></div>
+      <div class="stats-row" id="admin-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="card"><div style="font-weight:700;margin-bottom:14px">📋 Prochains créneaux</div><div id="admin-next-creneaux"></div></div>
+        <div class="card"><div style="font-weight:700;margin-bottom:14px">✅ Réservations récentes</div><div id="admin-recent-resa"></div></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="admin-agenda">
+      <div class="page-head"><div><h2>Agenda semaine</h2></div><div class="agenda-nav"><button onclick="agendaNav(-1)">‹</button><div class="week-label" id="agenda-week-lbl"></div><button onclick="agendaNav(1)">›</button><button onclick="agendaGoToday()" style="background:var(--blue)">Aujourd'hui</button></div></div>
+      <div id="agenda-container"></div>
+    </div>
+    <div class="tab-panel" id="admin-creneaux">
+      <div class="page-head"><div><h2>Gérer les créneaux</h2></div><button class="btn btn-primary" onclick="openModalCreneau()">+ Nouveau créneau</button></div>
+      <div class="filters" id="creneau-filters"><button class="filter-btn active" onclick="setCFilter('tous',this)">Tous</button><button class="filter-btn" onclick="setCFilter('libre',this)">Libres</button><button class="filter-btn" onclick="setCFilter('reserve',this)">Réservés</button></div>
+      <div id="creneaux-list"></div>
+    </div>
+    <div class="tab-panel" id="admin-structures">
+      <div class="page-head"><div><h2>Structures</h2></div><button class="btn btn-primary" onclick="openModalStructure()">+ Nouvelle structure</button></div>
+      <div class="card" style="padding:0;overflow-x:auto"><table class="struct-table" id="struct-table-body"><thead><tr><th>Structure</th><th>Type</th><th>Ville</th><th>Code</th><th>RDV</th><th>Lien secret</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="tab-panel" id="admin-reservations">
+      <div class="page-head"><h2>Toutes les réservations</h2></div>
+      <div class="filters" id="resa-filters"></div>
+      <div id="resa-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ÉCRAN STRUCTURE -->
+<div class="screen" id="screen-structure">
+  <div class="sidebar">
+    <div class="sb-logo"><div class="tag">Espace structure</div><div class="org" id="struct-org-name">SIAO Prise de RDV</div></div>
+    <div class="sb-nav">
+      <button class="sb-btn active" onclick="structTab('mes-rdv',this)"><span>📅</span> Mes rendez-vous</button>
+      <button class="sb-btn" onclick="structTab('creneaux-dispo',this)"><span>🟢</span> Créneaux disponibles</button>
+    </div>
+    <div class="sb-foot"><div class="who" id="struct-foot-name">—</div><button class="logout-btn" onclick="logout()">Déconnexion</button></div>
+  </div>
+  <div class="main-content">
+    <div class="tab-panel active" id="struct-mes-rdv">
+      <div class="struct-hero"><div class="avatar">🏠</div><div><h2 id="struct-hero-name">Ma structure</h2><p>Vos rendez-vous confirmés</p></div></div>
+      <div id="struct-rdv-list"></div>
+    </div>
+    <div class="tab-panel" id="struct-creneaux-dispo">
+      <div class="page-head"><h2>Créneaux disponibles</h2><p>Réservez un créneau</p></div>
+      <div id="struct-dispo-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-creneau"><div class="modal"><div class="modal-head"><h3>Nouveau créneau</h3><button class="close-x" onclick="closeModal('modal-creneau')">✕</button></div><div class="modal-body"><div class="form-row"><div class="form-group"><label>Date</label><input type="date" id="c-date"></div><div class="form-group"><label>Heure</label><input type="time" id="c-heure" value="09:00"></div><div class="form-group"><label>Durée</label><select id="c-duree"><option value="30">30 min</option><option value="45">45 min</option><option value="60" selected>1h</option><option value="90">1h30</option><option value="120">2h</option></select></div></div><div class="form-row"><div class="form-group"><label>Type</label><select id="c-type"><option>Bilan d'activité</option><option>Visite terrain</option><option>Réunion</option><option>Point de suivi</option><option>Formation</option><option>Autre</option></select></div><div class="form-group"><label>Modalité</label><select id="c-modalite"><option>Présentiel SIAO</option><option>Présentiel Structure</option><option>Visioconférence</option><option>Téléphone</option></select></div></div><div class="form-group"><label>Structure concernée</label><select id="c-struct-dest"><option value="">Toutes</option></select></div><div class="form-group"><label>Notes</label><textarea id="c-notes" rows="2"></textarea></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost" onclick="closeModal('modal-creneau')">Annuler</button><button class="btn btn-primary" onclick="saveCreneau()">Publier</button></div></div></div></div>
+
+<div class="modal-overlay" id="modal-structure"><div class="modal"><div class="modal-head"><h3>Nouvelle structure</h3><button class="close-x" onclick="closeModal('modal-structure')">✕</button></div><div class="modal-body"><div class="form-group"><label>Nom</label><input type="text" id="s-nom" placeholder="Nom"></div><div class="form-row"><div class="form-group"><label>Type</label><select id="s-type"><option>CHRS</option><option>Foyer</option><option>CADA</option><option>ALT</option><option>Autre</option></select></div><div class="form-group"><label>Ville</label><input type="text" id="s-ville"></div></div><div class="form-group"><label>Code accès</label><div style="display:flex;gap:8px"><input type="text" id="s-code" style="flex:1"><button class="btn btn-ghost btn-sm" onclick="generateCode()">🎲 Générer</button></div></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost" onclick="closeModal('modal-structure')">Annuler</button><button class="btn btn-success" onclick="saveStructure()">Créer</button></div></div></div></div>
+
+<div class="modal-overlay" id="modal-reserver"><div class="modal"><div class="modal-head"><h3>Confirmer</h3><button class="close-x" onclick="closeModal('modal-reserver')">✕</button></div><div class="modal-body"><div id="modal-reserver-detail"></div><div class="form-group"><label>Message</label><textarea id="r-message" rows="2"></textarea></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost" onclick="closeModal('modal-reserver')">Annuler</button><button class="btn btn-success" onclick="confirmerReservation()">Confirmer</button></div></div></div></div>
+
+<div class="modal-overlay" id="modal-detail"><div class="modal"><div class="modal-head"><h3>Détail</h3><button class="close-x" onclick="closeModal('modal-detail')">✕</button></div><div class="modal-body" id="modal-detail-body"></div></div></div>
+
+<script>
+// ============================================================
+// 🔐 CONFIGURATION SUPABASE
+// ============================================================
+const SUPABASE_URL = "https://elzhfqxysirwqzgihkve.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsemhmcXh5c2lyd3F6Z2loa3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDkzMzMsImV4cCI6MjA4OTkyNTMzM30._nz3MIUxjmabyShRS2x8k5l7HSfIxsgv-Ct8-wQaL0Y";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SIAO_PWD = "siao2025";
+
+let currentUser = null;
+let structures = [];
+let creneaux = [];
+let cFilter = "tous";
+let rFilter = "tous";
+let agendaWeekOffset = 0;
+let pendingResaId = null;
+
+const HOURS = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"];
+const JOURS = ["Lun","Mar","Mer","Jeu","Ven"];
+
+// ==================== CHARGEMENT DES DONNÉES ====================
+async function loadData() {
+  const { data: s } = await supabase.from("structures").select("*");
+  const { data: c } = await supabase.from("creneaux").select("*");
+  if (s) structures = s;
+  if (c) creneaux = c;
+  return true;
+}
+
+// ==================== TEMPS RÉEL ====================
+function setupRealtime() {
+  const channel = supabase
+    .channel("siao-realtime")
+    .on("postgres_changes", { event: "*", schema: "public", table: "structures" }, async () => {
+      await loadData();
+      if (currentUser?.role === "siao") {
+        renderStructures();
+        populateStructSelect();
+      }
+    })
+    .on("postgres_changes", { event: "*", schema: "public", table: "creneaux" }, async () => {
+      await loadData();
+      refreshCurrentView();
+    })
+    .subscribe();
+}
+
+function refreshCurrentView() {
+  if (!currentUser) return;
+  if (currentUser.role === "siao") {
+    const activeTab = document.querySelector("#screen-admin .tab-panel.active")?.id;
+    if (activeTab === "admin-vue-ensemble") renderVueEnsemble();
+    if (activeTab === "admin-agenda") renderAgenda();
+    if (activeTab === "admin-creneaux") renderCreneaux();
+    if (activeTab === "admin-structures") renderStructures();
+    if (activeTab === "admin-reservations") renderReservations();
+  } else if (currentUser.role === "structure") {
+    const activeTab = document.querySelector("#screen-structure .tab-panel.active")?.id;
+    if (activeTab === "struct-mes-rdv") renderMesRDV();
+    if (activeTab === "struct-creneaux-dispo") renderCreneauxDispo();
+  }
+}
+
+// ==================== LOGIN ====================
+function setLoginTab(tab, btn) {
+  document.querySelectorAll(".login-tab").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("login-siao").style.display = tab === "siao" ? "block" : "none";
+  document.getElementById("login-struct").style.display = tab === "structure" ? "block" : "none";
+}
+
+async function populateStructSelect() {
+  const sel = document.getElementById("struct-select");
+  sel.innerHTML = '<option value="">— Sélectionner —</option>';
+  structures.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.nom}</option>`);
+}
+
+async function loginSIAO() {
+  const pwd = document.getElementById("siao-pwd").value;
+  if (pwd === SIAO_PWD) {
+    currentUser = { role: "siao" };
+    await loadData();
+    showScreen("screen-admin");
+    initAdmin();
+    setupRealtime();
+  } else {
+    showError("Mot de passe incorrect");
+  }
+}
+
+async function loginStructure() {
+  const id = document.getElementById("struct-select").value;
+  const pwd = document.getElementById("struct-pwd").value.trim();
+  if (!id) { showError("Sélectionnez une structure"); return; }
+  const s = structures.find(x => x.id === parseInt(id));
+  if (s && pwd.toUpperCase() === s.code.toUpperCase()) {
+    currentUser = { role: "structure", id: s.id, nom: s.nom };
+    await loadData();
+    showScreen("screen-structure");
+    initStructure(s);
+    setupRealtime();
+  } else {
+    showError("Code incorrect");
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById("login-error");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 3000);
+}
+
+function logout() {
+  currentUser = null;
+  showScreen("screen-login");
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// ==================== ADMIN ====================
+function initAdmin() {
+  document.getElementById("admin-today-lbl").textContent = new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+  populateStructDestSelect();
+  renderVueEnsemble();
+  renderStructures();
+}
+
+function adminTab(tab, btn) {
+  document.querySelectorAll("#screen-admin .tab-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll("#screen-admin .sb-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("admin-" + tab).classList.add("active");
+  if (btn) btn.classList.add("active");
+  if (tab === "vue-ensemble") renderVueEnsemble();
+  if (tab === "agenda") renderAgenda();
+  if (tab === "creneaux") renderCreneaux();
+  if (tab === "structures") renderStructures();
+  if (tab === "reservations") renderReservations();
+}
+
+function renderVueEnsemble() {
+  const libres = creneaux.filter(c => c.statut === "libre").length;
+  const reserves = creneaux.filter(c => c.statut === "reserve").length;
+  document.getElementById("admin-stats").innerHTML = `
+    <div class="stat-card" style="--c:var(--blue)"><div class="stat-val">${creneaux.length}</div><div class="stat-lbl">Total créneaux</div></div>
+    <div class="stat-card" style="--c:var(--green)"><div class="stat-val">${libres}</div><div class="stat-lbl">Disponibles</div></div>
+    <div class="stat-card" style="--c:var(--orange)"><div class="stat-val">${reserves}</div><div class="stat-lbl">Réservés</div></div>
+    <div class="stat-card" style="--c:var(--accent)"><div class="stat-val">${structures.length}</div><div class="stat-lbl">Structures</div></div>
+  `;
+  const next = creneaux.filter(c => c.statut === "libre").sort((a,b) => new Date(a.date+" "+a.heure) - new Date(b.date+" "+b.heure)).slice(0,4);
+  document.getElementById("admin-next-creneaux").innerHTML = next.length ? next.map(c => `<div style="padding:8px 0;border-bottom:1px solid var(--border)"><strong>${c.type}</strong><br>${c.date} ${c.heure}</div>`).join("") : "<div>Aucun créneau</div>";
+  const recent = creneaux.filter(c => c.statut === "reserve").slice(0,4);
+  document.getElementById("admin-recent-resa").innerHTML = recent.length ? recent.map(c => `<div style="padding:8px 0;border-bottom:1px solid var(--border)">${c.type}<br>${c.date}</div>`).join("") : "<div>Aucune réservation</div>";
+}
+
+function populateStructDestSelect() {
+  const sel = document.getElementById("c-struct-dest");
+  sel.innerHTML = '<option value="">Toutes les structures</option>';
+  structures.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.nom}</option>`);
+}
+
+function setCFilter(f, btn) {
+  cFilter = f;
+  document.querySelectorAll("#creneau-filters .filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderCreneaux();
+}
+
+function renderCreneaux() {
+  const filtered = creneaux.filter(c => cFilter === "tous"
