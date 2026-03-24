@@ -2,370 +2,242 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIAO — Prise de rendez-vous</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#07111f;--bg2:#0d1e30;--bg3:#132840;
-  --blue:#1a6bdb;--blueL:#3b82f6;--accent:#38bdf8;
-  --green:#10b981;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
-  --white:#e8f4ff;--gray:#64748b;--grayL:#94a3b8;--border:#1a3550;
-}
-html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white)}
-.screen{display:none;min-height:100vh}.screen.active{display:flex}
-
-/* LOGIN */
-#s-login{align-items:center;justify-content:center;padding:24px}
-.login-card{background:rgba(13,30,48,.92);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:100%;max-width:400px;backdrop-filter:blur(10px)}
-.login-logo{text-align:center;margin-bottom:28px}
-.login-logo .tag{color:var(--accent);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em}
-.login-logo h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-top:6px}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:22px}
-.tab{background:transparent;border:none;border-radius:8px;padding:9px;color:var(--gray);font-size:12px;font-weight:600;cursor:pointer}
-.tab.active{background:var(--bg3);color:var(--accent)}
-.field{margin-bottom:13px}
-.field label{display:block;color:var(--grayL);font-size:10px;font-weight:600;text-transform:uppercase;margin-bottom:5px}
-.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--white);font-size:13px;outline:none}
-.btn-main{width:100%;background:var(--blue);color:#fff;border:none;border-radius:11px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-main:hover{background:var(--blueL)}
-.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:9px 13px;color:#fca5a5;font-size:12px;margin-bottom:12px;display:none}
-.err.show{display:block}
-.loading-bar{text-align:center;color:var(--grayL);font-size:13px;padding:12px}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ADMIN & STRUCTURE */
-#s-admin,#s-struct{flex-direction:row;width:100%}
-.sidebar{width:220px;min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);position:fixed;top:0;bottom:0;left:0;overflow-y:auto}
-.main{margin-left:220px;flex:1;padding:28px 32px}
-.sb-logo{padding:20px 18px;border-bottom:1px solid var(--border)}
-.sb-logo .tag{color:var(--accent);font-size:9px;font-weight:700}
-.sb-logo .org{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;margin-top:4px}
-.sb-nav{padding:12px 8px}
-.sb-sec{color:var(--gray);font-size:9px;font-weight:700;padding:12px 10px 4px}
-.sb-btn{display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border-radius:9px;border:none;background:transparent;color:var(--gray);cursor:pointer;font-size:12px;text-align:left}
-.sb-btn.active{background:rgba(26,107,219,.15);color:var(--accent);font-weight:600}
-.sb-foot{padding:12px 16px;border-top:1px solid var(--border)}
-.logout{width:100%;background:transparent;border:1px solid var(--border);border-radius:7px;padding:7px;color:var(--gray);cursor:pointer;margin-top:8px}
-.logout:hover{border-color:var(--red);color:#fca5a5}
-.realtime-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:5px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* COMPOSANTS */
-.tp{display:none}.tp.active{display:block}
-.ph{margin-bottom:24px}
-.ph h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
-.ph p{color:var(--gray);font-size:12px}
-.ph-row{display:flex;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.btn{border:none;border-radius:9px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
-.btn-p{background:var(--blue);color:#fff}
-.btn-g{background:var(--bg3);color:var(--grayL);border:1px solid var(--border)}
-.btn-s{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.25)}
-.btn-d{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}
-.btn-sm{padding:4px 10px;font-size:11px}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:18px}
-.badge{padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;display:inline-block}
-.b-blue{background:rgba(56,189,248,.1);color:var(--accent)}
-.b-green{background:rgba(16,185,129,.1);color:var(--green)}
-.b-orange{background:rgba(245,158,11,.1);color:var(--orange)}
-.b-purple{background:rgba(139,92,246,.1);color:var(--purple)}
-.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:24px}
-.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:2px solid var(--c,var(--blue))}
-.stat-v{font-family:'DM Mono',monospace;font-size:26px;margin-bottom:3px}
-.stat-l{color:var(--gray);font-size:10px;font-weight:600;text-transform:uppercase}
-.cr-card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-bottom:8px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;border-left:3px solid var(--c,var(--blue))}
-.cr-date{text-align:center;min-width:46px}
-.cr-day{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1}
-.cr-mon{font-size:10px;font-weight:600;color:var(--gray)}
-.cr-info h3{font-size:13px;font-weight:600;margin-bottom:3px}
-.cr-meta{display:flex;flex-wrap:wrap;gap:6px}
-.cr-meta span{font-size:11px;color:var(--grayL)}
-.cr-act{display:flex;gap:5px}
-.fg{margin-bottom:12px}
-.fg label{display:block;color:var(--grayL);font-size:10px;font-weight:600;text-transform:uppercase;margin-bottom:4px}
-.fg input,.fg select,.fg textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--white);font-size:12px;outline:none}
-.fg-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
-.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;background:rgba(19,40,64,.4);padding:8px 12px;border-radius:12px}
-.fb{background:var(--bg2);color:var(--gray);border:1px solid var(--border);border-radius:7px;padding:5px 12px;cursor:pointer;font-size:11px;font-weight:600}
-.fb.active{background:var(--blue);color:#fff}
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:16px}
-.ov.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:480px;max-height:86vh;overflow-y:auto}
-.mh{padding:18px 20px 0;display:flex;justify-content:space-between}
-.mb{padding:16px 20px 20px}
-.cls{background:var(--bg3);border:none;border-radius:7px;width:28px;height:28px;cursor:pointer;color:var(--gray)}
-#toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:1px solid var(--green);border-radius:10px;padding:10px 18px;color:var(--green);font-size:12px;z-index:999;opacity:0;transition:all .25s}
-#toast.show{opacity:1}
-.hero{background:linear-gradient(135deg,rgba(26,107,219,.15),rgba(14,165,233,.08));border-radius:14px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
-.av{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--accent));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
-.rdv-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:14px;border-left:3px solid var(--c,var(--purple))}
-.rdv-db{text-align:center;min-width:42px}
-.rdv-day{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;line-height:1}
-.rdv-mon{font-size:9px;text-transform:uppercase;color:var(--gray)}
-.empty{text-align:center;padding:48px 20px;color:var(--gray)}
-.empty .ei{font-size:40px;margin-bottom:12px;opacity:.35}
-.struct-tbl{width:100%;border-collapse:collapse}
-.struct-tbl th{background:var(--bg3);color:var(--gray);font-size:10px;font-weight:700;padding:9px 13px;text-align:left}
-.struct-tbl td{padding:11px 13px;border-bottom:1px solid var(--border);font-size:12px}
-.link-chip{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);background:rgba(56,189,248,.06);padding:4px 9px;border-radius:5px;cursor:pointer;display:inline-block}
-.drow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
-.drow-l{color:var(--gray);font-size:12px;min-width:140px}
-.drow-v{color:var(--white);font-size:12px}
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%);position:fixed;z-index:50;transition:transform .25s}
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0;padding:16px;padding-top:60px}
-  .stats{grid-template-columns:1fr 1fr}
-  .cr-card{grid-template-columns:auto 1fr}
-  .cr-act{grid-column:1/-1;justify-content:flex-end}
-  .ph-row{flex-direction:column}
-  .struct-tbl{display:block;overflow-x:auto}
-}
-@media(max-width:480px){
-  .stats{grid-template-columns:1fr}
-  .login-card{padding:28px 20px}
-}
+:root{--bg:#07111f;--bg2:#0d1e30;--bg3:#132840;--blue:#1a6bdb;--accent:#38bdf8;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--white:#e8f4ff;--gray:#64748b;--border:#1a3550}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--white)}
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.btn{background:var(--blue);color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer}
+.btn-danger{background:rgba(239,68,68,.2);color:#fca5a5}
+input,select{background:var(--bg3);border:1px solid var(--border);color:white;padding:8px 12px;border-radius:6px;width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.creneau{background:var(--bg2);border-left:4px solid var(--blue);padding:12px;margin-bottom:8px;border-radius:8px}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;background:rgba(56,189,248,.2);color:var(--accent)}
 </style>
 </head>
 <body>
-<div id="toast"></div>
 
-<!-- LOGIN -->
-<div class="screen active" id="s-login">
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="tag">SIAO — Système RDV</div>
-      <h1>Prise de rendez-vous</h1>
-      <p><span class="realtime-dot"></span>Données partagées en temps réel</p>
+<div id="loginScreen" class="screen active">
+  <div style="max-width:400px;margin:50px auto;padding:20px">
+    <h1>SIAO Prise de RDV</h1>
+    <div style="margin:20px 0">
+      <button onclick="showLoginPanel('siao')" id="tabSiao" style="background:var(--blue)">🏛 SIAO</button>
+      <button onclick="showLoginPanel('struct')" id="tabStruct">🏠 Structure</button>
     </div>
-    <div class="tabs">
-      <button class="tab active" onclick="setTab('siao',this)">🏛 SIAO</button>
-      <button class="tab" onclick="setTab('struct',this)">🏠 Structure</button>
+    <div id="siaoPanel">
+      <input type="password" id="siaoPwd" placeholder="Mot de passe SIAO" style="margin-bottom:10px">
+      <button class="btn" onclick="loginSiao()">Se connecter</button>
     </div>
-    <div id="login-err" class="err"></div>
-    <div id="login-loading" class="loading-bar"><span class="spinner"></span>Connexion à la base de données…</div>
-    <div id="pnl-siao">
-      <div class="field">
-        <label>Mot de passe SIAO</label>
-        <input type="password" id="siao-pwd" placeholder="••••••••">
-      </div>
-      <button class="btn-main" onclick="loginSIAO()">Accéder →</button>
+    <div id="structPanel" style="display:none">
+      <select id="structSelect"></select>
+      <input type="password" id="structCode" placeholder="Code d'accès" style="margin-top:10px">
+      <button class="btn" onclick="loginStruct()" style="margin-top:10px">Se connecter</button>
     </div>
-    <div id="pnl-struct" style="display:none">
-      <div class="field"><label>Votre structure</label>
-        <select id="struct-sel"><option value="">— Chargement… —</option></select>
-      </div>
-      <div class="field">
-        <label>Code d'accès</label>
-        <input type="password" id="struct-pwd" placeholder="Code">
-      </div>
-      <button class="btn-main" onclick="loginStruct()">Accéder →</button>
-    </div>
+    <div id="errorMsg" style="color:#fca5a5;margin-top:10px"></div>
   </div>
 </div>
 
-<!-- ADMIN SIAO -->
-<div class="screen" id="s-admin">
-  <div class="sidebar" id="admin-sidebar">
-    <div class="sb-logo"><div class="tag">Administration</div><div class="org">SIAO</div><div class="sub"><span class="realtime-dot"></span>Temps réel</div></div>
-    <div class="sb-nav">
-      <div class="sb-sec">Planification</div>
-      <button class="sb-btn active" onclick="aTab('ens',this)"><span>📊</span>Vue d'ensemble</button>
-      <button class="sb-btn" onclick="aTab('cren',this)"><span>📅</span>Créneaux</button>
-      <div class="sb-sec">Structures</div>
-      <button class="sb-btn" onclick="aTab('str',this)"><span>🏠</span>Structures</button>
-      <button class="sb-btn" onclick="aTab('res',this)"><span>✅</span>Réservations</button>
+<div id="adminScreen" class="screen">
+  <div style="display:flex;min-height:100vh">
+    <div style="width:200px;background:var(--bg2);padding:20px">
+      <h3>SIAO Admin</h3>
+      <hr style="margin:10px 0">
+      <button onclick="showAdminPanel('dashboard')">📊 Dashboard</button>
+      <button onclick="showAdminPanel('creneaux')">📅 Créneaux</button>
+      <button onclick="showAdminPanel('structures')">🏢 Structures</button>
+      <button onclick="showAdminPanel('reservations')">✅ Réservations</button>
+      <button onclick="logout()" style="margin-top:50px;background:var(--red)">Déconnexion</button>
     </div>
-    <div class="sb-foot">
-      <div class="who">Administrateur SIAO</div>
-      <button class="logout" onclick="logout()">Déconnexion</button>
-    </div>
-  </div>
-  <div class="main">
-    <div class="tp active" id="a-ens">
-      <div class="ph"><h2>Vue d'ensemble</h2><p id="a-date-lbl"></p></div>
-      <div class="stats" id="a-stats"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div class="card"><div style="color:var(--grayL);font-size:11px;font-weight:700;margin-bottom:12px">Prochains créneaux</div><div id="a-next"></div></div>
-        <div class="card"><div style="color:var(--grayL);font-size:11px;font-weight:700;margin-bottom:12px">Réservations récentes</div><div id="a-resa-r"></div></div>
-      </div>
-    </div>
-    <div class="tp" id="a-cren">
-      <div class="ph-row"><div class="ph"><h2>Gérer les créneaux</h2></div><button class="btn btn-p" onclick="openMC()">+ Nouveau créneau</button></div>
-      <div class="filters"><button class="fb active" onclick="setCF('tous',this)">Tous</button><button class="fb" onclick="setCF('libre',this)">Libres</button><button class="fb" onclick="setCF('reserve',this)">Réservés</button></div>
-      <div id="a-cren-list"></div>
-    </div>
-    <div class="tp" id="a-str">
-      <div class="ph-row"><div class="ph"><h2>Structures</h2></div><button class="btn btn-p" onclick="openMS()">+ Nouvelle structure</button></div>
-      <div class="card" style="padding:0"><table class="struct-tbl" id="a-str-tbl"><thead><tr><th>Structure</th><th>Type</th><th>Ville</th><th>Code</th><th>RDV</th><th></th></tr></thead><tbody></tbody></table></div>
-    </div>
-    <div class="tp" id="a-res">
-      <div class="ph"><h2>Réservations</h2></div>
-      <div id="a-res-list"></div>
-    </div>
+    <div style="flex:1;padding:20px" id="adminContent"></div>
   </div>
 </div>
 
-<!-- STRUCTURE -->
-<div class="screen" id="s-struct">
-  <div class="sidebar" id="struct-sidebar">
-    <div class="sb-logo"><div class="tag">Espace structure</div><div class="org" id="st-org">—</div></div>
-    <div class="sb-nav">
-      <button class="sb-btn active" onclick="sTab('rdv',this)"><span>📅</span>Mes rendez-vous</button>
-      <button class="sb-btn" onclick="sTab('dispo',this)"><span>🟢</span>Créneaux disponibles</button>
+<div id="structScreen" class="screen">
+  <div style="display:flex;min-height:100vh">
+    <div style="width:200px;background:var(--bg2);padding:20px">
+      <h3 id="structName">Structure</h3>
+      <hr style="margin:10px 0">
+      <button onclick="showStructPanel('mesrdv')">📅 Mes RDV</button>
+      <button onclick="showStructPanel('dispo')">🟢 Créneaux dispo</button>
+      <button onclick="logout()" style="margin-top:50px">Déconnexion</button>
     </div>
-    <div class="sb-foot"><div class="who" id="st-foot">—</div><button class="logout" onclick="logout()">Déconnexion</button></div>
-  </div>
-  <div class="main">
-    <div class="tp active" id="st-rdv">
-      <div class="hero"><div class="av" id="st-av">?</div><div><div style="font-size:18px;font-weight:800" id="st-hero-nm">—</div><p style="color:var(--grayL);font-size:12px">Vos rendez-vous</p></div></div>
-      <div id="st-rdv-list"></div>
-    </div>
-    <div class="tp" id="st-dispo">
-      <div class="ph"><h2>Créneaux disponibles</h2></div>
-      <div id="st-dispo-list"></div>
-    </div>
+    <div style="flex:1;padding:20px" id="structContent"></div>
   </div>
 </div>
-
-<!-- MODALS -->
-<div class="ov" id="m-cren"><div class="modal"><div class="mh"><h3>Nouveau créneau</h3><button class="cls" onclick="closeM('m-cren')">✕</button></div><div class="mb"><div class="fg-row"><div class="fg"><label>Date</label><input type="date" id="c-date"></div><div class="fg"><label>Heure</label><input type="time" id="c-heure" value="09:00"></div><div class="fg"><label>Durée</label><select id="c-duree"><option value="30">30 min</option><option value="60" selected>1h</option><option value="90">1h30</option></select></div></div><div class="fg-row"><div class="fg"><label>Type</label><select id="c-type"><option>Bilan</option><option>Visite</option><option>Réunion</option><option>Formation</option></select></div><div class="fg"><label>Modalité</label><select id="c-mod"><option>Présentiel</option><option>Visioconférence</option></select></div></div><div class="fg"><label>Notes</label><textarea id="c-notes" rows="2"></textarea></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-g" onclick="closeM('m-cren')">Annuler</button><button class="btn btn-p" onclick="saveCren()">Publier</button></div></div></div></div>
-
-<div class="ov" id="m-str"><div class="modal"><div class="mh"><h3>Nouvelle structure</h3><button class="cls" onclick="closeM('m-str')">✕</button></div><div class="mb"><div class="fg"><label>Nom</label><input type="text" id="s-nom"></div><div class="fg-row"><div class="fg"><label>Type</label><select id="s-type"><option>CHRS</option><option>CADA</option><option>FJT</option><option>Autre</option></select></div><div class="fg"><label>Ville</label><input type="text" id="s-ville"></div></div><div class="fg"><label>Code</label><input type="text" id="s-code"><button class="btn btn-g btn-sm" onclick="genCode()" style="margin-top:6px">🎲 Générer</button></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-g" onclick="closeM('m-str')">Annuler</button><button class="btn btn-s" onclick="saveStr()">Créer</button></div></div></div></div>
-
-<div class="ov" id="m-res"><div class="modal"><div class="mh"><h3>Confirmer</h3><button class="cls" onclick="closeM('m-res')">✕</button></div><div class="mb"><div id="m-res-detail"></div><div class="fg"><label>Votre nom</label><input type="text" id="r-nom" placeholder="Prénom NOM"></div><div class="fg"><label>Message</label><textarea id="r-msg" rows="2"></textarea></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-g" onclick="closeM('m-res')">Annuler</button><button class="btn btn-s" onclick="confirmRes()">Confirmer</button></div></div></div></div>
-
-<div class="ov" id="m-det"><div class="modal"><div class="mh"><h3>Détail</h3><button class="cls" onclick="closeM('m-det')">✕</button></div><div class="mb" id="m-det-body"></div></div></div>
 
 <script>
-// ============================================================
-// CONFIGURATION SUPABASE - VOS CLÉS ACTUELLES
-// ============================================================
 const SUPABASE_URL = 'https://elzhfqxysirwqzgihkve.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsemhmcXh5c2lyd3F6Z2loa3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDkzMzMsImV4cCI6MjA4OTkyNTMzM30._nz3MIUxjmabyShRS2x8k5l7HSfIxsgv-Ct8-wQaL0Y';
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-const SIAO_PWD = 'siao2025';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsemhmcXh5c2lyd3F6Z2loa3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDkzMzMsImV4cCI6MjA4OTkyNTMzM30._nz3MIUxjmabyShRS2x8k5l7HSfIxsgv-Ct8-wQaL0Y';
+const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let structures = [], creneaux = [], currentUser = null;
-let cfilt = 'tous';
 
-// ==================== CHARGEMENT INITIAL ====================
-(async () => {
-  document.getElementById('login-loading').style.display = 'block';
-  try {
-    const { data: s } = await supabase.from('structures').select('*');
-    const { data: c } = await supabase.from('creneaux').select('*');
-    structures = s || [];
-    creneaux = c || [];
-    populateStructSelect();
-    document.getElementById('login-loading').style.display = 'none';
-  } catch(e) {
-    document.getElementById('login-loading').style.display = 'none';
-    document.getElementById('login-err').innerHTML = '❌ Erreur de connexion à Supabase. Vérifiez vos clés.';
-    document.getElementById('login-err').classList.add('show');
-  }
-})();
+async function loadData() {
+  const { data: s } = await supabase.from('structures').select('*');
+  const { data: c } = await supabase.from('creneaux').select('*');
+  structures = s || [];
+  creneaux = c || [];
+  const select = document.getElementById('structSelect');
+  if(select) select.innerHTML = '<option value="">Choisir</option>' + structures.map(s => `<option value="${s.id}">${s.nom}</option>`).join('');
+}
+loadData();
 
-function populateStructSelect() {
-  const sel = document.getElementById('struct-sel');
-  sel.innerHTML = '<option value="">— Sélectionner —</option>';
-  structures.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.nom}</option>`);
+function showLoginPanel(type) {
+  document.getElementById('siaoPanel').style.display = type === 'siao' ? 'block' : 'none';
+  document.getElementById('structPanel').style.display = type === 'struct' ? 'block' : 'none';
+  document.getElementById('tabSiao').style.background = type === 'siao' ? 'var(--blue)' : 'transparent';
+  document.getElementById('tabStruct').style.background = type === 'struct' ? 'var(--blue)' : 'transparent';
 }
 
-// ==================== LOGIN ====================
-function setTab(t, btn) {
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('pnl-siao').style.display = t === 'siao' ? 'block' : 'none';
-  document.getElementById('pnl-struct').style.display = t === 'struct' ? 'block' : 'none';
-}
-
-async function loginSIAO() {
-  const pwd = document.getElementById('siao-pwd').value;
-  if (pwd === SIAO_PWD) {
-    currentUser = { role: 'siao' };
-    showScreen('s-admin');
-    initAdmin();
+async function loginSiao() {
+  const pwd = document.getElementById('siaoPwd').value;
+  if(pwd === 'siao2025') {
+    currentUser = { role: 'admin' };
+    document.getElementById('loginScreen').classList.remove('active');
+    document.getElementById('adminScreen').classList.add('active');
+    showAdminPanel('dashboard');
   } else {
-    document.getElementById('login-err').innerHTML = '❌ Mot de passe incorrect';
-    document.getElementById('login-err').classList.add('show');
-    setTimeout(() => document.getElementById('login-err').classList.remove('show'), 3000);
+    document.getElementById('errorMsg').innerText = 'Mot de passe incorrect';
   }
 }
 
 async function loginStruct() {
-  const id = document.getElementById('struct-sel').value;
-  const pwd = document.getElementById('struct-pwd').value.trim().toUpperCase();
-  if (!id) { toast('Sélectionnez une structure'); return; }
-  const s = structures.find(x => x.id == id);
-  if (s && pwd === s.code) {
-    currentUser = { role: 'struct', id: s.id, nom: s.nom };
-    showScreen('s-struct');
-    initStruct(s);
+  const id = document.getElementById('structSelect').value;
+  const code = document.getElementById('structCode').value;
+  const struct = structures.find(s => s.id == id);
+  if(struct && struct.code === code) {
+    currentUser = { role: 'struct', id: struct.id, name: struct.nom };
+    document.getElementById('loginScreen').classList.remove('active');
+    document.getElementById('structScreen').classList.add('active');
+    document.getElementById('structName').innerText = struct.nom;
+    showStructPanel('mesrdv');
   } else {
-    toast('Code incorrect');
+    document.getElementById('errorMsg').innerText = 'Code incorrect';
   }
-}
-
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
 }
 
 function logout() {
   currentUser = null;
-  showScreen('s-login');
+  document.getElementById('adminScreen').classList.remove('active');
+  document.getElementById('structScreen').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
 }
 
-// ==================== ADMIN ====================
-function initAdmin() {
-  document.getElementById('a-date-lbl').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
-  renderEns();
-  renderStr();
-  renderCren();
+async function showAdminPanel(panel) {
+  const container = document.getElementById('adminContent');
+  if(panel === 'dashboard') {
+    const libres = creneaux.filter(c => c.statut === 'libre').length;
+    const reserves = creneaux.filter(c => c.statut === 'reserve').length;
+    container.innerHTML = `
+      <h2>Dashboard</h2>
+      <div class="grid">
+        <div class="card"><h3>${creneaux.length}</h3><p>Total créneaux</p></div>
+        <div class="card"><h3>${libres}</h3><p>Disponibles</p></div>
+        <div class="card"><h3>${reserves}</h3><p>Réservés</p></div>
+        <div class="card"><h3>${structures.length}</h3><p>Structures</p></div>
+      </div>
+    `;
+  }
+  else if(panel === 'creneaux') {
+    container.innerHTML = `
+      <h2>Créneaux</h2>
+      <button class="btn" onclick="openCreneauModal()">+ Nouveau créneau</button>
+      <div id="creneauxList">${renderCreneaux()}</div>
+    `;
+  }
+  else if(panel === 'structures') {
+    container.innerHTML = `
+      <h2>Structures</h2>
+      <button class="btn" onclick="openStructureModal()">+ Nouvelle structure</button>
+      <div>${structures.map(s => `<div class="card"><b>${s.nom}</b> (${s.type})<br>Code: ${s.code}<br><button onclick="deleteStructure(${s.id})">Supprimer</button></div>`).join('')}</div>
+    `;
+  }
+  else if(panel === 'reservations') {
+    const reserves = creneaux.filter(c => c.statut === 'reserve');
+    container.innerHTML = `<h2>Réservations</h2>${reserves.map(c => `<div class="creneau"><b>${c.type}</b> - ${c.date} ${c.heure}<br>Réservé par: ${c.reserve_par_nom || '?'}<br><button onclick="cancelReservation(${c.id})">Annuler</button></div>`).join('') || '<p>Aucune réservation</p>'}`;
+  }
 }
 
-function aTab(tab, btn) {
-  document.querySelectorAll('#s-admin .tp').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('#s-admin .sb-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('a-' + tab).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (tab === 'ens') renderEns();
-  if (tab === 'cren') renderCren();
-  if (tab === 'str') renderStr();
-  if (tab === 'res') renderRes();
+async function showStructPanel(panel) {
+  const container = document.getElementById('structContent');
+  if(panel === 'mesrdv') {
+    const mesRdv = creneaux.filter(c => c.reserve_par == currentUser.id);
+    container.innerHTML = `<h2>Mes rendez-vous</h2>${mesRdv.map(c => `<div class="creneau"><b>${c.type}</b> - ${c.date} ${c.heure}<br><button onclick="cancelMyReservation(${c.id})">Annuler</button></div>`).join('') || '<p>Aucun rendez-vous</p>'}`;
+  }
+  else if(panel === 'dispo') {
+    const dispo = creneaux.filter(c => c.statut === 'libre' && new Date(c.date) >= new Date());
+    container.innerHTML = `<h2>Créneaux disponibles</h2>${dispo.map(c => `<div class="creneau"><b>${c.type}</b> - ${c.date} ${c.heure}<br><button onclick="openReservationModal(${c.id})">Réserver</button></div>`).join('') || '<p>Aucun créneau disponible</p>'}`;
+  }
 }
 
-function renderEns() {
-  const libres = creneaux.filter(c => c.statut === 'libre').length;
-  const reserves = creneaux.filter(c => c.statut === 'reserve').length;
-  document.getElementById('a-stats').innerHTML = `
-    <div class="stat" style="--c:var(--blue)"><div class="stat-v">${creneaux.length}</div><div class="stat-l">Créneaux</div></div>
-    <div class="stat" style="--c:var(--green)"><div class="stat-v">${libres}</div><div class="stat-l">Disponibles</div></div>
-    <div class="stat" style="--c:var(--orange)"><div class="stat-v">${reserves}</div><div class="stat-l">Réservés</div></div>
-    <div class="stat" style="--c:var(--accent)"><div class="stat-v">${structures.length}</div><div class="stat-l">Structures</div></div>
-  `;
-  const next = creneaux.filter(c => c.statut === 'libre').sort((a,b)=>new Date(a.date+' '+a.heure)-new Date(b.date+' '+b.heure)).slice(0,4);
-  document.getElementById('a-next').innerHTML = next.length ? next.map(c => `<div style="padding:8px 0;border-bottom:1px solid var(--border)"><strong>${c.type}</strong><br>${c.date} ${c.heure}</div>`).join('') : '<div class="empty"><div class="ei">📅</div><p>Aucun créneau</p></div>';
-  const recent = creneaux.filter(c => c.statut === 'reserve').slice(0,4);
-  document.getElementById('a-resa-r').innerHTML = recent.length ? recent.map(c => `<div style="padding:8px 0;border-bottom:1px solid var(--border)">${c.type}<br>${c.date} ${c.heure}</div>`).join('') : '<div class="empty"><div class="ei">✅</div><p>Aucune réservation</p></div>';
+function renderCreneaux() {
+  return creneaux.map(c => `<div class="creneau"><b>${c.type}</b> - ${c.date} ${c.heure} (${c.duree}min)<br><span class="badge">${c.statut}</span><br><button onclick="deleteCreneau(${c.id})">Supprimer</button></div>`).join('');
 }
 
-function renderStr() {
-  const tbody = document.querySelector('#a-str-tbl tbody');
-  tbody.innerHTML = structures.map(s => {
-    const nb = creneaux.filter(c => c.reserve_par == s.id).length;
-    return `<tr><td style="color:var(--white)">${s.nom}</td><td>${s.type || '—'}</td><td>${s.ville || '—'}</td><td><code style="background:var(--bg3);padding:2px 6px;border-radius:4px">${s.code}</code></td><td><span class="badge b-purple">${nb}</span></td><td><button class="btn btn-d btn-sm" onclick="delStr('${s.id}')">🗑</button></td></tr>`;
-  }).join('');
+async function openCreneauModal() {
+  const date = prompt('Date (YYYY-MM-DD):');
+  const heure = prompt('Heure (HH:MM):');
+  if(date && heure) {
+    await supabase.from('creneaux').insert([{ date, heure, duree: 60, type: 'Réunion', modalite: 'Présentiel', statut: 'libre' }]);
+    const { data: c } = await supabase.from('creneaux').select('*');
+    creneaux = c;
+    showAdminPanel('creneaux');
+  }
 }
 
-function renderCren() {
-  const filtered = creneaux.filter(c => cfilt === 'tous' || c.statut === cfilt).sort((a,b)=>new Date(a.date+' '+a.heure)-new Date(b.date+' '+b.heure));
-  document.getElementById('a-cren-list').innerHTML = filtered.length ? filtered.map(c => {
-    const d = new Date(c.date);
-    const col = c.statut === 'reserve' ? 'var(--green)' : 'var(--blue)';
-    return `<div class="cr-card" style="--c:${col}"><div class="cr-date"><div class="cr-day">${d.getDate()}</div><div class="cr-mon">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div><div class="cr-info"><h3>${c.type} <span class="badge ${c.statut==='reserve'?'b-green':'b-blue'}">${c.statut==='reserve'?'Réservé':'Libre'}</span></h3><div class="cr-meta"><span>🕐 ${c.heure} · ${c.duree}min</span><span>📍 ${c.modalite}</span>${c.reserve_par_nom ? `<span>👤 ${c.reserve_par_nom}</span>` : ''}</div></div><div class="cr-act"><button class="btn btn-g btn-sm"
+async function deleteCreneau(id) {
+  await supabase.from('creneaux').delete().eq('id', id);
+  const { data: c } = await supabase.from('creneaux').select('*');
+  creneaux = c;
+  showAdminPanel('creneaux');
+}
+
+async function openStructureModal() {
+  const nom = prompt('Nom de la structure:');
+  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+  if(nom) {
+    await supabase.from('structures').insert([{ nom, code, type: 'CHRS' }]);
+    const { data: s } = await supabase.from('structures').select('*');
+    structures = s;
+    showAdminPanel('structures');
+  }
+}
+
+async function deleteStructure(id) {
+  await supabase.from('structures').delete().eq('id', id);
+  const { data: s } = await supabase.from('structures').select('*');
+  structures = s;
+  showAdminPanel('structures');
+}
+
+async function openReservationModal(creneauId) {
+  const nom = prompt('Votre nom (prénom NOM):');
+  if(nom) {
+    await supabase.from('creneaux').update({ statut: 'reserve', reserve_par: currentUser.id, reserve_par_nom: nom }).eq('id', creneauId);
+    const { data: c } = await supabase.from('creneaux').select('*');
+    creneaux = c;
+    showStructPanel('mesrdv');
+  }
+}
+
+async function cancelReservation(id) {
+  await supabase.from('creneaux').update({ statut: 'libre', reserve_par: null, reserve_par_nom: null }).eq('id', id);
+  const { data: c } = await supabase.from('creneaux').select('*');
+  creneaux = c;
+  showAdminPanel('reservations');
+}
+
+async function cancelMyReservation(id) {
+  await supabase.from('creneaux').update({ statut: 'libre', reserve_par: null, reserve_par_nom: null }).eq('id', id);
+  const { data: c } = await supabase.from('creneaux').select('*');
+  creneaux = c;
+  showStructPanel('mesrdv');
+}
+</script>
+</body>
+</html>
