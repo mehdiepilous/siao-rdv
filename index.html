@@ -1,243 +1,427 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIAO — Prise de rendez-vous</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#07111f;--bg2:#0d1e30;--bg3:#132840;--blue:#1a6bdb;--accent:#38bdf8;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--white:#e8f4ff;--gray:#64748b;--border:#1a3550}
-body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--white)}
-.screen{display:none;min-height:100vh}
-.screen.active{display:block}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
-.btn{background:var(--blue);color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer}
-.btn-danger{background:rgba(239,68,68,.2);color:#fca5a5}
-input,select{background:var(--bg3);border:1px solid var(--border);color:white;padding:8px 12px;border-radius:6px;width:100%}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.creneau{background:var(--bg2);border-left:4px solid var(--blue);padding:12px;margin-bottom:8px;border-radius:8px}
-.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;background:rgba(56,189,248,.2);color:var(--accent)}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIAO - Prise de rendez-vous</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #07111f;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #0d1e30;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #1a3550;
+        }
+        button {
+            background: #1a6bdb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #3b82f6;
+        }
+        input, select {
+            background: #07111f;
+            border: 1px solid #1a3550;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        .hidden {
+            display: none;
+        }
+        .creneau {
+            background: #0d1e30;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #1a6bdb;
+            border-radius: 5px;
+        }
+        .badge {
+            background: #1a6bdb;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        .flex {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .sidebar {
+            width: 200px;
+            background: #0d1e30;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div id="loginScreen" class="screen active">
-  <div style="max-width:400px;margin:50px auto;padding:20px">
-    <h1>SIAO Prise de RDV</h1>
-    <div style="margin:20px 0">
-      <button onclick="showLoginPanel('siao')" id="tabSiao" style="background:var(--blue)">🏛 SIAO</button>
-      <button onclick="showLoginPanel('struct')" id="tabStruct">🏠 Structure</button>
+<!-- ÉCRAN DE CONNEXION -->
+<div id="loginScreen">
+    <div class="container" style="max-width: 400px; margin-top: 100px;">
+        <div class="card">
+            <h1 style="text-align: center;">SIAO Prise de RDV</h1>
+            <div style="display: flex; gap: 10px; margin: 20px 0;">
+                <button id="btnSiao" onclick="showSiaoLogin()" style="flex: 1;">🏛 SIAO</button>
+                <button id="btnStruct" onclick="showStructLogin()" style="flex: 1;">🏠 Structure</button>
+            </div>
+            
+            <div id="siaoLogin">
+                <input type="password" id="siaoPassword" placeholder="Mot de passe SIAO">
+                <button onclick="loginSiao()" style="width: 100%; margin-top: 10px;">Se connecter</button>
+            </div>
+            
+            <div id="structLogin" class="hidden">
+                <select id="structSelect"></select>
+                <input type="password" id="structCode" placeholder="Code d'accès">
+                <button onclick="loginStructure()" style="width: 100%; margin-top: 10px;">Se connecter</button>
+            </div>
+            
+            <div id="errorMsg" style="color: #ef4444; margin-top: 10px; text-align: center;"></div>
+        </div>
     </div>
-    <div id="siaoPanel">
-      <input type="password" id="siaoPwd" placeholder="Mot de passe SIAO" style="margin-bottom:10px">
-      <button class="btn" onclick="loginSiao()">Se connecter</button>
-    </div>
-    <div id="structPanel" style="display:none">
-      <select id="structSelect"></select>
-      <input type="password" id="structCode" placeholder="Code d'accès" style="margin-top:10px">
-      <button class="btn" onclick="loginStruct()" style="margin-top:10px">Se connecter</button>
-    </div>
-    <div id="errorMsg" style="color:#fca5a5;margin-top:10px"></div>
-  </div>
 </div>
 
-<div id="adminScreen" class="screen">
-  <div style="display:flex;min-height:100vh">
-    <div style="width:200px;background:var(--bg2);padding:20px">
-      <h3>SIAO Admin</h3>
-      <hr style="margin:10px 0">
-      <button onclick="showAdminPanel('dashboard')">📊 Dashboard</button>
-      <button onclick="showAdminPanel('creneaux')">📅 Créneaux</button>
-      <button onclick="showAdminPanel('structures')">🏢 Structures</button>
-      <button onclick="showAdminPanel('reservations')">✅ Réservations</button>
-      <button onclick="logout()" style="margin-top:50px;background:var(--red)">Déconnexion</button>
+<!-- ÉCRAN ADMIN -->
+<div id="adminScreen" class="hidden">
+    <div class="sidebar">
+        <h3>SIAO Admin</h3>
+        <hr style="margin: 10px 0;">
+        <button onclick="showDashboard()" style="width: 100%; margin: 5px 0;">📊 Dashboard</button>
+        <button onclick="showCreneaux()" style="width: 100%; margin: 5px 0;">📅 Créneaux</button>
+        <button onclick="showStructures()" style="width: 100%; margin: 5px 0;">🏢 Structures</button>
+        <button onclick="showReservations()" style="width: 100%; margin: 5px 0;">✅ Réservations</button>
+        <button onclick="logout()" style="width: 100%; margin-top: 20px; background: #ef4444;">Déconnexion</button>
     </div>
-    <div style="flex:1;padding:20px" id="adminContent"></div>
-  </div>
+    <div class="content" id="adminContent"></div>
 </div>
 
-<div id="structScreen" class="screen">
-  <div style="display:flex;min-height:100vh">
-    <div style="width:200px;background:var(--bg2);padding:20px">
-      <h3 id="structName">Structure</h3>
-      <hr style="margin:10px 0">
-      <button onclick="showStructPanel('mesrdv')">📅 Mes RDV</button>
-      <button onclick="showStructPanel('dispo')">🟢 Créneaux dispo</button>
-      <button onclick="logout()" style="margin-top:50px">Déconnexion</button>
+<!-- ÉCRAN STRUCTURE -->
+<div id="structureScreen" class="hidden">
+    <div class="sidebar">
+        <h3 id="structName">Structure</h3>
+        <hr style="margin: 10px 0;">
+        <button onclick="showMesRdv()" style="width: 100%; margin: 5px 0;">📅 Mes RDV</button>
+        <button onclick="showDisponibles()" style="width: 100%; margin: 5px 0;">🟢 Créneaux dispo</button>
+        <button onclick="logout()" style="width: 100%; margin-top: 20px;">Déconnexion</button>
     </div>
-    <div style="flex:1;padding:20px" id="structContent"></div>
-  </div>
+    <div class="content" id="structureContent"></div>
 </div>
 
 <script>
+// Configuration Supabase
 const SUPABASE_URL = 'https://elzhfqxysirwqzgihkve.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsemhmcXh5c2lyd3F6Z2loa3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDkzMzMsImV4cCI6MjA4OTkyNTMzM30._nz3MIUxjmabyShRS2x8k5l7HSfIxsgv-Ct8-wQaL0Y';
-const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let structures = [], creneaux = [], currentUser = null;
+let structures = [];
+let creneaux = [];
+let currentUser = null;
 
-async function loadData() {
-  const { data: s } = await supabase.from('structures').select('*');
-  const { data: c } = await supabase.from('creneaux').select('*');
-  structures = s || [];
-  creneaux = c || [];
-  const select = document.getElementById('structSelect');
-  if(select) select.innerHTML = '<option value="">Choisir</option>' + structures.map(s => `<option value="${s.id}">${s.nom}</option>`).join('');
+// Chargement initial
+async function chargerDonnees() {
+    try {
+        const { data: s } = await supabase.from('structures').select('*');
+        const { data: c } = await supabase.from('creneaux').select('*');
+        structures = s || [];
+        creneaux = c || [];
+        
+        // Mettre à jour le select des structures
+        const select = document.getElementById('structSelect');
+        if (select) {
+            select.innerHTML = '<option value="">Sélectionner une structure</option>' + 
+                structures.map(s => `<option value="${s.id}">${s.nom}</option>`).join('');
+        }
+    } catch(e) {
+        console.error('Erreur chargement:', e);
+    }
 }
-loadData();
 
-function showLoginPanel(type) {
-  document.getElementById('siaoPanel').style.display = type === 'siao' ? 'block' : 'none';
-  document.getElementById('structPanel').style.display = type === 'struct' ? 'block' : 'none';
-  document.getElementById('tabSiao').style.background = type === 'siao' ? 'var(--blue)' : 'transparent';
-  document.getElementById('tabStruct').style.background = type === 'struct' ? 'var(--blue)' : 'transparent';
+// Affichage des écrans
+function showSiaoLogin() {
+    document.getElementById('siaoLogin').classList.remove('hidden');
+    document.getElementById('structLogin').classList.add('hidden');
+    document.getElementById('errorMsg').innerHTML = '';
 }
 
+function showStructLogin() {
+    document.getElementById('siaoLogin').classList.add('hidden');
+    document.getElementById('structLogin').classList.remove('hidden');
+    document.getElementById('errorMsg').innerHTML = '';
+}
+
+// Connexion SIAO
 async function loginSiao() {
-  const pwd = document.getElementById('siaoPwd').value;
-  if(pwd === 'siao2025') {
-    currentUser = { role: 'admin' };
-    document.getElementById('loginScreen').classList.remove('active');
-    document.getElementById('adminScreen').classList.add('active');
-    showAdminPanel('dashboard');
-  } else {
-    document.getElementById('errorMsg').innerText = 'Mot de passe incorrect';
-  }
+    const pwd = document.getElementById('siaoPassword').value;
+    if (pwd === 'siao2025') {
+        currentUser = { role: 'admin' };
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminScreen').classList.remove('hidden');
+        showDashboard();
+    } else {
+        document.getElementById('errorMsg').innerHTML = 'Mot de passe incorrect';
+    }
 }
 
-async function loginStruct() {
-  const id = document.getElementById('structSelect').value;
-  const code = document.getElementById('structCode').value;
-  const struct = structures.find(s => s.id == id);
-  if(struct && struct.code === code) {
-    currentUser = { role: 'struct', id: struct.id, name: struct.nom };
-    document.getElementById('loginScreen').classList.remove('active');
-    document.getElementById('structScreen').classList.add('active');
-    document.getElementById('structName').innerText = struct.nom;
-    showStructPanel('mesrdv');
-  } else {
-    document.getElementById('errorMsg').innerText = 'Code incorrect';
-  }
+// Connexion Structure
+async function loginStructure() {
+    const structId = document.getElementById('structSelect').value;
+    const code = document.getElementById('structCode').value;
+    
+    const structure = structures.find(s => s.id == structId);
+    if (structure && structure.code === code) {
+        currentUser = { role: 'structure', id: structure.id, nom: structure.nom };
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('structureScreen').classList.remove('hidden');
+        document.getElementById('structName').innerHTML = structure.nom;
+        showMesRdv();
+    } else {
+        document.getElementById('errorMsg').innerHTML = 'Code incorrect';
+    }
 }
 
+// Déconnexion
 function logout() {
-  currentUser = null;
-  document.getElementById('adminScreen').classList.remove('active');
-  document.getElementById('structScreen').classList.remove('active');
-  document.getElementById('loginScreen').classList.add('active');
+    currentUser = null;
+    document.getElementById('adminScreen').classList.add('hidden');
+    document.getElementById('structureScreen').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('siaoPassword').value = '';
+    document.getElementById('structCode').value = '';
 }
 
-async function showAdminPanel(panel) {
-  const container = document.getElementById('adminContent');
-  if(panel === 'dashboard') {
+// Admin - Dashboard
+function showDashboard() {
     const libres = creneaux.filter(c => c.statut === 'libre').length;
     const reserves = creneaux.filter(c => c.statut === 'reserve').length;
-    container.innerHTML = `
-      <h2>Dashboard</h2>
-      <div class="grid">
-        <div class="card"><h3>${creneaux.length}</h3><p>Total créneaux</p></div>
-        <div class="card"><h3>${libres}</h3><p>Disponibles</p></div>
-        <div class="card"><h3>${reserves}</h3><p>Réservés</p></div>
-        <div class="card"><h3>${structures.length}</h3><p>Structures</p></div>
-      </div>
+    document.getElementById('adminContent').innerHTML = `
+        <h2>Dashboard</h2>
+        <div class="flex">
+            <div class="card" style="flex:1">
+                <h3>${creneaux.length}</h3>
+                <p>Total créneaux</p>
+            </div>
+            <div class="card" style="flex:1">
+                <h3>${libres}</h3>
+                <p>Disponibles</p>
+            </div>
+            <div class="card" style="flex:1">
+                <h3>${reserves}</h3>
+                <p>Réservés</p>
+            </div>
+            <div class="card" style="flex:1">
+                <h3>${structures.length}</h3>
+                <p>Structures</p>
+            </div>
+        </div>
     `;
-  }
-  else if(panel === 'creneaux') {
-    container.innerHTML = `
-      <h2>Créneaux</h2>
-      <button class="btn" onclick="openCreneauModal()">+ Nouveau créneau</button>
-      <div id="creneauxList">${renderCreneaux()}</div>
+}
+
+// Admin - Créneaux
+async function showCreneaux() {
+    const content = `
+        <h2>Gestion des créneaux</h2>
+        <button onclick="ajouterCreneau()">+ Nouveau créneau</button>
+        <div id="creneauxList">
+            ${creneaux.map(c => `
+                <div class="creneau">
+                    <strong>${c.type || 'Réunion'}</strong> - ${c.date} à ${c.heure} (${c.duree || 60} min)<br>
+                    <span class="badge">${c.statut}</span>
+                    ${c.reserve_par_nom ? `<span class="badge">👤 ${c.reserve_par_nom}</span>` : ''}
+                    <br><button onclick="supprimerCreneau(${c.id})" style="margin-top: 10px; background:#ef4444;">Supprimer</button>
+                </div>
+            `).join('') || '<p>Aucun créneau</p>'}
+        </div>
     `;
-  }
-  else if(panel === 'structures') {
-    container.innerHTML = `
-      <h2>Structures</h2>
-      <button class="btn" onclick="openStructureModal()">+ Nouvelle structure</button>
-      <div>${structures.map(s => `<div class="card"><b>${s.nom}</b> (${s.type})<br>Code: ${s.code}<br><button onclick="deleteStructure(${s.id})">Supprimer</button></div>`).join('')}</div>
+    document.getElementById('adminContent').innerHTML = content;
+}
+
+async function ajouterCreneau() {
+    const date = prompt("Date (YYYY-MM-DD) :");
+    const heure = prompt("Heure (HH:MM) :");
+    if (date && heure) {
+        await supabase.from('creneaux').insert([{
+            date: date,
+            heure: heure,
+            duree: 60,
+            type: "Réunion",
+            modalite: "Présentiel",
+            statut: "libre"
+        }]);
+        const { data: c } = await supabase.from('creneaux').select('*');
+        creneaux = c;
+        showCreneaux();
+    }
+}
+
+async function supprimerCreneau(id) {
+    if (confirm('Supprimer ce créneau ?')) {
+        await supabase.from('creneaux').delete().eq('id', id);
+        const { data: c } = await supabase.from('creneaux').select('*');
+        creneaux = c;
+        showCreneaux();
+    }
+}
+
+// Admin - Structures
+async function showStructures() {
+    const content = `
+        <h2>Gestion des structures</h2>
+        <button onclick="ajouterStructure()">+ Nouvelle structure</button>
+        <div>
+            ${structures.map(s => `
+                <div class="card">
+                    <strong>${s.nom}</strong><br>
+                    Type: ${s.type || 'CHRS'}<br>
+                    Code: <code>${s.code}</code><br>
+                    <button onclick="supprimerStructure(${s.id})" style="background:#ef4444; margin-top:10px;">Supprimer</button>
+                </div>
+            `).join('') || '<p>Aucune structure</p>'}
+        </div>
     `;
-  }
-  else if(panel === 'reservations') {
+    document.getElementById('adminContent').innerHTML = content;
+}
+
+async function ajouterStructure() {
+    const nom = prompt("Nom de la structure :");
+    if (nom) {
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+        await supabase.from('structures').insert([{ nom: nom, code: code, type: "CHRS" }]);
+        const { data: s } = await supabase.from('structures').select('*');
+        structures = s;
+        showStructures();
+    }
+}
+
+async function supprimerStructure(id) {
+    if (confirm('Supprimer cette structure ?')) {
+        await supabase.from('structures').delete().eq('id', id);
+        const { data: s } = await supabase.from('structures').select('*');
+        structures = s;
+        showStructures();
+    }
+}
+
+// Admin - Réservations
+function showReservations() {
     const reserves = creneaux.filter(c => c.statut === 'reserve');
-    container.innerHTML = `<h2>Réservations</h2>${reserves.map(c => `<div class="creneau"><b>${c.type}</b> - ${c.date} ${c.heure}<br>Réservé par: ${c.reserve_par_nom || '?'}<br><button onclick="cancelReservation(${c.id})">Annuler</button></div>`).join('') || '<p>Aucune réservation</p>'}`;
-  }
+    document.getElementById('adminContent').innerHTML = `
+        <h2>Toutes les réservations</h2>
+        ${reserves.map(r => `
+            <div class="creneau">
+                <strong>${r.type || 'Réunion'}</strong> - ${r.date} à ${r.heure}<br>
+                Réservé par: ${r.reserve_par_nom || 'Anonyme'}<br>
+                <button onclick="annulerReservation(${r.id})" style="background:#ef4444;">Annuler</button>
+            </div>
+        `).join('') || '<p>Aucune réservation</p>'}
+    `;
 }
 
-async function showStructPanel(panel) {
-  const container = document.getElementById('structContent');
-  if(panel === 'mesrdv') {
+async function annulerReservation(id) {
+    if (confirm('Annuler cette réservation ?')) {
+        await supabase.from('creneaux').update({ statut: 'libre', reserve_par: null, reserve_par_nom: null }).eq('id', id);
+        const { data: c } = await supabase.from('creneaux').select('*');
+        creneaux = c;
+        showReservations();
+    }
+}
+
+// Structure - Mes RDV
+function showMesRdv() {
     const mesRdv = creneaux.filter(c => c.reserve_par == currentUser.id);
-    container.innerHTML = `<h2>Mes rendez-vous</h2>${mesRdv.map(c => `<div class="creneau"><b>${c.type}</b> - ${c.date} ${c.heure}<br><button onclick="cancelMyReservation(${c.id})">Annuler</button></div>`).join('') || '<p>Aucun rendez-vous</p>'}`;
-  }
-  else if(panel === 'dispo') {
-    const dispo = creneaux.filter(c => c.statut === 'libre' && new Date(c.date) >= new Date());
-    container.innerHTML = `<h2>Créneaux disponibles</h2>${dispo.map(c => `<div class="creneau"><b>${c.type}</b> - ${c.date} ${c.heure}<br><button onclick="openReservationModal(${c.id})">Réserver</button></div>`).join('') || '<p>Aucun créneau disponible</p>'}`;
-  }
+    document.getElementById('structureContent').innerHTML = `
+        <h2>Mes rendez-vous</h2>
+        ${mesRdv.map(r => `
+            <div class="creneau">
+                <strong>${r.type || 'Réunion'}</strong> - ${r.date} à ${r.heure}<br>
+                Modalité: ${r.modalite || 'Présentiel'}<br>
+                <button onclick="annulerMonRdv(${r.id})" style="background:#ef4444;">Annuler</button>
+            </div>
+        `).join('') || '<p>Aucun rendez-vous</p>'}
+    `;
 }
 
-function renderCreneaux() {
-  return creneaux.map(c => `<div class="creneau"><b>${c.type}</b> - ${c.date} ${c.heure} (${c.duree}min)<br><span class="badge">${c.statut}</span><br><button onclick="deleteCreneau(${c.id})">Supprimer</button></div>`).join('');
+async function annulerMonRdv(id) {
+    if (confirm('Annuler ce rendez-vous ?')) {
+        await supabase.from('creneaux').update({ statut: 'libre', reserve_par: null, reserve_par_nom: null }).eq('id', id);
+        const { data: c } = await supabase.from('creneaux').select('*');
+        creneaux = c;
+        showMesRdv();
+    }
 }
 
-async function openCreneauModal() {
-  const date = prompt('Date (YYYY-MM-DD):');
-  const heure = prompt('Heure (HH:MM):');
-  if(date && heure) {
-    await supabase.from('creneaux').insert([{ date, heure, duree: 60, type: 'Réunion', modalite: 'Présentiel', statut: 'libre' }]);
-    const { data: c } = await supabase.from('creneaux').select('*');
-    creneaux = c;
-    showAdminPanel('creneaux');
-  }
+// Structure - Créneaux disponibles
+function showDisponibles() {
+    const dispo = creneaux.filter(c => c.statut === 'libre');
+    document.getElementById('structureContent').innerHTML = `
+        <h2>Créneaux disponibles</h2>
+        ${dispo.map(d => `
+            <div class="creneau">
+                <strong>${d.type || 'Réunion'}</strong> - ${d.date} à ${d.heure} (${d.duree || 60} min)<br>
+                Modalité: ${d.modalite || 'Présentiel'}<br>
+                <button onclick="reserverCreneau(${d.id})">Réserver</button>
+            </div>
+        `).join('') || '<p>Aucun créneau disponible</p>'}
+    `;
 }
 
-async function deleteCreneau(id) {
-  await supabase.from('creneaux').delete().eq('id', id);
-  const { data: c } = await supabase.from('creneaux').select('*');
-  creneaux = c;
-  showAdminPanel('creneaux');
+async function reserverCreneau(id) {
+    const nom = prompt("Votre nom (prénom NOM) :");
+    if (nom) {
+        await supabase.from('creneaux').update({ 
+            statut: 'reserve', 
+            reserve_par: currentUser.id, 
+            reserve_par_nom: nom 
+        }).eq('id', id);
+        const { data: c } = await supabase.from('creneaux').select('*');
+        creneaux = c;
+        showMesRdv();
+    }
 }
 
-async function openStructureModal() {
-  const nom = prompt('Nom de la structure:');
-  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-  if(nom) {
-    await supabase.from('structures').insert([{ nom, code, type: 'CHRS' }]);
-    const { data: s } = await supabase.from('structures').select('*');
-    structures = s;
-    showAdminPanel('structures');
-  }
-}
-
-async function deleteStructure(id) {
-  await supabase.from('structures').delete().eq('id', id);
-  const { data: s } = await supabase.from('structures').select('*');
-  structures = s;
-  showAdminPanel('structures');
-}
-
-async function openReservationModal(creneauId) {
-  const nom = prompt('Votre nom (prénom NOM):');
-  if(nom) {
-    await supabase.from('creneaux').update({ statut: 'reserve', reserve_par: currentUser.id, reserve_par_nom: nom }).eq('id', creneauId);
-    const { data: c } = await supabase.from('creneaux').select('*');
-    creneaux = c;
-    showStructPanel('mesrdv');
-  }
-}
-
-async function cancelReservation(id) {
-  await supabase.from('creneaux').update({ statut: 'libre', reserve_par: null, reserve_par_nom: null }).eq('id', id);
-  const { data: c } = await supabase.from('creneaux').select('*');
-  creneaux = c;
-  showAdminPanel('reservations');
-}
-
-async function cancelMyReservation(id) {
-  await supabase.from('creneaux').update({ statut: 'libre', reserve_par: null, reserve_par_nom: null }).eq('id', id);
-  const { data: c } = await supabase.from('creneaux').select('*');
-  creneaux = c;
-  showStructPanel('mesrdv');
-}
+// Initialisation
+chargerDonnees();
 </script>
 </body>
 </html>
