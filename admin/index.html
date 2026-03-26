@@ -514,7 +514,7 @@ select option{background:var(--surface)}
         </div>
 
         <div style="margin-top:20px;text-align:center;font-size:12px;color:var(--text-soft)">
-          Problème de connexion ? <a href="#" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="3d4e484d4d524f497d4e545c52135b4f">[email&#160;protected]</span></a>
+          Problème de connexion ? <a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a>
         </div>
       </div>
     </div>
@@ -832,7 +832,7 @@ select option{background:var(--surface)}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ─── THEME ─────────────────────────────────────────────────────────────────
 let isDark = false;
 function toggleTheme(){
@@ -957,7 +957,7 @@ function toCren(row){
     duree:  row.duree,
     type:   row.type,
     mod:    row.mod,
-    dest:   row.dest||'',
+    dest:   row.dest||null,
     notes:  row.notes||'',
     statut: row.statut||'libre',
     par:    row.par||null,
@@ -975,8 +975,11 @@ async function loadAll(){
     db.from('structures').select('*').order('nom'),
     db.from('creneaux').select('*').order('date').order('heure')
   ]);
+  if(r1.error) console.error('Erreur structures:', r1.error.message, r1.error);
+  if(r2.error) console.error('Erreur creneaux:', r2.error.message, r2.error);
   if(r1.data) structures = r1.data;
   if(r2.data) creneaux   = r2.data;
+  console.log('Loaded:', structures.length, 'structures,', creneaux.length, 'creneaux');
 }
 
 // Temps réel
@@ -1242,19 +1245,20 @@ async function saveCren(){
   const dt = document.getElementById('c-date')?.value;
   if(!dt){ showToast('Date requise','warn'); return; }
   const cren = {
-    id:     'c'+Date.now(),
     date:   dt,
     heure:  document.getElementById('c-heure')?.value || '09:00',
     duree:  parseInt(document.getElementById('c-duree')?.value || '60'),
     type:   document.getElementById('c-type')?.value || 'Autre',
     mod:    document.getElementById('c-mod')?.value || 'Présentiel — SIAO',
-    dest:   document.getElementById('c-dest')?.value || '',
+    dest:   document.getElementById('c-dest')?.value || null,
     notes:  document.getElementById('c-notes')?.value || '',
     statut: 'libre', par: null, msg: ''
   };
   const {error} = await db.from('creneaux').insert(cren);
   if(error){ showToast('Erreur: '+error.message,'error'); return; }
-  creneaux.push(cren);
+  // Reload from DB to get the generated UUID
+  const r = await db.from('creneaux').select('*').order('date').order('heure');
+  if(r.data) creneaux = r.data;
   closeModal('m-cren');
   renderAllCreneaux(); renderEnsemble();
   showToast('Créneau publié ✅','success');
@@ -1386,7 +1390,7 @@ updateRecap();
   <div style="display:flex;align-items:center;gap:16px">
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Mentions légales</a>
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Politique de confidentialité</a>
-    <a href="/cdn-cgi/l/email-protection#a2d1cbc3cdc5cbd0cdccc6c7e2c1c3cbcd8fc0cdd0c6c7c3d7da8cc4d0" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
+    <a href="mailto:contact@siao33.fr" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
   </div>
 </footer>
 
@@ -1411,7 +1415,7 @@ updateRecap();
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">SIRET</span>377 785 290 00034</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Adresse</span>6 rue du Noviciat, 33800 Bordeaux</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Tél.</span>05 40 54 55 00</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="/cdn-cgi/l/email-protection#e2918b838d858b908d8c8687a281838b8dcf808d90868783979acc8490" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="b7c4ded6d8d0dec5d8d9d3d2f7d4d6ded89ad5d8c5d3d2d6c2cf99d1c5">[email&#160;protected]</span></a></div>
+          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a></div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Dir. publication</span><span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
@@ -1447,7 +1451,7 @@ updateRecap();
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
       <div class="card"><div class="ch"><div class="ct">3. Vos droits</div></div><div class="cb">
         <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:8px">Accès · Rectification · Effacement · Opposition (art. 15–22 RGPD)</p>
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="/cdn-cgi/l/email-protection#57243e3638303e25383933321734363e387a353825333236222f793125" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="384b5159575f514a57565c5d785b595157155a574a5c5d594d40165e4a">[email&#160;protected]</span></a></p>
+        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a></p>
         <p style="font-size:13px;color:var(--text-soft);margin-top:6px">DPO : <span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></p>
         <div style="margin-top:10px;padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e">Recours possible auprès de la <a href="https://www.cnil.fr" target="_blank" style="color:#92400e;font-weight:700">CNIL</a>.</div>
       </div></div>
