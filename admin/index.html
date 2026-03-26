@@ -1,990 +1,255 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SIAO RDV — Administration</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --navy:#0f1f3d;--navy2:#1a3260;
-  --p:#2152a3;--pl:#3b72d4;--pd:#163a7a;--ps:#eef4ff;
-  --a:#00c6a2;--as:#e6faf7;
-  --g:#10b981;--w:#f59e0b;--d:#ef4444;
-  --bg:#f0f4f9;--sur:#fff;--sur2:#f7f9fc;--sur3:#eef1f6;
-  --tx:#0f1f3d;--txm:#4a5578;--txs:#8c95b0;
-  --b:rgba(15,31,61,.08);--bm:rgba(15,31,61,.14);
-  --sh:0 1px 4px rgba(15,31,61,.07);--shm:0 4px 16px rgba(15,31,61,.10);
-  --shl:0 16px 48px rgba(15,31,61,.14);
-  --r:12px;--e:.18s ease;
-}
-[data-theme=dark]{
-  --bg:#080d18;--sur:#0f1625;--sur2:#141d2e;--sur3:#192135;
-  --tx:#dde8ff;--txm:#7a93c0;--txs:#3d506b;
-  --b:rgba(255,255,255,.06);--bm:rgba(255,255,255,.1);
-  --navy:#dde8ff;--navy2:#b0c8f0;
-}
-html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--bm);border-radius:4px}
-
-/* ── LOGIN PAGE ─────────────────────────────────────────────────────────── */
-#login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(140deg,var(--navy) 0%,#1e3a7a 45%,#2a4f96 100%);padding:20px}
-.login-card{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-radius:20px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 24px 80px rgba(0,0,0,.25)}
-[data-theme=dark] .login-card{background:var(--sur)}
-.login-logo{width:56px;height:56px;background:linear-gradient(135deg,var(--p),var(--a));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 16px}
-.login-card h1{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--navy);text-align:center;margin-bottom:5px}
-.login-card p{font-size:13px;color:var(--txs);text-align:center;margin-bottom:24px}
-.fg{margin-bottom:13px}
-.fg label{display:block;font-size:11px;font-weight:700;color:var(--txm);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
-.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:1.5px solid var(--b);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);background:var(--sur2);outline:none;transition:border-color var(--e)}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pl);background:var(--sur)}
-.btn{border:none;border-radius:9px;padding:10px 18px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:all var(--e);display:inline-flex;align-items:center;gap:6px}
-.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--pd)}
-.btn-s{background:var(--g);color:#fff}.btn-s:hover{filter:brightness(1.08)}
-.btn-g{background:var(--sur2);border:1.5px solid var(--b);color:var(--txm)}.btn-g:hover{background:var(--sur3)}
-.btn-d{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}.btn-d:hover{background:#fca5a5}
-.btn-w{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
-.btn-full{width:100%;justify-content:center;padding:12px}
-.btn-sm{padding:5px 10px;font-size:11px;border-radius:7px}
-.btn-xs{padding:3px 8px;font-size:10px;border-radius:6px}
-.err-box{background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;color:#dc2626;font-size:12px;display:none;margin-bottom:12px}
-.ok-box{background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:9px 12px;color:#059669;font-size:12px;display:none;margin-bottom:12px}
-
-/* ── APP SHELL ──────────────────────────────────────────────────────────── */
-#app{display:none;flex-direction:column;min-height:100vh}
-#app.on{display:flex}
-
-/* ── TOPBAR ─────────────────────────────────────────────────────────────── */
-#topbar{background:var(--navy);height:50px;display:flex;align-items:center;padding:0 20px;gap:4px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.2)}
-.tl{display:flex;align-items:center;gap:10px;margin-right:16px;padding-right:16px;border-right:1px solid rgba(255,255,255,.1)}
-.tl-ico{width:28px;height:28px;background:linear-gradient(135deg,var(--pl),var(--a));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
-.tl-nm{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#fff}
-.ttab{border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:7px 13px;border-radius:7px 7px 0 0;cursor:pointer;height:50px;border-bottom:2px solid transparent;transition:all var(--e);white-space:nowrap;display:flex;align-items:center;gap:6px}
-.ttab:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}
-.ttab.on{color:#fff;font-weight:600;border-bottom-color:var(--a)}
-.t-gap{flex:1}
-.t-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:5px 10px;color:rgba(255,255,255,.65);cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all var(--e)}
-.t-btn:hover{background:rgba(255,255,255,.15)}
-
-/* ── PAGES ─────────────────────────────────────────────────────────────── */
-.pg{display:none;flex:1}.pg.on{display:flex;flex-direction:column}
-
-/* ── LAYOUT (sidebar + main) ─────────────────────────────────────────────── */
-.layout{display:flex;flex:1;overflow:hidden}
-.side{width:220px;background:var(--navy);flex-shrink:0;overflow-y:auto;display:flex;flex-direction:column}
-[data-theme=dark] .side{background:#0a1120}
-.sb-day{margin:10px 10px 4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 12px}
-.sb-day-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
-.sb-day-ln{font-size:11px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:5px;margin-bottom:2px}
-.sb-sec{padding:12px 12px 3px;font-size:9px;font-weight:700;color:rgba(255,255,255,.22);text-transform:uppercase;letter-spacing:1px}
-.nb{display:flex;align-items:center;gap:8px;width:calc(100% - 12px);margin:1px 6px;padding:8px 10px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.5);font-size:12.5px;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;transition:all var(--e);position:relative}
-.nb:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
-.nb.on{background:rgba(255,255,255,.1);color:#fff;font-weight:600}
-.nb.on::before{content:'';position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--a);border-radius:0 3px 3px 0}
-.nb-ico{font-size:14px;width:16px;text-align:center;flex-shrink:0}
-.nb-b{margin-left:auto;font-size:9px;font-weight:700;padding:2px 5px;border-radius:7px;color:#fff}
-.nb-b.g{background:var(--g)}.nb-b.r{background:var(--d)}.nb-b.o{background:var(--w)}
-.sb-foot{margin-top:auto;padding:10px;border-top:1px solid rgba(255,255,255,.06)}
-.u-row{display:flex;align-items:center;gap:8px;padding:7px;border-radius:8px}
-.u-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--pl),var(--a));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
-.u-nm{font-size:12px;font-weight:600;color:rgba(255,255,255,.8)}
-.u-rl{font-size:10px;color:rgba(255,255,255,.35)}
-.logout-btn{margin-left:auto;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.38);width:22px;height:22px;border-radius:6px;cursor:pointer;font-size:11px;transition:all var(--e)}
-.logout-btn:hover{background:rgba(239,68,68,.2);color:#ff7070}
-
-/* ── MAIN CONTENT ─────────────────────────────────────────────────────────── */
-.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
-.topbar2{background:var(--sur);border-bottom:1px solid var(--b);padding:0 22px;height:52px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:100}
-.tb2-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)}
-.tb2-sub{font-size:10px;color:var(--txs);margin-top:1px}
-.tb2-r{display:flex;align-items:center;gap:7px}
-.srch{background:var(--sur2);border:1.5px solid var(--b);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--tx);font-family:'DM Sans',sans-serif;outline:none;width:180px;transition:all var(--e)}
-.srch:focus{border-color:var(--pl);width:210px}
-.content{padding:18px 22px}
-
-/* ── CARDS ─────────────────────────────────────────────────────────────── */
-.card{background:var(--sur);border-radius:var(--r);border:1px solid var(--b);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
-.ch{padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b)}
-.ct{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--navy)}
-.cs{font-size:11px;color:var(--txs);margin-top:1px}
-.cb{padding:14px 16px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-
-/* ── KPIs ─────────────────────────────────────────────────────────────── */
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;margin-bottom:18px}
-.kpi{background:var(--sur);border:1px solid var(--b);border-radius:var(--r);padding:15px 17px;cursor:pointer;transition:all var(--e);position:relative;overflow:hidden}
-.kpi:hover{transform:translateY(-2px);box-shadow:var(--shm)}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.kpi.blue::before{background:linear-gradient(90deg,var(--pd),var(--pl))}
-.kpi.green::before{background:linear-gradient(90deg,#059669,#10b981)}
-.kpi.orange::before{background:linear-gradient(90deg,#d97706,#f59e0b)}
-.kpi.red::before{background:linear-gradient(90deg,#dc2626,#ef4444)}
-.kpi-v{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:3px}
-.kpi-l{font-size:11px;color:var(--txs)}
-
-/* ── STRUCT GRID ─────────────────────────────────────────────────────────── */
-.struct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:13px}
-.sc{background:var(--sur);border:1px solid var(--b);border-radius:var(--r);overflow:hidden;transition:all var(--e)}
-.sc:hover{box-shadow:var(--shm);transform:translateY(-2px)}
-.sc-head{padding:14px 15px 12px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--b)}
-.sc-av{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
-.sc-nm{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy);line-height:1.2}
-.sc-tp{font-size:11px;color:var(--txs);margin-top:2px}
-.sc-body{padding:11px 14px}
-.sc-stats{display:flex;gap:7px;margin-bottom:10px}
-.sc-stat{flex:1;text-align:center;background:var(--sur2);border-radius:7px;padding:6px 4px}
-.sc-sv{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--navy)}
-.sc-sl{font-size:9px;color:var(--txs);text-transform:uppercase;letter-spacing:.3px}
-.sc-code{font-family:'DM Mono',monospace;font-size:11px;color:var(--p);background:var(--ps);border-radius:6px;padding:4px 8px;display:inline-block;margin-bottom:8px;font-weight:600}
-.sc-note{font-size:11px;color:var(--txm);font-style:italic;padding:6px 8px;background:rgba(245,158,11,.06);border-left:2px solid var(--w);border-radius:0 6px 6px 0;margin-top:6px;line-height:1.5}
-.sc-acts{display:flex;gap:4px;padding:10px 14px;border-top:1px solid var(--b)}
-.sa{flex:1;padding:5px;border:1px solid var(--b);border-radius:7px;font-size:11px;font-weight:600;background:var(--sur2);color:var(--txm);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all var(--e);white-space:nowrap;text-align:center}
-.sa:hover{background:var(--ps);border-color:var(--pl);color:var(--p)}
-.sa.danger{border-color:#fecaca;background:#fee2e2;color:#dc2626}.sa.danger:hover{background:#fca5a5}
-
-/* ── CREN ITEMS ─────────────────────────────────────────────────────────── */
-.ci{background:var(--sur);border:1px solid var(--b);border-radius:var(--r);padding:12px 15px;margin-bottom:8px;display:flex;align-items:center;gap:11px;transition:all var(--e)}
-.ci:hover{box-shadow:var(--sh)}
-.ci-date{text-align:center;min-width:40px;flex-shrink:0}
-.ci-day{font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--navy);line-height:1}
-.ci-mon{font-size:9px;color:var(--txs);text-transform:uppercase}
-.ci-sep{width:2px;height:28px;background:var(--b);border-radius:2px;flex-shrink:0}
-.ci-info{flex:1;min-width:0}
-.ci-type{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px}
-.ci-meta{font-size:11px;color:var(--txs)}
-
-/* ── BADGES ─────────────────────────────────────────────────────────────── */
-.badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-flex;align-items:center}
-.bg{background:#d1fae5;color:#059669}.bb{background:var(--ps);color:var(--p)}.bo{background:#fef3c7;color:#d97706}.bd{background:#fee2e2;color:#dc2626}.bpu{background:#ede9fe;color:#7c3aed}
-
-/* ── FILTERS ─────────────────────────────────────────────────────────────── */
-.filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px}
-.fb{padding:5px 11px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;font-weight:500;background:var(--sur);color:var(--txs);cursor:pointer;transition:all var(--e);font-family:'DM Sans',sans-serif}
-.fb:hover{border-color:var(--pl);color:var(--p)}
-.fb.on{background:var(--p);border-color:var(--p);color:#fff}
-
-/* ── SLOT ITEMS ─────────────────────────────────────────────────────────── */
-.si{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b)}
-.si:last-child{border-bottom:none}
-.si-time{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy);min-width:44px;text-align:center}
-.si-sub{font-size:9px;color:var(--txs);text-transform:uppercase;letter-spacing:.3px}
-.si-sep{width:2px;height:22px;background:var(--b);border-radius:2px;flex-shrink:0}
-.si-info{flex:1;min-width:0}
-.si-type{font-size:12px;font-weight:600;color:var(--tx)}
-.si-struct{font-size:11px;color:var(--txs);margin-top:1px}
-
-/* ── ACTIVITY ─────────────────────────────────────────────────────────────── */
-.ai{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--b)}
-.ai:last-child{border-bottom:none}
-.ai-dot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0}
-.ai-txt{font-size:12px;color:var(--tx);flex:1;line-height:1.5}
-.ai-txt strong{font-weight:500;color:var(--navy)}
-.ai-time{font-size:10px;color:var(--txs);margin-top:1px}
-
-/* ── MODAL ─────────────────────────────────────────────────────────────── */
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:500;align-items:center;justify-content:center;padding:16px}
-.ov.open{display:flex}
-.modal{background:var(--sur);border-radius:16px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--shl);animation:pop .22s cubic-bezier(.34,1.5,.64,1) both}
-@keyframes pop{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:none}}
-.mh{padding:15px 20px 12px;border-bottom:1px solid var(--b);display:flex;align-items:flex-start;justify-content:space-between}
-.mt{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--navy)}
-.ms{font-size:11px;color:var(--txs);margin-top:2px}
-.cx{background:var(--sur2);border:none;border-radius:7px;width:26px;height:26px;cursor:pointer;font-size:13px;color:var(--txs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.cx:hover{background:#fee2e2;color:#dc2626}
-.mb{padding:16px 20px}
-.mf{padding:10px 20px 14px;display:flex;gap:7px;justify-content:flex-end;border-top:1px solid var(--b)}
-.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
-/* ── CONFIRM ─────────────────────────────────────────────────────────────── */
-#conf-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:600;display:none;align-items:center;justify-content:center}
-#conf-ov.open{display:flex}
-.conf-box{background:var(--sur);border-radius:14px;padding:24px;max-width:320px;width:90%;text-align:center;box-shadow:var(--shl);animation:pop .22s cubic-bezier(.34,1.5,.64,1) both}
-.conf-box h3{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy);margin:10px 0 6px}
-.conf-box p{font-size:13px;color:var(--txs);margin-bottom:16px;line-height:1.6}
-.conf-btns{display:flex;gap:8px;justify-content:center}
-
-/* ── TOAST ─────────────────────────────────────────────────────────────── */
-#toasts{position:fixed;bottom:18px;right:18px;z-index:700;display:flex;flex-direction:column;gap:5px;pointer-events:none}
-.toast{background:var(--navy);color:#fff;padding:10px 14px;border-radius:10px;display:flex;align-items:center;gap:8px;font-size:13px;box-shadow:var(--shl);border-left:3px solid var(--a);animation:tin .25s cubic-bezier(.34,1.5,.64,1) both,tout .2s 3s ease forwards}
-.toast.s{border-left-color:var(--g)}.toast.w{border-left-color:var(--w)}.toast.e{border-left-color:var(--d)}.toast.i{border-left-color:var(--pl)}
-@keyframes tin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
-@keyframes tout{from{opacity:1}to{opacity:0}}
-
-/* ── ACCESS MODAL ─────────────────────────────────────────────────────────── */
-.ac-box{background:var(--sur2);border:1px solid var(--b);border-radius:10px;padding:14px;margin-bottom:12px}
-.ac-lbl{font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
-.ac-code{font-family:'DM Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.14em;color:var(--p);text-align:center;padding:12px;background:var(--ps);border-radius:8px;margin-bottom:9px;cursor:pointer;user-select:all}
-.ac-link{font-family:'DM Mono',monospace;font-size:11px;color:var(--txs);word-break:break-all;background:var(--sur3);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:9px;line-height:1.6;cursor:pointer;user-select:all}
-.cp-btn{width:100%;padding:9px;background:var(--p);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all var(--e)}
-.cp-btn:hover{background:var(--pd)}
-
-/* ── DUR CHIPS (créneaux) ─────────────────────────────────────────────────── */
-.dur-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.dc{padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;color:var(--txs);cursor:pointer;transition:all var(--e);background:var(--sur2);font-family:'DM Sans',sans-serif}
-.dc.on{border-color:var(--p);background:var(--ps);color:var(--p);font-weight:600}
-
-/* ── PARAMÈTRES ─────────────────────────────────────────────────────────── */
-.params-wrap{max-width:600px;margin:0 auto;padding:22px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIAO RDV — Administration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .login-card h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #0f172a; }
+        .login-card p { color: #64748b; margin-bottom: 24px; }
+        input { width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 16px; font-size: 14px; }
+        button { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; }
+        .error { background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 12px; margin-bottom: 16px; display: none; }
+        .app { display: none; }
+        .app-header {
+            background: #0f172a;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .app-header h2 { font-size: 18px; }
+        .logout-btn { background: #ef4444; width: auto; padding: 8px 16px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .card h3 { margin-bottom: 16px; font-size: 18px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+        .btn-primary { background: #3b82f6; width: auto; padding: 10px 20px; }
+        .btn-danger { background: #ef4444; width: auto; }
+        .structure-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .structure-info h4 { margin-bottom: 4px; }
+        .structure-info p { font-size: 13px; color: #64748b; }
+        .success { background: #dcfce7; color: #166534; padding: 12px; border-radius: 12px; margin-bottom: 16px; display: none; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
-<div id="toasts"></div>
 
-<!-- ██ LOGIN ████████████████████████████████████████████████████████████ -->
-<div id="login-page">
-  <div class="login-card">
-    <div class="login-logo">🏛</div>
-    <h1>Administration SIAO</h1>
-    <p>Accès réservé aux équipes SIAO Gironde</p>
-    <div class="fg"><label>Identifiant</label><input type="text" id="li-user" value="admin@siao.fr" placeholder="admin@siao.fr"></div>
-    <div class="fg"><label>Mot de passe</label><input type="password" id="li-pwd" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <div class="err-box" id="li-err">Identifiants incorrects.</div>
-    <button class="btn btn-p btn-full" onclick="doLogin()">Accéder au tableau de bord →</button>
-    <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--txs)">
-      SIAO Gironde · <a href="/cdn-cgi/l/email-protection#a1d2c8c0cec6c8d3cecfc5c4e1c2c0c8ce8cc3ced3c5c4c0d4d98fc7d3" style="color:var(--p)"><span class="__cf_email__" data-cfemail="186b7179777f716a77767c7d587b797177357a776a7c7d796d60367e6a">[email&#160;protected]</span></a>
+<!-- Page de connexion -->
+<div id="loginPage" class="login-container">
+    <div class="login-card">
+        <h1>🏛 SIAO RDV</h1>
+        <p>Administration — Accès sécurisé</p>
+        <div id="loginError" class="error">Mot de passe incorrect</div>
+        <input type="password" id="passwordInput" placeholder="Mot de passe" onkeypress="if(event.key==='Enter') login()">
+        <button onclick="login()">Se connecter</button>
     </div>
-  </div>
 </div>
 
-<!-- ██ APP ███████████████████████████████████████████████████████████████ -->
-<div id="app">
-
-  <!-- TOPBAR -->
-  <div id="topbar">
-    <div class="tl"><div class="tl-ico">🏛</div><div class="tl-nm">SIAO RDV</div></div>
-    <button class="ttab on" id="T-dash"    onclick="goPg('dash')">📊 Dashboard</button>
-    <button class="ttab"    id="T-struct"  onclick="goPg('struct')">🏠 Structures</button>
-    <button class="ttab"    id="T-cren"    onclick="goPg('cren')">📅 Créneaux</button>
-    <button class="ttab"    id="T-msg"     onclick="goPg('msg')">💬 Messagerie</button>
-    <button class="ttab"    id="T-params"  onclick="goPg('params')">⚙️ Paramètres</button>
-    <div class="t-gap"></div>
-    <div style="display:flex;align-items:center;gap:5px;margin-right:12px;font-size:11px;color:rgba(255,255,255,.4)"><span style="width:6px;height:6px;border-radius:50%;background:var(--a);animation:pulse 2s infinite;display:inline-block"></span> En ligne</div>
-    <button class="t-btn" onclick="toggleDark()" id="th-btn">🌙</button>
-    <button class="t-btn" onclick="doLogout()" style="margin-left:5px">↩ Déconnexion</button>
-  </div>
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-  <!-- ── PAGE DASHBOARD ─────────────────────────────────────────────── -->
-  <div id="P-dash" class="pg on">
-    <div class="layout">
-      <nav class="side">
-        <div class="sb-day">
-          <div class="sb-day-lbl">Aujourd'hui</div>
-          <div class="sb-day-ln">📅 <span id="sb-cren-today">— créneaux</span></div>
-          <div class="sb-day-ln">🏠 <span id="sb-struct-count">— structures</span></div>
-        </div>
-        <div class="sb-sec">Vues</div>
-        <button class="nb on" id="N-overview"  onclick="goSub('overview')"><span class="nb-ico">📊</span> Vue d'ensemble</button>
-        <button class="nb"    id="N-resa"       onclick="goSub('resa')"><span class="nb-ico">✅</span> Réservations <span class="nb-b g" id="nb-resa-count">0</span></button>
-        <button class="nb"    id="N-inact"      onclick="goSub('inact')"><span class="nb-ico">🚨</span> Inactivité</button>
-        <div class="sb-sec">Raccourcis</div>
-        <button class="nb" onclick="goPg('struct')"><span class="nb-ico">🏠</span> Structures</button>
-        <button class="nb" onclick="goPg('cren')"><span class="nb-ico">📅</span> Créneaux</button>
-        <button class="nb" onclick="openAddStruct()"><span class="nb-ico">➕</span> Nouvelle structure</button>
-        <div class="sb-foot"><div class="u-row"><div class="u-av">SA</div><div><div class="u-nm">SIAO Admin</div><div class="u-rl">Accès complet</div></div><button class="logout-btn" onclick="doLogout()">↩</button></div></div>
-      </nav>
-      <div class="main">
-        <div class="topbar2">
-          <div><div class="tb2-title" id="dash-title">Vue d'ensemble</div><div class="tb2-sub">SIAO Gironde · Administration</div></div>
-          <div class="tb2-r"><button class="btn btn-p btn-sm" onclick="openAddStruct()">+ Nouvelle structure</button></div>
-        </div>
-        <div class="content">
-          <!-- Overview -->
-          <div id="sub-overview">
-            <div class="kpi-row">
-              <div class="kpi blue" onclick="goPg('cren')"><div class="kpi-v" id="k-cren">—</div><div class="kpi-l">Créneaux à venir</div></div>
-              <div class="kpi green" onclick="goSub('resa')"><div class="kpi-v" id="k-resa">—</div><div class="kpi-l">Réservations</div></div>
-              <div class="kpi orange" onclick="goPg('cren')"><div class="kpi-v" id="k-libre">—</div><div class="kpi-l">Créneaux libres</div></div>
-              <div class="kpi blue" onclick="goPg('struct')"><div class="kpi-v" id="k-str">—</div><div class="kpi-l">Structures</div></div>
+<!-- Application -->
+<div id="app" class="app">
+    <div class="app-header">
+        <h2>🏛 SIAO RDV — Administration</h2>
+        <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+    <div class="container">
+        <div id="message" class="success"></div>
+        
+        <div class="grid-2">
+            <!-- Formulaire de création -->
+            <div class="card">
+                <h3>➕ Nouvelle structure</h3>
+                <input type="text" id="nom" placeholder="Nom de la structure *">
+                <select id="type">
+                    <option value="CHRS">CHRS</option>
+                    <option value="CADA">CADA</option>
+                    <option value="ALT">ALT</option>
+                    <option value="Résidence accueil">Résidence accueil</option>
+                    <option value="Foyer">Foyer</option>
+                </select>
+                <input type="text" id="ville" placeholder="Ville">
+                <button class="btn-primary" onclick="createStructure()">Créer la structure</button>
             </div>
-            <div class="g2">
-              <div class="card">
-                <div class="ch"><div><div class="ct">Prochains créneaux libres</div><div class="cs">À venir</div></div><button class="btn btn-p btn-sm" onclick="openModal('m-cren')">+ Nouveau</button></div>
-                <div class="cb" id="dash-next" style="display:flex;flex-direction:column;gap:0"></div>
-              </div>
-              <div class="card">
-                <div class="ch"><div class="ct">Dernières réservations</div></div>
-                <div class="cb" id="dash-resa" style="display:flex;flex-direction:column;gap:0"></div>
-              </div>
+            
+            <!-- Liste des structures -->
+            <div class="card">
+                <h3>📋 Structures existantes</h3>
+                <div id="structuresList">Chargement...</div>
             </div>
-          </div>
-          <!-- Réservations -->
-          <div id="sub-resa" style="display:none">
-            <div id="resa-list"></div>
-          </div>
-          <!-- Inactivité -->
-          <div id="sub-inact" style="display:none">
-            <p style="font-size:13px;color:var(--txs);margin-bottom:14px">Structures sans RDV depuis 30 jours ou plus.</p>
-            <div id="inact-list"></div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <!-- ── PAGE STRUCTURES ────────────────────────────────────────────── -->
-  <div id="P-struct" class="pg">
-    <div class="topbar2">
-      <div><div class="tb2-title">Structures partenaires</div><div class="tb2-sub" id="struct-count-lbl">—</div></div>
-      <div class="tb2-r">
-        <input class="srch" id="struct-srch" placeholder="🔍 Rechercher…" oninput="renderStructs()">
-        <button class="btn btn-p btn-sm" onclick="openAddStruct()">+ Nouvelle structure</button>
-      </div>
-    </div>
-    <div class="content">
-      <div class="filters" id="struct-filters">
-        <button class="fb on" onclick="setSF('tous',this)">Tous</button>
-        <button class="fb" onclick="setSF('CHRS',this)">CHRS</button>
-        <button class="fb" onclick="setSF('CADA',this)">CADA</button>
-        <button class="fb" onclick="setSF('ALT',this)">ALT</button>
-        <button class="fb" onclick="setSF('Résidence accueil',this)">Résidence</button>
-        <button class="fb" onclick="setSF('Foyer',this)">Foyer</button>
-      </div>
-      <div class="struct-grid" id="struct-grid"></div>
-    </div>
-  </div>
-
-  <!-- ── PAGE CRÉNEAUX ──────────────────────────────────────────────── -->
-  <div id="P-cren" class="pg">
-    <div class="topbar2">
-      <div><div class="tb2-title">Créneaux</div><div class="tb2-sub" id="cren-count-lbl">—</div></div>
-      <div class="tb2-r"><button class="btn btn-p btn-sm" onclick="openModal('m-cren')">+ Nouveau créneau</button></div>
-    </div>
-    <div class="content">
-      <div class="filters" id="cren-filters">
-        <button class="fb on" onclick="setCF('tous',this)">Tous</button>
-        <button class="fb" onclick="setCF('libre',this)">Libres</button>
-        <button class="fb" onclick="setCF('reserve',this)">Réservés</button>
-      </div>
-      <div id="cren-list"></div>
-    </div>
-  </div>
-
-  <!-- ── PAGE MESSAGERIE ────────────────────────────────────────────── -->
-  <div id="P-msg" class="pg">
-    <div class="topbar2"><div><div class="tb2-title">Messagerie</div><div class="tb2-sub">Échanges avec les structures</div></div></div>
-    <div class="content">
-      <div id="msg-list" style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
-  </div>
-
-  <!-- ── PAGE PARAMÈTRES ────────────────────────────────────────────── -->
-  <div id="P-params" class="pg">
-    <div class="params-wrap">
-      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">⚙️ Paramètres</div>
-      <div style="font-size:13px;color:var(--txs);margin-bottom:22px">Configuration de l'administration SIAO</div>
-
-      <div class="card" style="margin-bottom:16px">
-        <div class="ch"><div><div class="ct">🔐 Mot de passe administrateur</div><div class="cs">Modifiez le mot de passe d'accès</div></div></div>
-        <div class="cb">
-          <div class="fg"><label>Mot de passe actuel</label><input type="password" id="p-cur" placeholder="Mot de passe actuel"></div>
-          <div class="fg"><label>Nouveau mot de passe</label><input type="password" id="p-new" placeholder="Au moins 6 caractères"></div>
-          <div class="fg"><label>Confirmer</label><input type="password" id="p-conf" placeholder="Confirmer le nouveau mot de passe"></div>
-          <div class="err-box" id="p-err"></div>
-          <div class="ok-box" id="p-ok">✅ Mot de passe mis à jour avec succès</div>
-          <button class="btn btn-p" onclick="changePwd()">🔐 Mettre à jour</button>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:16px">
-        <div class="ch"><div><div class="ct">🔗 Liens de la plateforme</div><div class="cs">À communiquer aux structures</div></div></div>
-        <div class="cb">
-          <div class="fg">
-            <label>Interface structure (à envoyer aux partenaires)</label>
-            <div style="display:flex;gap:8px">
-              <input type="text" value="https://mehdiepilous.github.io/siao-rdv/" readonly style="flex:1;background:var(--sur2);color:var(--txm);cursor:pointer" onclick="this.select()">
-              <button class="btn btn-g btn-sm" onclick="copyText('https://mehdiepilous.github.io/siao-rdv/')">📋</button>
+<script>
+    // Configuration Supabase
+    const supabase = createClient(
+        'https://qsbacmdryccpqsrowylx.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzYmFjbWRyeWNjcHFzcm93eWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzgxNDAsImV4cCI6MjA4OTkxNDE0MH0.k6kLpDoRmR874sQ5nG2KQWi_-6ZRACFUS-W5r_BMres'
+    );
+    
+    const ADMIN_PASSWORD = 'siao2025';
+    
+    // Vérifier si déjà connecté
+    if (sessionStorage.getItem('admin_logged') === 'true') {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        loadStructures();
+    }
+    
+    function login() {
+        const pwd = document.getElementById('passwordInput').value;
+        if (pwd === ADMIN_PASSWORD) {
+            sessionStorage.setItem('admin_logged', 'true');
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            loadStructures();
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    }
+    
+    function logout() {
+        sessionStorage.removeItem('admin_logged');
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('passwordInput').value = '';
+    }
+    
+    async function loadStructures() {
+        const { data, error } = await supabase
+            .from('structures')
+            .select('*')
+            .order('nom');
+        
+        const container = document.getElementById('structuresList');
+        if (error) {
+            container.innerHTML = '<p style="color:red">Erreur de chargement</p>';
+            return;
+        }
+        
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p>Aucune structure</p>';
+            return;
+        }
+        
+        container.innerHTML = data.map(s => `
+            <div class="structure-item">
+                <div class="structure-info">
+                    <h4>${escapeHtml(s.nom)}</h4>
+                    <p>${s.type || ''} ${s.ville ? '· ' + s.ville : ''}</p>
+                    <p style="font-family:monospace; font-size:12px">Code: ${s.code || '—'}</p>
+                </div>
+                <button class="btn-danger" onclick="deleteStructure('${s.id}', '${escapeHtml(s.nom)}')">Supprimer</button>
             </div>
-          </div>
-          <div class="fg">
-            <label>Interface admin (confidentiel)</label>
-            <div style="display:flex;gap:8px">
-              <input type="text" value="https://mehdiepilous.github.io/siao-rdv/admin/" readonly style="flex:1;background:var(--sur2);color:var(--txm);cursor:pointer" onclick="this.select()">
-              <button class="btn btn-g btn-sm" onclick="copyText('https://mehdiepilous.github.io/siao-rdv/admin/')">📋</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="ch"><div><div class="ct">🏛 Informations SIAO</div><div class="cs">Affichées aux structures partenaires</div></div></div>
-        <div class="cb">
-          <div class="fg"><label>Organisation</label><input type="text" value="SIAO Gironde — CAIO"></div>
-          <div class="fg"><label>Email</label><input type="email" value="siaogironde@caio-bordeaux.fr"></div>
-          <div class="fg"><label>Téléphone</label><input type="tel" value="05 40 54 55 00"></div>
-          <button class="btn btn-p" onclick="toast('Configuration sauvegardée ✅','s')">💾 Sauvegarder</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /app -->
-
-<!-- ██ MODALS ████████████████████████████████████████████████████████████ -->
-
-<!-- Ajout/Modif structure -->
-<div class="ov" id="m-struct">
-  <div class="modal">
-    <div class="mh"><div><div class="mt" id="ms-title">Nouvelle structure</div><div class="ms">Renseignez les informations</div></div><button class="cx" onclick="closeModal('m-struct')">✕</button></div>
-    <div class="mb">
-      <input type="hidden" id="s-id">
-      <div class="fg-row">
-        <div class="fg"><label>Nom *</label><input type="text" id="s-nom" placeholder="Ex : CHRS La Boussole"></div>
-        <div class="fg"><label>Type *</label><select id="s-type"><option value="CHRS">CHRS</option><option value="CADA">CADA</option><option value="ALT">ALT</option><option value="Résidence accueil">Résidence accueil</option><option value="Foyer">Foyer</option><option value="Autre">Autre</option></select></div>
-      </div>
-      <div class="fg-row">
-        <div class="fg"><label>Ville *</label><input type="text" id="s-ville" placeholder="Ex : Bordeaux"></div>
-        <div class="fg"><label>Référent SIAO *</label><input type="text" id="s-ref" placeholder="Prénom Nom"></div>
-      </div>
-      <div class="fg"><label>Téléphone</label><input type="tel" id="s-tel" placeholder="05 XX XX XX XX"></div>
-      <div class="fg">
-        <label>Code d'accès *</label>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="s-code" placeholder="Cliquez sur Générer →" style="flex:1;font-family:'DM Mono',monospace;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
-          <button class="btn btn-p btn-sm" onclick="genCode()" style="flex-shrink:0;font-weight:700">🎲 Générer</button>
-        </div>
-        <div style="font-size:11px;color:var(--txs);margin-top:4px">Ce code permet à la structure de se connecter — transmettez-le après création</div>
-      </div>
-      <div class="fg"><label>Note interne (optionnel)</label><textarea id="s-note" rows="2" style="resize:none" placeholder="Visible uniquement par le SIAO…"></textarea></div>
-      <div class="err-box" id="s-err">Veuillez remplir tous les champs obligatoires (*).</div>
-    </div>
-    <div class="mf"><button class="btn btn-g" onclick="closeModal('m-struct')">Annuler</button><button class="btn btn-s" id="s-save" onclick="saveStruct()">✅ Enregistrer</button></div>
-  </div>
-</div>
-
-<!-- Accès structure -->
-<div class="ov" id="m-access">
-  <div class="modal">
-    <div class="mh"><div><div class="mt">🔑 Informations d'accès</div><div class="ms" id="ac-nm">—</div></div><button class="cx" onclick="closeModal('m-access')">✕</button></div>
-    <div class="mb">
-      <p style="font-size:13px;color:var(--txs);margin-bottom:14px;line-height:1.6">Transmettez ces informations à votre interlocuteur pour lui permettre de se connecter.</p>
-      <div class="ac-box">
-        <div class="ac-lbl">Code d'accès</div>
-        <div class="ac-code" id="ac-code" onclick="copyText(this.textContent,'Code copié !')">—</div>
-        <button class="cp-btn" onclick="copyText(document.getElementById('ac-code').textContent,'Code copié !')">📋 Copier le code</button>
-      </div>
-      <div class="ac-box">
-        <div class="ac-lbl">Lien d'invitation direct</div>
-        <div class="ac-link" id="ac-link" onclick="copyText(this.textContent,'Lien copié !')">—</div>
-        <button class="cp-btn" onclick="copyText(document.getElementById('ac-link').textContent,'Lien copié !')">🔗 Copier le lien</button>
-      </div>
-      <div style="padding:11px 13px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:9px;font-size:12px;color:var(--txs);line-height:1.7">
-        <strong style="color:#059669">💡 Comment envoyer ?</strong> Utilisez le bouton <strong>✉️ Email</strong> ci-dessous pour préparer automatiquement un email, ou copiez le code / lien manuellement.
-      </div>
-    </div>
-    <div class="mf"><button class="btn btn-g" onclick="closeModal('m-access')">Fermer</button><button class="btn btn-p" onclick="sendEmail()">✉️ Envoyer par email</button></div>
-  </div>
-</div>
-
-<!-- Note interne -->
-<div class="ov" id="m-note">
-  <div class="modal">
-    <div class="mh"><div><div class="mt">🔒 Note interne</div><div class="ms" id="note-nm">Visible uniquement par le SIAO</div></div><button class="cx" onclick="closeModal('m-note')">✕</button></div>
-    <div class="mb">
-      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:9px;padding:10px 13px;font-size:12px;color:#92400e;margin-bottom:13px">🔒 Cette note est <strong>strictement interne</strong> — la structure ne peut jamais la voir.</div>
-      <div class="fg"><label>Note</label><textarea id="note-val" rows="4" style="resize:vertical" placeholder="Renouvellement, points de vigilance, suivi…"></textarea></div>
-    </div>
-    <div class="mf"><button class="btn btn-g" onclick="closeModal('m-note')">Annuler</button><button class="btn btn-p" onclick="saveNote()">💾 Enregistrer</button></div>
-  </div>
-</div>
-
-<!-- Nouveau créneau -->
-<div class="ov" id="m-cren">
-  <div class="modal">
-    <div class="mh"><div><div class="mt">➕ Nouveau créneau</div><div class="ms">Publier un créneau visible par les structures</div></div><button class="cx" onclick="closeModal('m-cren')">✕</button></div>
-    <div class="mb">
-      <div class="fg-row">
-        <div class="fg"><label>Date *</label><input type="date" id="c-date"></div>
-        <div class="fg"><label>Heure *</label><input type="time" id="c-heure" value="09:00"></div>
-      </div>
-      <div class="fg">
-        <label>Durée</label>
-        <div class="dur-chips">
-          <div class="dc" onclick="selDur(this,'30')">30 min</div>
-          <div class="dc" onclick="selDur(this,'45')">45 min</div>
-          <div class="dc on" onclick="selDur(this,'60')">1h</div>
-          <div class="dc" onclick="selDur(this,'90')">1h30</div>
-          <div class="dc" onclick="selDur(this,'120')">2h</div>
-        </div>
-      </div>
-      <div class="fg-row">
-        <div class="fg"><label>Type</label><select id="c-type"><option>Bilan d'activité</option><option>Réunion partenariale</option><option>Point de suivi</option><option>Visite terrain</option><option>Formation SI SIAO</option><option>Autre</option></select></div>
-        <div class="fg"><label>Modalité</label><select id="c-mod"><option>Présentiel — SIAO</option><option>Visioconférence</option><option>Téléphone</option><option>Présentiel — Structure</option></select></div>
-      </div>
-      <div class="fg"><label>Structure ciblée</label><select id="c-dest"><option value="">Toutes les structures</option></select></div>
-      <div class="fg"><label>Notes internes</label><textarea id="c-notes" rows="2" style="resize:none" placeholder="Ordre du jour, documents à préparer…"></textarea></div>
-      <div class="err-box" id="c-err">Veuillez saisir une date.</div>
-    </div>
-    <div class="mf"><button class="btn btn-g" onclick="closeModal('m-cren')">Annuler</button><button class="btn btn-p" onclick="saveCren()">✅ Publier</button></div>
-  </div>
-</div>
-
-<!-- Confirm -->
-<div id="conf-ov">
-  <div class="conf-box">
-    <div style="font-size:32px">⚠️</div>
-    <h3 id="conf-t">Confirmer</h3>
-    <p id="conf-m">Cette action est irréversible.</p>
-    <div class="conf-btns"><button class="btn btn-g" onclick="closeConf()">Annuler</button><button class="btn btn-d" id="conf-ok">Confirmer</button></div>
-  </div>
-</div>
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ══════════════════════════════════════════════════════════════════
-// SUPABASE
-// ══════════════════════════════════════════════════════════════════
-const { createClient } = supabase;
-const db = createClient(
-  'https://qsbacmdryccpqsrowylx.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzYmFjbWRyeWNjcHFzcm93eWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzgxNDAsImV4cCI6MjA4OTkxNDE0MH0.k6kLpDoRmR874sQ5nG2KQWi_-6ZRACFUS-W5r_BMres'
-);
-const SITE = 'https://mehdiepilous.github.io/siao-rdv';
-let structures=[], creneaux=[], msgs=[];
-let sf='tous', cf='tous', noteId=null, accessS=null;
-const COLS=['linear-gradient(135deg,#3b72d4,#7c3aed)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#f97316,#fbbf24)','linear-gradient(135deg,#8b5cf6,#a78bfa)','linear-gradient(135deg,#0ea5e9,#38bdf8)','linear-gradient(135deg,#ec4899,#f43f5e)'];
-function gc(i){return COLS[i%COLS.length];}
-function gi(nm){return (nm||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
-
-// ── SUPABASE LOAD ─────────────────────────────────────────────────────────
-async function loadAll(){
-  const[r1,r2,r3]=await Promise.all([
-    db.from('structures').select('*').order('nom'),
-    db.from('creneaux').select('*').order('date').order('heure'),
-    db.from('messages').select('*').order('created_at',{ascending:false}).limit(50)
-  ]);
-  if(r1.data)structures=r1.data;
-  if(r2.data)creneaux=r2.data;
-  if(r3.data)msgs=r3.data;
-  fillSelects(); renderAll();
-}
-function fillSelects(){
-  ['c-dest'].forEach(id=>{
-    const s=document.getElementById(id);if(!s)return;
-    const cur=s.value;
-    s.innerHTML='<option value="">Toutes les structures</option>';
-    structures.forEach(x=>{s.innerHTML+=`<option value="${x.id}">${x.nom}</option>`;});
-    s.value=cur;
-  });
-}
-function subscribeRT(){
-  db.channel('admin-rt')
-    .on('postgres_changes',{event:'*',schema:'public',table:'structures'},()=>db.from('structures').select('*').order('nom').then(r=>{if(r.data){structures=r.data;fillSelects();renderAll();}}))
-    .on('postgres_changes',{event:'*',schema:'public',table:'creneaux'},()=>db.from('creneaux').select('*').order('date').order('heure').then(r=>{if(r.data){creneaux=r.data;renderAll();}}))
-    .on('postgres_changes',{event:'*',schema:'public',table:'messages'},()=>db.from('messages').select('*').order('created_at',{ascending:false}).limit(50).then(r=>{if(r.data){msgs=r.data;renderMsgs();}}))
-    .subscribe();
-}
-function renderAll(){
-  renderKPIs(); renderDashNext(); renderDashResa();
-  renderStructs(); renderCreneaux(); renderMsgs();
-  renderResa(); renderInact();
-  const now=new Date();
-  const today=creneaux.filter(c=>new Date(c.date+'T'+c.heure)>=now).length;
-  const sbc=document.getElementById('sb-cren-today');if(sbc)sbc.textContent=today+' créneau'+(today>1?'x':'')+' à venir';
-  const sbs=document.getElementById('sb-struct-count');if(sbs)sbs.textContent=structures.length+' structure'+(structures.length>1?'s':'');
-}
-
-// ── RENDER DASHBOARD ─────────────────────────────────────────────────────
-function renderKPIs(){
-  const now=new Date();
-  const av=creneaux.filter(c=>new Date(c.date+'T'+c.heure)>=now);
-  const res=creneaux.filter(c=>c.statut==='reserve');
-  const lib=av.filter(c=>c.statut==='libre');
-  [['k-cren',av.length],['k-resa',res.length],['k-libre',lib.length],['k-str',structures.length]].forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v;});
-  const nb=document.getElementById('nb-resa-count');if(nb)nb.textContent=res.length;
-}
-function renderDashNext(){
-  const el=document.getElementById('dash-next');if(!el)return;
-  const now=new Date();
-  const list=creneaux.filter(c=>c.statut==='libre'&&new Date(c.date+'T'+c.heure)>=now).sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure)).slice(0,5);
-  if(!list.length){el.innerHTML='<p style="color:var(--txs);font-size:13px;padding:10px 0">Aucun créneau libre à venir</p>';return;}
-  el.innerHTML=list.map(c=>{
-    const d=new Date(c.date+'T00:00:00');
-    const dest=c.dest?structures.find(s=>s.id===c.dest):null;
-    return`<div class="si"><div style="text-align:center;min-width:38px"><div class="si-time" style="font-size:14px">${d.getDate()}</div><div class="si-sub">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div><div class="si-sep"></div><div class="si-info"><div class="si-type">${c.type}</div><div class="si-struct">${c.heure} · ${c.mod}${dest?' · '+dest.nom:''}</div></div><span class="badge bg">Libre</span></div>`;
-  }).join('');
-}
-function renderDashResa(){
-  const el=document.getElementById('dash-resa');if(!el)return;
-  const list=creneaux.filter(c=>c.statut==='reserve').sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
-  if(!list.length){el.innerHTML='<p style="color:var(--txs);font-size:13px;padding:10px 0">Aucune réservation</p>';return;}
-  el.innerHTML=list.map(c=>{
-    const s=c.par?structures.find(x=>x.id===c.par):null;
-    return`<div class="si"><div class="si-info"><div class="si-type">${s?s.nom:'—'}</div><div class="si-struct">${c.type} · ${c.date}</div></div><span class="badge bg">Réservé</span></div>`;
-  }).join('');
-}
-function renderResa(){
-  const el=document.getElementById('resa-list');if(!el)return;
-  const list=creneaux.filter(c=>c.statut==='reserve').sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure));
-  if(!list.length){el.innerHTML='<p style="color:var(--txs);font-size:13px;text-align:center;padding:30px 0">Aucune réservation en cours</p>';return;}
-  el.innerHTML=list.map(c=>{
-    const s=c.par?structures.find(x=>x.id===c.par):null;
-    const d=new Date(c.date+'T00:00:00');
-    return`<div class="ci" style="border-left:3px solid var(--g)">
-      <div class="ci-date"><div class="ci-day">${d.getDate()}</div><div class="ci-mon">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-      <div class="ci-sep"></div>
-      <div class="ci-info"><div class="ci-type">${c.type} <span class="badge bg" style="margin-left:6px">Réservé</span></div><div class="ci-meta">${c.heure} · ${c.mod}${s?' · ✅ '+s.nom:''}</div></div>
-      <button class="btn btn-w btn-sm" onclick="liberCren('${c.id}')">Libérer</button>
-      <button class="btn btn-d btn-sm" onclick="delCren('${c.id}')">🗑</button>
-    </div>`;
-  }).join('');
-}
-function renderInact(){
-  const el=document.getElementById('inact-list');if(!el)return;
-  const now=new Date();
-  const inact=structures.map(s=>{
-    const last=creneaux.filter(c=>c.par===s.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
-    const days=last?Math.round((now-new Date(last.date+'T00:00:00'))/86400000):999;
-    return{...s,days,last};
-  }).filter(s=>s.days>=30).sort((a,b)=>b.days-a.days);
-  if(!inact.length){el.innerHTML='<p style="color:var(--txs);font-size:13px;text-align:center;padding:30px 0">✅ Toutes les structures sont actives</p>';return;}
-  el.innerHTML=inact.map(s=>{
-    const col=s.days>=90?'#dc2626':s.days>=60?'#d97706':'#2152a3';
-    return`<div style="display:flex;align-items:center;gap:12px;padding:12px 15px;background:var(--sur);border:1px solid var(--b);border-radius:var(--r);margin-bottom:8px">
-      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--navy)">${s.nom}</div><div style="font-size:11px;color:var(--txs);margin-top:2px">${s.type} · ${s.ville||''}${s.last?' · Dernier RDV : '+s.last.date:' · Aucun RDV'}</div></div>
-      <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:${col}18;color:${col}">${s.days}j</span>
-      <button class="btn btn-p btn-sm" onclick="openAccess('${s.id}')">🔑 Relancer</button>
-    </div>`;
-  }).join('');
-}
-
-// ── RENDER STRUCTURES ─────────────────────────────────────────────────────
-function renderStructs(){
-  const q=(document.getElementById('struct-srch')?.value||'').toLowerCase();
-  const list=structures.filter((s,i)=>{
-    const mt=sf==='tous'||s.type===sf;
-    const ms=!q||s.nom.toLowerCase().includes(q)||(s.ville||'').toLowerCase().includes(q)||(s.type||'').toLowerCase().includes(q);
-    return mt&&ms;
-  });
-  const lbl=document.getElementById('struct-count-lbl');
-  if(lbl)lbl.textContent=list.length+' structure'+(list.length>1?'s':'');
-  const el=document.getElementById('struct-grid');if(!el)return;
-  if(!list.length){
-    el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--txs)"><div style="font-size:42px;opacity:.2;margin-bottom:12px">🏠</div><div style="font-family:\'Sora\',sans-serif;font-size:16px;font-weight:600;color:var(--txm);margin-bottom:6px">Aucune structure</div><p style="font-size:13px">Cliquez sur <strong>+ Nouvelle structure</strong> pour commencer</p></div>';
-    return;
-  }
-  const now=new Date();
-  el.innerHTML=list.map((s,i)=>{
-    const idx=structures.indexOf(s);
-    const rdv=creneaux.filter(c=>c.par===s.id).length;
-    const av=creneaux.filter(c=>c.par===s.id&&c.statut==='reserve'&&new Date(c.date+'T'+c.heure)>=now).length;
-    const sts=s.statut==='active'
-      ?'<span style="display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:8px"><span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block"></span> Active</span>'
-      :'<span style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#d97706;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:8px"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block"></span> En attente</span>';
-    const TC={'CHRS':'#3b72d4','CADA':'#f59e0b','ALT':'#8b5cf6','Résidence accueil':'#10b981','Foyer':'#ec4899'}[s.type]||'#64748b';
-    const note=s.note?`<div class="sc-note">🔒 ${s.note}</div>`:'';
-    const nm_e=s.nom.replace(/'/g,"\\'");
-    const nt_e=(s.note||'').replace(/'/g,"\\'");
-    return`<div class="sc">
-      <div class="sc-head">
-        <div class="sc-av" style="background:${gc(idx)}">${gi(s.nom)}</div>
-        <div style="flex:1;min-width:0">
-          <div class="sc-nm">${s.nom}</div>
-          <div class="sc-tp">${s.ville||''}</div>
-        </div>
-        <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:${TC}18;color:${TC};flex-shrink:0">${s.type}</span>
-      </div>
-      <div class="sc-body">
-        <div class="sc-stats">
-          <div class="sc-stat"><div class="sc-sv">${rdv}</div><div class="sc-sl">RDV total</div></div>
-          <div class="sc-stat"><div class="sc-sv">${av}</div><div class="sc-sl">À venir</div></div>
-          <div class="sc-stat"><div class="sc-sv" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--p)">${s.code}</div><div class="sc-sl">Code</div></div>
-        </div>
-        ${sts}${note}
-      </div>
-      <div class="sc-acts">
-        <button class="sa" onclick="openEditStruct('${s.id}')">✏️ Modifier</button>
-        <button class="sa" onclick="openNoteModal('${s.id}','${nm_e}','${nt_e}')">🔒 Note</button>
-        <button class="sa" onclick="openAccess('${s.id}')">🔑 Accès</button>
-        <button class="sa danger" onclick="delStruct('${s.id}','${nm_e}')">🗑</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-function setSF(f,btn){
-  sf=f;
-  document.querySelectorAll('#struct-filters .fb').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  renderStructs();
-}
-
-// ── CRUD STRUCTURES ───────────────────────────────────────────────────────
-function openAddStruct(){
-  document.getElementById('ms-title').textContent='Nouvelle structure';
-  document.getElementById('s-save').textContent='✅ Enregistrer';
-  document.getElementById('s-id').value='';
-  ['s-nom','s-ville','s-ref','s-tel','s-code','s-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('s-type').value='CHRS';
-  document.getElementById('s-err').style.display='none';
-  openModal('m-struct');
-}
-function openEditStruct(id){
-  const s=structures.find(x=>x.id===id);if(!s)return;
-  document.getElementById('ms-title').textContent='Modifier la structure';
-  document.getElementById('s-save').textContent='💾 Mettre à jour';
-  document.getElementById('s-id').value=id;
-  document.getElementById('s-nom').value=s.nom||'';
-  document.getElementById('s-type').value=s.type||'CHRS';
-  document.getElementById('s-ville').value=s.ville||'';
-  document.getElementById('s-ref').value=s.referent||'';
-  document.getElementById('s-tel').value=s.tel||'';
-  document.getElementById('s-code').value=s.code||'';
-  document.getElementById('s-note').value=s.note||'';
-  document.getElementById('s-err').style.display='none';
-  openModal('m-struct');
-}
-async function saveStruct(){
-  const nom=(document.getElementById('s-nom')?.value||'').trim();
-  const type=document.getElementById('s-type')?.value||'Autre';
-  const ville=(document.getElementById('s-ville')?.value||'').trim();
-  const referent=(document.getElementById('s-ref')?.value||'').trim();
-  const tel=(document.getElementById('s-tel')?.value||'').trim();
-  const code=(document.getElementById('s-code')?.value||'').trim().toUpperCase();
-  const note=(document.getElementById('s-note')?.value||'').trim();
-  if(!nom||!ville||!referent||!code){document.getElementById('s-err').style.display='block';return;}
-  document.getElementById('s-err').style.display='none';
-  const editId=document.getElementById('s-id').value;
-  if(editId){
-    const{error}=await db.from('structures').update({nom,type,ville,referent,tel,code,note}).eq('id',editId);
-    if(error){toast('Erreur: '+error.message,'e');return;}
-    const idx=structures.findIndex(s=>s.id===editId);
-    if(idx>=0)structures[idx]={...structures[idx],nom,type,ville,referent,tel,code,note};
-    toast('Structure "'+nom+'" mise à jour ✅','s');
-  }else{
-    const ns={nom,type,ville,referent,tel,code,note,tags:[],statut:'active'};
-    const{error}=await db.from('structures').insert(ns);
-    if(error){toast('Erreur: '+error.message,'e');return;}
-    structures.push(ns);
-    toast('Structure "'+nom+'" créée ✅','s');
-  }
-  closeModal('m-struct');
-  fillSelects(); renderStructs(); renderKPIs();
-}
-async function delStruct(id,nm){
-  confirm2('Supprimer "'+nm+'" ?','Cette action est irréversible.',async()=>{
-    await db.from('creneaux').update({statut:'libre',par:null}).eq('par',id);
-    await db.from('structures').delete().eq('id',id);
-    structures=structures.filter(s=>s.id!==id);
-    fillSelects(); renderStructs(); renderKPIs();
-    toast('Structure supprimée','w');
-  });
-}
-function genCode(){
-  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const v=Array.from({length:8},()=>c[Math.floor(Math.random()*c.length)]).join('');
-  const el=document.getElementById('s-code');
-  if(el){el.value=v;el.focus();el.select();}
-}
-
-// ── ACCÈS STRUCTURE ───────────────────────────────────────────────────────
-function openAccess(id){
-  const s=structures.find(x=>x.id===id);if(!s)return;
-  accessS=s;
-  document.getElementById('ac-nm').textContent=s.nom;
-  document.getElementById('ac-code').textContent=s.code;
-  const link=SITE+'?struct='+encodeURIComponent(s.id)+'&code='+encodeURIComponent(s.code);
-  document.getElementById('ac-link').textContent=link;
-  openModal('m-access');
-}
-function sendEmail(){
-  if(!accessS)return;
-  const s=accessS;
-  const link=document.getElementById('ac-link').textContent;
-  const subj=encodeURIComponent('Votre accès SIAO RDV — '+s.nom);
-  const body=encodeURIComponent([
-    'Bonjour,','',
-    'Voici vos informations de connexion à la plateforme SIAO RDV :','',
-    '🏠 Structure : '+s.nom,
-    '🔑 Code d\'accès : '+s.code,
-    '🔗 Lien direct : '+link,'',
-    'Comment vous connecter :',
-    '1. Ouvrez le lien ci-dessus',
-    '2. Sélectionnez votre structure dans la liste',
-    '3. Saisissez votre code d\'accès','',
-    'Ce code est confidentiel — ne le partagez pas.','',
-    'Cordialement,','Le SIAO Gironde',
-    '05 40 54 55 00 — siaogironde@caio-bordeaux.fr'
-  ].join('\n'));
-  window.open('mailto:?subject='+subj+'&body='+body);
-}
-
-// ── NOTE INTERNE ──────────────────────────────────────────────────────────
-function openNoteModal(id,nm,note){
-  noteId=id;
-  document.getElementById('note-nm').textContent=nm+' — Note interne';
-  document.getElementById('note-val').value=note||'';
-  openModal('m-note');
-}
-async function saveNote(){
-  const note=(document.getElementById('note-val').value||'').trim();
-  const{error}=await db.from('structures').update({note}).eq('id',noteId);
-  if(error){toast('Erreur: '+error.message,'e');return;}
-  const idx=structures.findIndex(s=>s.id===noteId);
-  if(idx>=0)structures[idx].note=note;
-  closeModal('m-note'); renderStructs();
-  toast('Note enregistrée ✅ — invisible pour la structure','s');
-}
-
-// ── CRÉNEAUX ──────────────────────────────────────────────────────────────
-function renderCreneaux(){
-  const el=document.getElementById('cren-list');if(!el)return;
-  const now=new Date();
-  const list=creneaux.filter(c=>cf==='tous'||c.statut===cf).sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure));
-  const lbl=document.getElementById('cren-count-lbl');
-  if(lbl)lbl.textContent=list.length+' créneau'+(list.length>1?'x':'');
-  if(!list.length){el.innerHTML='<p style="color:var(--txs);font-size:13px;text-align:center;padding:40px 0">Aucun créneau. Cliquez sur <strong>+ Nouveau créneau</strong> pour commencer.</p>';return;}
-  el.innerHTML=list.map(c=>{
-    const d=new Date(c.date+'T00:00:00');
-    const past=new Date(c.date+'T'+c.heure)<now;
-    const s=c.par?structures.find(x=>x.id===c.par):null;
-    const dest=c.dest?structures.find(x=>x.id===c.dest):null;
-    const lc=c.statut==='reserve'?'var(--g)':'var(--p)';
-    return`<div class="ci" style="border-left:3px solid ${lc}${past?';opacity:.55':''}">
-      <div class="ci-date"><div class="ci-day">${d.getDate()}</div><div class="ci-mon">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-      <div class="ci-sep"></div>
-      <div class="ci-info">
-        <div class="ci-type">${c.type} <span class="badge ${c.statut==='reserve'?'bg':'bb'}" style="margin-left:6px">${c.statut==='reserve'?'Réservé':'Libre'}</span>${past?'<span class="badge" style="background:var(--sur3);color:var(--txs);margin-left:4px">Passé</span>':''}</div>
-        <div class="ci-meta">🕐 ${c.heure} · ${c.duree}min · ${c.mod}${dest?' · 🏠 '+dest.nom:' · 🌐 Toutes'}${s?' · ✅ '+s.nom:''}</div>
-      </div>
-      ${c.statut==='reserve'?`<button class="btn btn-w btn-sm" onclick="liberCren('${c.id}')">Libérer</button>`:''}
-      <button class="btn btn-d btn-sm" onclick="delCren('${c.id}')">🗑</button>
-    </div>`;
-  }).join('');
-}
-function setCF(f,btn){
-  cf=f;
-  document.querySelectorAll('#cren-filters .fb').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  renderCreneaux();
-}
-let durSel=60;
-function selDur(el,v){
-  durSel=parseInt(v);
-  document.querySelectorAll('#m-cren .dc').forEach(d=>d.classList.remove('on'));
-  el.classList.add('on');
-}
-async function saveCren(){
-  const date=(document.getElementById('c-date')?.value||'').trim();
-  if(!date){document.getElementById('c-err').style.display='block';return;}
-  document.getElementById('c-err').style.display='none';
-  const heure=document.getElementById('c-heure')?.value||'09:00';
-  const type=document.getElementById('c-type')?.value||'Autre';
-  const mod=document.getElementById('c-mod')?.value||'Présentiel — SIAO';
-  const dest=document.getElementById('c-dest')?.value||'';
-  const notes=document.getElementById('c-notes')?.value||'';
-  const nc={date,heure,duree:durSel,type,mod,dest,notes,statut:'libre',par:null,msg:''};
-  const{error}=await db.from('creneaux').insert(nc);
-  if(error){toast('Erreur: '+error.message,'e');return;}
-  creneaux.push(nc);
-  closeModal('m-cren'); renderAll();
-  toast('Créneau publié ✅','s');
-}
-async function liberCren(id){
-  await db.from('creneaux').update({statut:'libre',par:null,msg:''}).eq('id',id);
-  const idx=creneaux.findIndex(c=>c.id===id);
-  if(idx>=0){creneaux[idx].statut='libre';creneaux[idx].par=null;}
-  renderAll(); toast('Créneau libéré','w');
-}
-async function delCren(id){
-  confirm2('Supprimer ce créneau ?','Cette action est irréversible.',async()=>{
-    await db.from('creneaux').delete().eq('id',id);
-    creneaux=creneaux.filter(c=>c.id!==id);
-    renderAll(); toast('Créneau supprimé','w');
-  });
-}
-
-// ── MESSAGERIE ────────────────────────────────────────────────────────────
-function renderMsgs(){
-  const el=document.getElementById('msg-list');if(!el)return;
-  if(!msgs.length){el.innerHTML='<p style="color:var(--txs);font-size:13px;text-align:center;padding:40px 0">Aucun message reçu</p>';return;}
-  el.innerHTML=msgs.map(m=>{
-    const s=structures.find(x=>x.id===m.struct_id);
-    const d=new Date(m.created_at);
-    return`<div style="background:var(--sur);border:1px solid var(--b);border-radius:var(--r);padding:13px 16px;display:flex;align-items:flex-start;gap:11px">
-      <div style="width:32px;height:32px;border-radius:50%;background:var(--ps);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:11px;font-weight:700;color:var(--p);flex-shrink:0">${s?gi(s.nom):'?'}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px">${s?s.nom:'Structure inconnue'}</div>
-        <div style="font-size:13px;color:var(--tx);line-height:1.5">${m.contenu}</div>
-      </div>
-      <div style="font-size:10px;color:var(--txs);flex-shrink:0">${d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
-    </div>`;
-  }).join('');
-}
-
-// ── PARAMÈTRES ────────────────────────────────────────────────────────────
-let adminPwd='siao2025';
-function changePwd(){
-  const cur=(document.getElementById('p-cur')?.value||'').trim();
-  const nw=(document.getElementById('p-new')?.value||'').trim();
-  const cf2=(document.getElementById('p-conf')?.value||'').trim();
-  const err=document.getElementById('p-err');
-  const ok=document.getElementById('p-ok');
-  err.style.display='none';ok.style.display='none';
-  if(cur!==adminPwd){err.textContent='Mot de passe actuel incorrect.';err.style.display='block';return;}
-  if(nw.length<6){err.textContent='Le nouveau mot de passe doit faire au moins 6 caractères.';err.style.display='block';return;}
-  if(nw!==cf2){err.textContent='Les mots de passe ne correspondent pas.';err.style.display='block';return;}
-  adminPwd=nw;ok.style.display='block';
-  ['p-cur','p-new','p-conf'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  toast('Mot de passe mis à jour ✅','s');
-}
-
-// ── NAVIGATION ────────────────────────────────────────────────────────────
-function goPg(id){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('on'));
-  const p=document.getElementById('P-'+id);if(p)p.classList.add('on');
-  const t=document.getElementById('T-'+id);if(t)t.classList.add('on');
-}
-function goSub(id){
-  ['overview','resa','inact'].forEach(s=>{const el=document.getElementById('sub-'+s);if(el)el.style.display='none';});
-  ['N-overview','N-resa','N-inact'].forEach(s=>{const el=document.getElementById(s);if(el)el.classList.remove('on');});
-  const sub=document.getElementById('sub-'+id);if(sub)sub.style.display='';
-  const nb=document.getElementById('N-'+id);if(nb)nb.classList.add('on');
-  const titles={overview:'Vue d\'ensemble',resa:'Réservations',inact:'Tableau d\'inactivité'};
-  const ttl=document.getElementById('dash-title');if(ttl&&titles[id])ttl.textContent=titles[id];
-}
-
-// ── LOGIN / LOGOUT ────────────────────────────────────────────────────────
-function doLogin(){
-  const pwd=(document.getElementById('li-pwd')?.value||'').trim();
-  const err=document.getElementById('li-err');
-  if(!pwd||pwd!==adminPwd){err.style.display='block';return;}
-  err.style.display='none';
-  document.getElementById('login-page').style.display='none';
-  document.getElementById('app').classList.add('on');
-  loadAll().then(()=>subscribeRT());
-  toast('Connexion réussie ✓','s');
-}
-function doLogout(){
-  document.getElementById('login-page').style.display='flex';
-  document.getElementById('app').classList.remove('on');
-  document.getElementById('li-pwd').value='';
-}
-document.getElementById('li-pwd').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-
-// ── UTILITAIRES ───────────────────────────────────────────────────────────
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-let _cb=null;
-function confirm2(t,m,cb){
-  document.getElementById('conf-t').textContent=t;
-  document.getElementById('conf-m').textContent=m;
-  _cb=cb;
-  document.getElementById('conf-ov').classList.add('open');
-  document.getElementById('conf-ok').onclick=()=>{closeConf();if(_cb)_cb();};
-}
-function closeConf(){document.getElementById('conf-ov').classList.remove('open');}
-function copyText(txt,msg){navigator.clipboard.writeText(txt).then(()=>toast(msg||'Copié !','s'));}
-function toast(msg,type){
-  const w=document.getElementById('toasts');
-  const t=document.createElement('div');
-  t.className='toast '+(type||'s');
-  const ico={s:'✅',w:'⚠️',e:'❌',i:'ℹ️'};
-  t.innerHTML=`<span>${ico[type]||'✅'}</span><span>${msg}</span>`;
-  w.appendChild(t);
-  setTimeout(()=>{if(t.parentNode)t.parentNode.removeChild(t);},3500);
-}
-f
+        `).join('');
+    }
+    
+    async function createStructure() {
+        const nom = document.getElementById('nom').value.trim();
+        const type = document.getElementById('type').value;
+        const ville = document.getElementById('ville').value.trim();
+        
+        if (!nom) {
+            showMessage('Veuillez saisir un nom', 'error');
+            return;
+        }
+        
+        const code = nom.substring(0, 4).toUpperCase() + Math.floor(Math.random() * 100);
+        
+        const { error } = await supabase
+            .from('structures')
+            .insert([{ nom, type, ville, code }]);
+        
+        if (error) {
+            showMessage('Erreur: ' + error.message, 'error');
+        } else {
+            showMessage('Structure "' + nom + '" créée ! Code: ' + code, 'success');
+            document.getElementById('nom').value = '';
+            document.getElementById('ville').value = '';
+            loadStructures();
+        }
+    }
+    
+    async function deleteStructure(id, nom) {
+        if (!confirm('Supprimer "' + nom + '" ?')) return;
+        
+        const { error } = await supabase
+            .from('structures')
+            .delete()
+            .eq('id', id);
+        
+        if (error) {
+            showMessage('Erreur: ' + error.message, 'error');
+        } else {
+            showMessage('Structure supprimée', 'success');
+            loadStructures();
+        }
+    }
+    
+    function showMessage(msg, type) {
+        const el = document.getElementById('message');
+        el.textContent = msg;
+        el.className = type === 'success' ? 'success' : 'error';
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+</script>
+</body>
+</html>
