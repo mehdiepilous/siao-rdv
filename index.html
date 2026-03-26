@@ -245,10 +245,8 @@ footer a:hover{color:var(--p)}
         <div id="login-err" style="background:#fee2e2;border:1px solid #fecaca;border-radius:7px;padding:7px 10px;color:#dc2626;font-size:12px;margin-bottom:9px;display:none">Code incorrect. Vérifiez avec votre référent SIAO.</div>
         <button class="btn btn-s" style="width:100%;justify-content:center;padding:11px;font-size:14px" onclick="doLogin()">Accéder à mon espace →</button>
         <div style="margin-top:12px;padding:10px;background:var(--sur2);border-radius:9px;border:1px solid var(--b)">
-          <div style="font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Démo</div>
-          <button class="btn btn-g" style="width:100%;justify-content:center;font-size:12px" onclick="loginDemo()">🔓 Entrer sans code</button>
-        </div>
-        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="mailto:siaogironde@caio-bordeaux.fr" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
+          </div>
+        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="/cdn-cgi/l/email-protection#ec9f858d838b859e83828889ac8f8d8583c18e839e88898d9994c28a9e" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
       </div>
     </div>
   </div>
@@ -257,7 +255,7 @@ footer a:hover{color:var(--p)}
     <span>© 2026 CAIO — SIAO Gironde · Association loi 1901 · SIRET 377 785 290 00034</span>
     <div style="display:flex;gap:12px">
       <a href="#" onclick="event.preventDefault();openOv('ov-ml')">Mentions légales</a>
-      <a href="mailto:siaogironde@caio-bordeaux.fr">Contact</a>
+      <a href="/cdn-cgi/l/email-protection#66150f0709010f14090802032605070f094b040914020307131e480014">Contact</a>
     </div>
   </footer>
 </div>
@@ -310,7 +308,7 @@ footer a:hover{color:var(--p)}
               <div style="font-size:12px;color:var(--txs);margin-bottom:5px">Chargée de convention · SIAO Gironde</div>
               <div style="display:flex;gap:12px;flex-wrap:wrap">
                 <a id="ref-tel" href="tel:0540545500" style="font-size:12px;color:var(--p);text-decoration:none">📞 05 40 54 55 00</a>
-                <a href="mailto:siaogironde@caio-bordeaux.fr" style="font-size:12px;color:var(--p);text-decoration:none">✉️ siaogironde@caio-bordeaux.fr</a>
+                <a href="/cdn-cgi/l/email-protection#493a2028262e203b26272d2c092a282026642b263b2d2c283c31672f3b" style="font-size:12px;color:var(--p);text-decoration:none">✉️ <span class="__cf_email__" data-cfemail="097a6068666e607b66676d6c496a686066246b667b6d6c687c71276f7b">[email&#160;protected]</span></a>
               </div>
             </div>
             <button class="btn btn-g btn-sm" onclick="goP('messages')">💬 Écrire</button>
@@ -417,7 +415,7 @@ footer a:hover{color:var(--p)}
         <div style="background:var(--sur2);border-radius:9px;padding:12px;border:1px solid var(--b)"><div style="font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Hébergement</div><div style="font-size:12px;color:var(--tx);display:flex;flex-direction:column;gap:3px"><div><strong>GitHub Pages</strong></div><div>github.com/mehdiepilous/siao-rdv</div><div style="margin-top:5px"><strong>Supabase</strong> — Europe (Frankfurt)</div></div></div>
       </div>
       <div style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:10px;font-size:12px;color:#065f46">✅ <strong>Aucun cookie de traçage.</strong> Seules les données des référents professionnels sont collectées.</div>
-      <div style="font-size:12px;color:var(--txs);line-height:1.7">Droits RGPD : <a href="mailto:siaogironde@caio-bordeaux.fr" style="color:var(--p)">siaogironde@caio-bordeaux.fr</a> · <a href="https://www.cnil.fr" target="_blank" style="color:var(--p)">CNIL</a></div>
+      <div style="font-size:12px;color:var(--txs);line-height:1.7">Droits RGPD : <a href="/cdn-cgi/l/email-protection#32415b535d555b405d5c56577251535b5d1f505d40565753474a1c5440" style="color:var(--p)"><span class="__cf_email__" data-cfemail="7b08121a141c120914151f1e3b181a1214561914091f1e1a0e03551d09">[email&#160;protected]</span></a> · <a href="https://www.cnil.fr" target="_blank" style="color:var(--p)">CNIL</a></div>
     </div>
     <div class="mf"><button class="btn btn-g" onclick="closeOv('ov-ml')">Fermer</button></div>
   </div>
@@ -433,7 +431,7 @@ footer a:hover{color:var(--p)}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════════════
 // SUPABASE
 // ══════════════════════════════════════════════════════
@@ -600,8 +598,7 @@ async function doLogin() {
   }
 }
 
-async function loginDemo() {
-  const {data} = await db.from('structures').select('*').limit(1).single();
+// loginDemo désactivé = await db.from('structures').select('*').limit(1).single();
   if(data) enterStruct(data);
   else toast('Aucune structure en base','w');
 }
@@ -697,11 +694,4 @@ function doConfirm(t,m,cb){ document.getElementById('conf-t').textContent=t; doc
 function cc(){ document.getElementById('conf').classList.remove('open'); }
 function toast(msg,type){ const w=document.getElementById('toasts'),t=document.createElement('div'); t.className='toast '+(type||'s'); const ico={s:'✅',w:'⚠️',i:'ℹ️',e:'❌'}; t.innerHTML='<span>'+(ico[type]||'✅')+'</span><span>'+msg+'</span>'; w.appendChild(t); setTimeout(()=>{if(t.parentNode)t.parentNode.removeChild(t);},3500); }
 function obn(n){ document.querySelectorAll('.ob-s').forEach(s=>s.classList.remove('on')); document.querySelectorAll('.ob-dot').forEach(d=>d.classList.remove('on')); document.getElementById('ob'+n).classList.add('on'); document.getElementById('ob-fill').style.width=(n/3*100)+'%'; }
-function obc(){ document.getElementById('ob-ov').classList.remove('open'); toast('Bienvenue ! Votre espace est prêt.','s'); }
-document.querySelectorAll('.tog-r').forEach(r=>r.addEventListener('click',()=>r.querySelector('.tog-sw').classList.toggle('on')));
-
-// ── INIT ──────────────────────────────────────────────────────────────────
-initStructures();
-</script>
-</body>
-</html>
+f
