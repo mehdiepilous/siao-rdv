@@ -419,18 +419,10 @@ select option{background:var(--surface)}
 .tag.active{background:var(--primary-soft);border-color:var(--primary-light);color:var(--primary)}
 </style>
 <style>
-.scard-act-btn{padding:5px 9px;border-radius:7px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--surface2);color:var(--text-mid);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
-.scard-act-btn:hover{background:var(--primary-soft);border-color:var(--primary-light);color:var(--primary)}
-.scard-act-btn.danger{border-color:#fecaca;background:#fee2e2;color:#dc2626}
-.scard-act-btn.danger:hover{background:#fca5a5}
-.access-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px}
-.access-code{font-family:'DM Mono',monospace;font-size:20px;font-weight:700;letter-spacing:.12em;color:var(--primary);text-align:center;padding:11px;background:var(--primary-soft);border-radius:8px;margin:8px 0;cursor:pointer}
-.access-link{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-soft);word-break:break-all;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:9px 11px;margin:6px 0;line-height:1.6;cursor:pointer}
-.copy-btn{width:100%;padding:9px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;transition:background .2s}
-.copy-btn:hover{filter:brightness(1.1)}
-.fb{padding:6px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;background:var(--surface);color:var(--text-soft);cursor:pointer;transition:all .2s}
+.fb{padding:6px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;background:var(--surface);color:var(--text-soft);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.fb:hover{border-color:var(--primary-light);color:var(--primary)}
 .fb.active{background:var(--primary);border-color:var(--primary);color:#fff}
-.struct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.struct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:14px}
 </style>
 </head>
 <body>
@@ -443,6 +435,7 @@ select option{background:var(--surface)}
   <button class="dtab" onclick="go('s-calendar',this)">🗓 Calendrier</button>
   <button class="dtab" onclick="go('s-messages',this)">💬 Messagerie</button>
   <button class="dtab" onclick="go('s-new-cren',this)">➕ Créer créneau</button>
+  <button class="dtab" onclick="go('s-parametres',this)">⚙️ Paramètres</button>
   <div class="tab-divider"></div>
   <div class="color-picker-wrap">
     <span>🎨</span>
@@ -522,7 +515,7 @@ select option{background:var(--surface)}
 
         <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
           <div style="font-size:11px;color:var(--text-soft);text-align:center;margin-bottom:12px">Accès rapide (prototype)</div>
-          <button style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:10px;font-size:12px;color:var(--text-mid);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[1]);showToast('Connecté en tant qu\'Admin SIAO','success')">
+          <button style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:10px;font-size:12px;color:var(--text-mid);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[2]);showToast('Connecté en tant qu\'Admin SIAO','success')">
             🔓 Connexion démo sans mot de passe
           </button>
         </div>
@@ -580,16 +573,16 @@ select option{background:var(--surface)}
       <!-- D-OVERVIEW -->
       <div id="d-overview">
         <div class="kpi-grid">
-          <div class="kpi blue" onclick="goDash('d-creneaux')"><div class="kpi-ico">📅</div><div class="kpi-val">12</div><div class="kpi-lbl">Créneaux à venir</div><div class="kpi-trend up">↑ +3 sem.</div></div>
-          <div class="kpi green"><div class="kpi-ico">✅</div><div class="kpi-val">8</div><div class="kpi-lbl">Réservations confirmées</div><div class="kpi-trend up">↑ 97%</div></div>
+          <div class="kpi blue" onclick="showToast('Détail des créneaux','info')"><div class="kpi-ico">📅</div><div class="kpi-val" id="k-cren">—</div><div class="kpi-lbl">Créneaux à venir</div><div class="kpi-trend up">↑ +3 sem.</div></div>
+          <div class="kpi green"><div class="kpi-ico">✅</div><div class="kpi-val" id="k-resa">—</div><div class="kpi-lbl">Réservations confirmées</div><div class="kpi-trend up">↑ 97%</div></div>
           <div class="kpi orange"><div class="kpi-ico">⏳</div><div class="kpi-val">2</div><div class="kpi-lbl">En attente</div><div class="kpi-trend dn">↓ Action requise</div></div>
-          <div class="kpi purple"><div class="kpi-ico">🏠</div><div class="kpi-val">24</div><div class="kpi-lbl">Structures partenaires</div><div class="kpi-trend up">↑ +2 mois</div></div>
+          <div class="kpi purple"><div class="kpi-ico">🏠</div><div class="kpi-val" id="k-str">—</div><div class="kpi-lbl">Structures partenaires</div><div class="kpi-trend up">↑ +2 mois</div></div>
           <div class="kpi red"><div class="kpi-ico">🚨</div><div class="kpi-val">1</div><div class="kpi-lbl">Inactive 60j+</div><div class="kpi-trend dn">À relancer</div></div>
         </div>
         <div class="two-col" style="margin-bottom:16px">
           <div class="card">
             <div class="ch"><div><div class="ct">Prochains créneaux</div><div class="cs">Cette semaine</div></div><div class="filters" style="margin:0;gap:5px"><button class="fb active" style="padding:4px 9px;font-size:10.5px">Tous</button><button class="fb" style="padding:4px 9px;font-size:10.5px">Libres</button><button class="fb" style="padding:4px 9px;font-size:10.5px">Réservés</button></div></div>
-            <div class="cb" style="display:flex;flex-direction:column;gap:8px">
+            <div class="cb" id="dash-next-cren" style="display:flex;flex-direction:column;gap:8px">
               <div class="slot-item"><div class="slot-time"><div>09:00</div><div class="slot-sub">Lun 24</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Bilan d'activité</div><div class="slot-struct">Foyer La Caravelle</div></div><span class="badge badge-red">Réservé</span><span class="slot-mode">💻</span></div>
               <div class="slot-item"><div class="slot-time"><div>14:30</div><div class="slot-sub">Mar 25</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Réunion partenariale</div><div class="slot-struct">Toutes structures</div></div><span class="badge badge-green">Libre</span><span class="slot-mode">🏢</span></div>
               <div class="slot-item"><div class="slot-time"><div>10:00</div><div class="slot-sub">Jeu 27</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Point de suivi</div><div class="slot-struct">CHRS Espoir</div></div><span class="badge badge-orange">En attente</span><span class="slot-mode">📞</span></div>
@@ -617,7 +610,7 @@ select option{background:var(--surface)}
             </div></div>
           </div>
         </div>
-        <div class="card"><div class="ch"><div><div class="ct">Structures partenaires</div><div class="cs">24 structures actives</div></div><button class="btn btn-ghost btn-sm">+ Nouvelle structure</button></div><div class="cb"><div class="struct-grid" id="struct-grid-main"></div></div></div>
+        <div class="card"><div class="ch"><div><div class="ct">Structures partenaires</div><div class="cs">24 structures actives</div></div><button class="btn btn-primary btn-sm" onclick="goDash('d-structures');openAddStruct()">+ Nouvelle structure</button></div><div class="cb"><div class="struct-grid" id="struct-grid-main"></div></div></div>
       </div>
 
       <!-- D-CRENEAUX -->
@@ -632,20 +625,20 @@ select option{background:var(--surface)}
 
       <!-- D-STRUCTURES -->
       <div id="d-structures" style="display:none">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-          <div style="display:flex;gap:7px;flex-wrap:wrap" id="struct-filters">
-            <button class="fb active" onclick="setFilter('tous',this)">Tous</button>
-            <button class="fb" onclick="setFilter('CHRS',this)">CHRS</button>
-            <button class="fb" onclick="setFilter('CADA',this)">CADA</button>
-            <button class="fb" onclick="setFilter('ALT',this)">ALT</button>
-            <button class="fb" onclick="setFilter('Résidence accueil',this)">Résidence</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap" id="struct-filters">
+            <button class="fb active" onclick="setStructFilter('tous',this)">Tous</button>
+            <button class="fb" onclick="setStructFilter('CHRS',this)">CHRS</button>
+            <button class="fb" onclick="setStructFilter('CADA',this)">CADA</button>
+            <button class="fb" onclick="setStructFilter('ALT',this)">ALT</button>
+            <button class="fb" onclick="setStructFilter('Résidence accueil',this)">Résidence</button>
           </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input id="struct-search" placeholder="🔍 Rechercher…" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--surface);outline:none;width:200px" oninput="renderStructGrids()">
+          <div style="display:flex;gap:8px">
+            <input id="struct-search" placeholder="🔍 Rechercher…" oninput="renderStructGrids()" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;color:var(--text);background:var(--surface);outline:none;font-family:'DM Sans',sans-serif;width:180px">
             <button class="btn btn-primary btn-sm" onclick="openAddStruct()">+ Nouvelle structure</button>
           </div>
         </div>
-        <div style="font-size:12px;color:var(--text-soft);margin-bottom:12px"><span id="struct-count-lbl">—</span></div>
+        <div style="font-size:12px;color:var(--text-soft);margin-bottom:10px"><span id="struct-count-lbl"></span></div>
         <div class="struct-grid" id="struct-grid-full"></div>
       </div>
 
@@ -687,7 +680,7 @@ select option{background:var(--surface)}
     </div>
     <div class="sb-sec">Actions</div>
     <button class="nb" onclick="openModal('m-cren')"><span class="nb-ico">➕</span> Nouveau créneau</button>
-    <button class="nb" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[1])"><span class="nb-ico">⬅</span> Retour dashboard</button>
+    <button class="nb" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[2])"><span class="nb-ico">⬅</span> Retour dashboard</button>
     <div class="sb-bottom"><div class="user-row"><div class="user-av">SA</div><div><div class="user-nm">SIAO Admin</div><div class="user-rl">Accès complet</div></div></div></div>
   </nav>
   <div class="main-wrap">
@@ -782,8 +775,8 @@ select option{background:var(--surface)}
         <div id="recap-content">Réunion partenariale · 28 mars 2026 · 14:30 · 1h · Visioconférence · Toutes les structures</div>
       </div>
       <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
-        <button class="btn btn-ghost" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[1])">Annuler</button>
-        <button class="btn btn-primary" onclick="showToast('Créneau publié avec succès ! Les structures seront notifiées.','success');go('s-dashboard',document.querySelectorAll('.dtab')[1])">✅ Publier le créneau</button>
+        <button class="btn btn-ghost" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[2])">Annuler</button>
+        <button class="btn btn-primary" onclick="showToast('Créneau publié avec succès ! Les structures seront notifiées.','success');go('s-dashboard',document.querySelectorAll('.dtab')[2])">✅ Publier le créneau</button>
       </div>
     </div></div>
   </div>
@@ -822,7 +815,63 @@ select option{background:var(--surface)}
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 
-<!-- ═══ MODAL AJOUT/MODIF STRUCTURE ══════════════════════════════════════════ -->
+<!-- ═══ SCREEN — PARAMÈTRES ══════════════════════════════════════════════ -->
+<div id="s-parametres" class="screen">
+  <div style="max-width:600px;margin:0 auto;padding:28px">
+    <div style="margin-bottom:24px">
+      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">⚙️ Paramètres</div>
+      <div style="font-size:13px;color:var(--text-soft)">Configuration de l'administration SIAO</div>
+    </div>
+
+    <!-- Changer mot de passe -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="ch"><div><div class="ct">🔐 Mot de passe administrateur</div><div class="cs">Modifiez le mot de passe d'accès à l'administration</div></div></div>
+      <div class="cb">
+        <div class="fg"><label>Mot de passe actuel</label><input type="password" id="pwd-current" placeholder="Mot de passe actuel"></div>
+        <div class="fg"><label>Nouveau mot de passe</label><input type="password" id="pwd-new" placeholder="Nouveau mot de passe (min. 8 caractères)"></div>
+        <div class="fg"><label>Confirmer</label><input type="password" id="pwd-confirm" placeholder="Confirmer le nouveau mot de passe"></div>
+        <div id="pwd-err" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;color:#dc2626;font-size:12px;display:none;margin-bottom:10px"></div>
+        <div id="pwd-ok" style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:8px 12px;color:#059669;font-size:12px;display:none;margin-bottom:10px">✅ Mot de passe mis à jour avec succès</div>
+        <button class="btn btn-primary" onclick="changePwd()">🔐 Mettre à jour le mot de passe</button>
+      </div>
+    </div>
+
+    <!-- Infos site -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="ch"><div><div class="ct">🔗 Liens de la plateforme</div><div class="cs">URLs à communiquer aux structures</div></div></div>
+      <div class="cb">
+        <div class="fg">
+          <label>Interface structure (à envoyer aux partenaires)</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" value="https://mehdiepilous.github.io/siao-rdv/" readonly style="background:var(--surface2);color:var(--text-mid);cursor:pointer" onclick="this.select()">
+            <button class="btn btn-ghost btn-sm" onclick="copyText('https://mehdiepilous.github.io/siao-rdv/','Lien copié !')">📋</button>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Interface admin (confidentiel)</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" value="https://mehdiepilous.github.io/siao-rdv/admin/" readonly style="background:var(--surface2);color:var(--text-mid);cursor:pointer" onclick="this.select()">
+            <button class="btn btn-ghost btn-sm" onclick="copyText('https://mehdiepilous.github.io/siao-rdv/admin/','Lien copié !')">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infos SIAO -->
+    <div class="card">
+      <div class="ch"><div><div class="ct">🏛 Informations SIAO</div><div class="cs">Affichées aux structures partenaires</div></div></div>
+      <div class="cb">
+        <div class="fg"><label>Nom de l'organisation</label><input type="text" value="SIAO Gironde — CAIO" id="conf-org"></div>
+        <div class="fg"><label>Email de contact</label><input type="email" value="siaogironde@caio-bordeaux.fr" id="conf-email"></div>
+        <div class="fg"><label>Téléphone</label><input type="tel" value="05 40 54 55 00" id="conf-tel"></div>
+        <button class="btn btn-primary" onclick="showToast('Configuration sauvegardée ✅','success')">💾 Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ MODAL — AJOUT / MODIF STRUCTURE ════════════════════════════════════ -->
 <div class="modal-ov" id="m-struct">
   <div class="modal">
     <div class="modal-h">
@@ -843,13 +892,13 @@ select option{background:var(--surface)}
       <div class="fg">
         <label>Code d'accès *</label>
         <div style="display:flex;gap:8px">
-          <input type="text" id="s-code" placeholder="Ex : BOUSSOLE25" style="flex:1;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
-          <button class="btn btn-ghost btn-sm" onclick="genCode()" style="flex-shrink:0;white-space:nowrap">🎲 Générer</button>
+          <input type="text" id="s-code" placeholder="Ex : BOUSSOLE25" style="flex:1;text-transform:uppercase;font-family:'DM Mono',monospace;font-size:14px;font-weight:600;letter-spacing:.05em" oninput="this.value=this.value.toUpperCase()">
+          <button class="btn btn-ghost btn-sm" onclick="genCode()" style="flex-shrink:0;white-space:nowrap;font-weight:700">🎲 Générer</button>
         </div>
-        <div style="font-size:11px;color:var(--text-soft);margin-top:4px">Transmis à la structure pour se connecter — confidentiel</div>
+        <div style="font-size:11px;color:var(--text-soft);margin-top:4px">Ce code sera transmis à la structure pour se connecter — cliquez sur 🎲 pour en générer un automatiquement</div>
       </div>
       <div class="fg"><label>Note interne (optionnel)</label><textarea id="s-note" rows="2" style="resize:none" placeholder="Visible uniquement par le SIAO…"></textarea></div>
-      <div id="s-err" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;color:#dc2626;font-size:12px;display:none;margin-top:6px">Veuillez remplir tous les champs obligatoires (*).</div>
+      <div id="s-err" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;color:#dc2626;font-size:12px;display:none;margin-top:6px">⚠️ Veuillez remplir tous les champs obligatoires (*) : nom, ville, référent et code d'accès.</div>
     </div>
     <div class="modal-f">
       <button class="btn btn-ghost" onclick="closeModal('m-struct')">Annuler</button>
@@ -858,38 +907,38 @@ select option{background:var(--surface)}
   </div>
 </div>
 
-<!-- ═══ MODAL ACCÈS STRUCTURE ═══════════════════════════════════════════════ -->
+<!-- ═══ MODAL — ACCÈS STRUCTURE ════════════════════════════════════════════ -->
 <div class="modal-ov" id="m-access">
   <div class="modal">
     <div class="modal-h">
-      <div><div class="modal-title">🔑 Accès structure</div><div class="modal-sub" id="access-struct-nm">—</div></div>
+      <div><div class="modal-title">🔑 Informations d'accès</div><div class="modal-sub" id="access-struct-nm">—</div></div>
       <button class="close-x" onclick="closeModal('m-access')">✕</button>
     </div>
     <div class="modal-b">
-      <p style="font-size:13px;color:var(--text-soft);margin-bottom:14px;line-height:1.6">Transmettez ces informations à votre interlocuteur pour qu'il puisse accéder à son espace.</p>
-      <div class="access-box">
-        <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Code d'accès</div>
-        <div class="access-code" id="access-code-val" onclick="copyAccessCode()">—</div>
-        <button class="copy-btn" onclick="copyAccessCode()">📋 Copier le code</button>
+      <p style="font-size:13px;color:var(--text-soft);margin-bottom:16px;line-height:1.6">Transmettez ces informations à votre interlocuteur pour lui permettre d'accéder à son espace structure.</p>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:16px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Code d'accès</div>
+        <div id="access-code-disp" style="font-family:'DM Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.14em;color:var(--primary);text-align:center;padding:12px;background:var(--primary-soft);border-radius:9px;margin-bottom:9px;cursor:pointer" onclick="copyAccessCode()">—</div>
+        <button onclick="copyAccessCode()" style="width:100%;padding:9px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px">📋 Copier le code</button>
       </div>
-      <div class="access-box">
-        <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Lien direct (avec code pré-rempli)</div>
-        <div class="access-link" id="access-link-val" onclick="copyAccessLink()">—</div>
-        <button class="copy-btn" onclick="copyAccessLink()">🔗 Copier le lien</button>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:16px;margin-bottom:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Lien d'invitation direct</div>
+        <div id="access-link-disp" style="font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text-soft);word-break:break-all;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:9px 11px;margin-bottom:9px;line-height:1.6;cursor:pointer" onclick="copyAccessLink()">—</div>
+        <button onclick="copyAccessLink()" style="width:100%;padding:9px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px">🔗 Copier le lien</button>
       </div>
-      <div style="padding:12px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:9px;font-size:12px;color:var(--text-soft);line-height:1.7">
-        <strong style="color:#059669">Comment l'envoyer ?</strong><br>
-        Copiez le <strong>code</strong> ou le <strong>lien</strong> et transmettez-le par email ou messagerie à votre interlocuteur. Il pourra se connecter directement depuis son navigateur, sans installation.
+      <div style="padding:12px 14px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:9px;font-size:12px;color:var(--text-soft);line-height:1.7">
+        <strong style="color:#059669">💡 Comment envoyer l'accès ?</strong><br>
+        Cliquez sur <strong>✉️ Envoyer par email</strong> pour préparer automatiquement un email avec toutes les informations, ou copiez le code / le lien manuellement.
       </div>
     </div>
     <div class="modal-f">
       <button class="btn btn-ghost" onclick="closeModal('m-access')">Fermer</button>
-      <button class="btn btn-primary" id="access-email-btn" onclick="sendAccessByEmail()">✉️ Ouvrir un email</button>
+      <button class="btn btn-primary" onclick="sendByEmail()">✉️ Envoyer par email</button>
     </div>
   </div>
 </div>
 
-<!-- ═══ MODAL NOTE INTERNE ════════════════════════════════════════════════════ -->
+<!-- ═══ MODAL — NOTE INTERNE ════════════════════════════════════════════════ -->
 <div class="modal-ov" id="m-note">
   <div class="modal">
     <div class="modal-h">
@@ -897,7 +946,9 @@ select option{background:var(--surface)}
       <button class="close-x" onclick="closeModal('m-note')">✕</button>
     </div>
     <div class="modal-b">
-      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:9px;padding:10px 13px;font-size:12px;color:#92400e;margin-bottom:13px">🔒 Cette note est <strong>strictement interne</strong> — la structure ne peut jamais la voir.</div>
+      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:9px;padding:10px 13px;font-size:12px;color:#92400e;margin-bottom:13px;display:flex;gap:8px;align-items:flex-start">
+        <span style="flex-shrink:0">🔒</span><span>Cette note est <strong>strictement interne</strong> — la structure ne peut jamais la voir.</span>
+      </div>
       <div class="fg"><label>Note</label><textarea id="note-val" rows="4" style="resize:vertical" placeholder="Renouvellement à prévoir, points de vigilance, suivi en cours…"></textarea></div>
     </div>
     <div class="modal-f">
@@ -909,20 +960,19 @@ select option{background:var(--surface)}
 
 <script>
 
-// ══════════════════════════════════════════════════════════════════
-// SUPABASE — DONNÉES EN TEMPS RÉEL
-// ══════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// SUPABASE — Données en temps réel
+// ════════════════════════════════════════════════════════════════
 const { createClient } = supabase;
 const db = createClient('https://qsbacmdryccpqsrowylx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzYmFjbWRyeWNjcHFzcm93eWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzgxNDAsImV4cCI6MjA4OTkxNDE0MH0.k6kLpDoRmR874sQ5nG2KQWi_-6ZRACFUS-W5r_BMres');
 
-let structures  = [];
-let creneaux    = [];
-let currentNoteId = null;
-let currentAccessStruct = null;
+let structures   = [];
+let creneaux     = [];
 let structFilter = 'tous';
-
-const SITE_URL  = 'https://mehdiepilous.github.io/siao-rdv';
-const GRAD_COLS = [
+let noteStructId = null;
+let accessStruct = null;
+const SITE       = 'https://mehdiepilous.github.io/siao-rdv';
+const COLS = [
   'linear-gradient(135deg,#3b72d4,#7c3aed)',
   'linear-gradient(135deg,#059669,#10b981)',
   'linear-gradient(135deg,#f97316,#fbbf24)',
@@ -930,10 +980,10 @@ const GRAD_COLS = [
   'linear-gradient(135deg,#0ea5e9,#38bdf8)',
   'linear-gradient(135deg,#ec4899,#f43f5e)',
 ];
-function getCoul(i){ return GRAD_COLS[i % GRAD_COLS.length]; }
-function getInit(nm){ return (nm||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+function col(i){ return COLS[i%COLS.length]; }
+function init(nm){ return (nm||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
 
-// ── Charger tout ──────────────────────────────────────────────────────────
+// ── Charger tout depuis Supabase ──────────────────────────────────────────
 async function loadAll(){
   const [r1,r2] = await Promise.all([
     db.from('structures').select('*').order('nom'),
@@ -941,159 +991,123 @@ async function loadAll(){
   ]);
   if(r1.data) structures = r1.data;
   if(r2.data) creneaux   = r2.data;
+
+  // Peupler les selects destination créneau
+  ['c-dest','nc-dest'].forEach(id=>{
+    const sel=document.getElementById(id);
+    if(sel){
+      const cur=sel.value;
+      sel.innerHTML='<option value="">Toutes les structures</option>';
+      structures.forEach(s=>{sel.innerHTML+=`<option value="${s.id}">${s.nom}</option>`;});
+      sel.value=cur;
+    }
+  });
   renderAll();
-  // Peupler select destinations créneaux
-  const sel = document.getElementById('c-dest');
-  if(sel){
-    sel.innerHTML='<option value="">Toutes les structures</option>';
-    structures.forEach(s=>{sel.innerHTML+=`<option value="${s.id}">${s.nom}</option>`;});
-  }
 }
 
 function renderAll(){
   renderStructGrids();
-  renderDashboard();
-  renderCreneaux();
+  renderDashKPIs();
+  renderDashNext();
 }
 
 // ── Temps réel ────────────────────────────────────────────────────────────
 function subscribeRT(){
   db.channel('admin-rt')
-    .on('postgres_changes',{event:'*',schema:'public',table:'structures'}, async ()=>{
-      const r=await db.from('structures').select('*').order('nom');
-      if(r.data){ structures=r.data; renderAll(); }
-    })
-    .on('postgres_changes',{event:'*',schema:'public',table:'creneaux'}, async ()=>{
-      const r=await db.from('creneaux').select('*').order('date').order('heure');
-      if(r.data){ creneaux=r.data; renderAll(); }
-    })
+    .on('postgres_changes',{event:'*',schema:'public',table:'structures'},
+      ()=>db.from('structures').select('*').order('nom').then(r=>{if(r.data){structures=r.data;renderAll();}})
+    )
+    .on('postgres_changes',{event:'*',schema:'public',table:'creneaux'},
+      ()=>db.from('creneaux').select('*').order('date').order('heure').then(r=>{if(r.data){creneaux=r.data;renderAll();}})
+    )
     .subscribe();
 }
 
-// ── DASHBOARD ─────────────────────────────────────────────────────────────
-function renderDashboard(){
-  const libres = creneaux.filter(c=>c.statut==='libre');
-  const resas  = creneaux.filter(c=>c.statut==='reserve');
-  const now    = new Date();
+// ── DASHBOARD KPIs ────────────────────────────────────────────────────────
+function renderDashKPIs(){
+  const now  = new Date();
+  const avenir= creneaux.filter(c=>new Date(c.date+'T'+c.heure)>=now);
+  const resas = creneaux.filter(c=>c.statut==='reserve');
+  [['k-cren',avenir.length],['k-resa',resas.length],['k-str',structures.length]]
+    .forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v;});
+}
 
-  // KPIs
-  [
-    ['k-cren',  creneaux.length],
-    ['k-libre', libres.length],
-    ['k-resa',  resas.length],
-    ['k-str',   structures.length],
-  ].forEach(([id,v])=>{ const el=document.getElementById(id); if(el) el.textContent=v; });
-
-  // Prochains libres
-  const nextEl = document.getElementById('a-next');
-  if(nextEl){
-    const next = libres.filter(c=>new Date(c.date+'T'+c.heure)>=now)
-      .sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure)).slice(0,5);
-    nextEl.innerHTML = next.length ? next.map(c=>{
-      const d=new Date(c.date+'T00:00:00');
-      const dest = c.dest ? structures.find(s=>s.id===c.dest) : null;
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-        <div style="text-align:center;min-width:38px"><div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:800;color:var(--navy)">${d.getDate()}</div><div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${c.type}</div><div style="font-size:11px;color:var(--text-soft)">${c.heure} · ${c.mod}${dest?' · '+dest.nom:' · Toutes structures'}</div></div>
-        <span style="background:var(--primary-soft);color:var(--primary);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700">${c.duree}min</span>
-      </div>`;
-    }).join('') : '<p style="color:var(--text-soft);font-size:13px;padding:10px 0">Aucun créneau libre à venir</p>';
-  }
-
-  // Dernières réservations
-  const resaEl = document.getElementById('a-resa-r');
-  if(resaEl){
-    const sorted = resas.sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
-    resaEl.innerHTML = sorted.length ? sorted.map(c=>{
-      const s=structures.find(x=>x.id===c.par);
-      const d=new Date(c.date+'T00:00:00');
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${s?.nom||'—'}</div><div style="font-size:11px;color:var(--text-soft)">${c.type} · ${d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}</div></div>
-        <span style="background:#d1fae5;color:#059669;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700">Réservé</span>
-      </div>`;
-    }).join('') : '<p style="color:var(--text-soft);font-size:12px;padding:10px 0">Aucune réservation</p>';
-  }
+function renderDashNext(){
+  const el=document.getElementById('dash-next-cren'); if(!el) return;
+  const now=new Date();
+  const next=creneaux.filter(c=>c.statut==='libre'&&new Date(c.date+'T'+c.heure)>=now)
+    .sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure)).slice(0,4);
+  if(!next.length){el.innerHTML='<p style="color:var(--text-soft);font-size:13px;padding:8px 0">Aucun créneau libre</p>';return;}
+  el.innerHTML=next.map(c=>{
+    const d=new Date(c.date+'T00:00:00');
+    const dest=c.dest?structures.find(s=>s.id===c.dest):null;
+    return`<div class="slot-item">
+      <div class="slot-time"><div>${c.heure}</div><div class="slot-sub">${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric'})}</div></div>
+      <div class="slot-sep"></div>
+      <div class="slot-info-wrap"><div class="slot-type">${c.type}</div><div class="slot-struct">${dest?dest.nom:'Toutes structures'}</div></div>
+      <span class="badge badge-green">Libre</span>
+      <span class="slot-mode">${c.mod.includes('Visio')?'💻':c.mod.includes('Tél')?'📞':'🏢'}</span>
+    </div>`;
+  }).join('');
 }
 
 // ── STRUCTURES ────────────────────────────────────────────────────────────
-function renderStructGrids(){
-  const q    = (document.getElementById('struct-search')?.value||'').toLowerCase();
-  const list = structures.filter((s,i)=>{
-    const matchType   = structFilter==='tous'||s.type===structFilter;
-    const matchSearch = !q||s.nom.toLowerCase().includes(q)||s.ville?.toLowerCase().includes(q)||s.type?.toLowerCase().includes(q);
-    return matchType && matchSearch;
-  });
-
-  const lbl = document.getElementById('struct-count-lbl');
-  if(lbl) lbl.textContent=`${list.length} structure${list.length>1?'s':''}`;
-
-  const g1=document.getElementById('struct-grid-main');
-  const g2=document.getElementById('struct-grid-full');
-  const html=list.length
-    ? list.map((s,i)=>renderStructCard({
-        id:s.id, init:getInit(s.nom), nm:s.nom, tp:s.type+' · '+(s.ville||''), type:s.type,
-        rdv:creneaux.filter(c=>c.par===s.id).length,
-        av:creneaux.filter(c=>c.par===s.id&&c.statut==='reserve'&&new Date(c.date+'T'+c.heure)>=new Date()).length,
-        col:getCoul(i), sts:s.statut||'active', tags:s.tags||[], note:s.note||'', code:s.code
-      })).join('')
-    : `<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-soft)">
-        <div style="font-size:40px;opacity:.3;margin-bottom:10px">🏠</div>
-        <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:600;color:var(--text-mid);margin-bottom:6px">Aucune structure</div>
-        <p style="font-size:13px">Cliquez sur <strong>+ Nouvelle structure</strong> pour commencer</p>
-      </div>`;
-  if(g1) g1.innerHTML=html;
-  if(g2) g2.innerHTML=html;
-}
-
-function renderStructCard(s){
-  const stsHtml=s.sts==='active'
-    ?'<div style="display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:8px"><span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block"></span> Active</div>'
-    :'<div style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#d97706;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:8px"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block"></span> En attente</div>';
-  const tagsHtml=s.tags.map(t=>`<span class="internal-tag">🔒 ${t}</span>`).join('');
-  const noteHtml=s.note?`<div style="margin-top:8px;padding:6px 9px;background:rgba(245,158,11,.07);border-left:3px solid var(--warn);border-radius:0 7px 7px 0;font-size:11px;color:var(--text-mid);line-height:1.4;font-style:italic">🔒 ${s.note}</div>`:'';
-  const nm_s=s.nm.replace(/'/g,"\\'");
-  const note_s=(s.note||'').replace(/'/g,"\\'");
-  const TYPE_COLOR={'CHRS':'#3b72d4','CADA':'#f59e0b','ALT':'#8b5cf6','Résidence accueil':'#10b981','Foyer':'#ec4899'}[s.type]||'#64748b';
-  return`<div class="struct-card">
-    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
-      <div class="struct-av" style="background:${s.col}">${s.init}</div>
-      <div style="flex:1;min-width:0">
-        <div class="struct-nm">${s.nm}</div>
-        <div class="struct-tp">${s.tp}</div>
-      </div>
-      <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:${TYPE_COLOR}18;color:${TYPE_COLOR};flex-shrink:0">${s.type}</span>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:9px">
-      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px">
-        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.rdv}</div>
-        <div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">RDV total</div>
-      </div>
-      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px">
-        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.av}</div>
-        <div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">À venir</div>
-      </div>
-      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px">
-        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--primary);margin-top:3px;font-weight:700">${s.code}</div>
-        <div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">Code</div>
-      </div>
-    </div>
-    ${stsHtml}
-    ${tagsHtml?`<div class="tags-wrap">${tagsHtml}</div>`:''}
-    ${noteHtml}
-    <div style="display:flex;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-      <button class="scard-act-btn" style="flex:1" onclick="event.stopPropagation();openEditStruct('${s.id}')">✏️ Modifier</button>
-      <button class="scard-act-btn" style="flex:1" onclick="event.stopPropagation();openNoteModal('${s.id}','${nm_s}','${note_s}')">🔒 Note</button>
-      <button class="scard-act-btn" style="flex:1" onclick="event.stopPropagation();openAccess('${s.id}')">🔑 Accès</button>
-      <button class="scard-act-btn danger" onclick="event.stopPropagation();deleteStruct('${s.id}','${nm_s}')">🗑</button>
-    </div>
-  </div>`;
-}
-
-function setFilter(f,btn){
+function setStructFilter(f,btn){
   structFilter=f;
   document.querySelectorAll('#struct-filters .fb').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   renderStructGrids();
+}
+
+function renderStructGrids(){
+  const q=(document.getElementById('struct-search')?.value||'').toLowerCase();
+  const list=structures.filter((s,i)=>{
+    const mt=structFilter==='tous'||s.type===structFilter;
+    const ms=!q||s.nom.toLowerCase().includes(q)||(s.ville||'').toLowerCase().includes(q)||(s.type||'').toLowerCase().includes(q);
+    return mt&&ms;
+  });
+  const lbl=document.getElementById('struct-count-lbl');
+  if(lbl) lbl.textContent=list.length+' structure'+(list.length>1?'s':'');
+  const card_html=list.length
+    ?list.map((s,i)=>renderStructCard({
+        id:s.id,init:init(s.nom),nm:s.nom,tp:(s.type||'')+' · '+(s.ville||''),
+        type:s.type||'',
+        rdv:creneaux.filter(c=>c.par===s.id).length,
+        av:creneaux.filter(c=>c.par===s.id&&c.statut==='reserve'&&new Date(c.date+'T'+c.heure)>=new Date()).length,
+        col:col(i),sts:s.statut||'active',tags:s.tags||[],note:s.note||'',code:s.code||''
+      })).join('')
+    :'<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-soft)"><div style="font-size:42px;opacity:.25;margin-bottom:12px">🏠</div><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:600;color:var(--text-mid);margin-bottom:6px">Aucune structure</div><p style="font-size:13px">Cliquez sur <strong>+ Nouvelle structure</strong> pour créer votre première structure partenaire</p></div>';
+  ['struct-grid-main','struct-grid-full'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=card_html;});
+}
+
+function renderStructCard(s){
+  const sts=s.sts==='active'
+    ?'<div style="display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:8px"><span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block"></span> Active</div>'
+    :'<div style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#d97706;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:8px"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block"></span> En attente</div>';
+  const tags=(s.tags||[]).map(t=>`<span class="internal-tag">🔒 ${t}</span>`).join('');
+  const note=s.note?`<div style="margin-top:8px;padding:6px 9px;background:rgba(245,158,11,.07);border-left:3px solid var(--warn);border-radius:0 7px 7px 0;font-size:11px;color:var(--text-mid);line-height:1.4;font-style:italic">🔒 ${s.note}</div>`:'';
+  const TC={'CHRS':'#3b72d4','CADA':'#f59e0b','ALT':'#8b5cf6','Résidence accueil':'#10b981','Foyer':'#ec4899'}[s.type]||'#64748b';
+  const nm=s.nm.replace(/'/g,"\\'");
+  const nt=(s.note||'').replace(/'/g,"\\'");
+  return`<div class="struct-card">
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+      <div class="struct-av" style="background:${s.col}">${s.init}</div>
+      <div style="flex:1;min-width:0"><div class="struct-nm">${s.nm}</div><div class="struct-tp">${s.tp}</div></div>
+      <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:${TC}18;color:${TC};flex-shrink:0">${s.type}</span>
+    </div>
+    <div style="display:flex;gap:7px;margin-bottom:9px">
+      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.rdv}</div><div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">RDV total</div></div>
+      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.av}</div><div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">À venir</div></div>
+      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px"><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--primary);margin-top:4px;font-weight:700;word-break:break-all">${s.code}</div><div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">Code</div></div>
+    </div>
+    ${sts}${tags?`<div class="tags-wrap">${tags}</div>`:''}${note}
+    <div style="display:flex;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+      <button style="flex:1;padding:5px;border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:600;background:var(--surface2);color:var(--text-mid);cursor:pointer;font-family:'DM Sans',sans-serif" onmouseover="this.style.background='var(--primary-soft)';this.style.color='var(--primary)'" onmouseout="this.style.background='var(--surface2)';this.style.color='var(--text-mid)'" onclick="event.stopPropagation();openEditStruct('${s.id}')">✏️ Modifier</button>
+      <button style="flex:1;padding:5px;border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:600;background:var(--surface2);color:var(--text-mid);cursor:pointer;font-family:'DM Sans',sans-serif" onmouseover="this.style.background='var(--primary-soft)';this.style.color='var(--primary)'" onmouseout="this.style.background='var(--surface2)';this.style.color='var(--text-mid)'" onclick="event.stopPropagation();openNoteModal('${s.id}','${nm}','${nt}')">🔒 Note</button>
+      <button style="flex:1;padding:5px;border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:600;background:var(--surface2);color:var(--text-mid);cursor:pointer;font-family:'DM Sans',sans-serif" onmouseover="this.style.background='var(--primary-soft)';this.style.color='var(--primary)'" onmouseout="this.style.background='var(--surface2)';this.style.color='var(--text-mid)'" onclick="event.stopPropagation();openAccess('${s.id}')">🔑 Accès</button>
+      <button style="padding:5px 8px;border:1px solid #fecaca;border-radius:7px;font-size:11px;font-weight:600;background:#fee2e2;color:#dc2626;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="event.stopPropagation();deleteStruct('${s.id}','${nm}')" onmouseover="this.style.background='#fca5a5'" onmouseout="this.style.background='#fee2e2'">🗑</button>
+    </div>
+  </div>`;
 }
 
 // ── CRUD STRUCTURES ───────────────────────────────────────────────────────
@@ -1101,14 +1115,16 @@ function openAddStruct(){
   document.getElementById('m-struct-title').textContent='Nouvelle structure';
   document.getElementById('s-save-btn').textContent='✅ Enregistrer';
   document.getElementById('s-edit-id').value='';
-  ['s-nom','s-ville','s-referent','s-tel','s-code','s-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('s-type').value='CHRS';
+  ['s-nom','s-ville','s-referent','s-tel','s-code','s-note'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  if(document.getElementById('s-type')) document.getElementById('s-type').value='CHRS';
   document.getElementById('s-err').style.display='none';
   openModal('m-struct');
 }
 
 function openEditStruct(id){
-  const s=structures.find(x=>x.id===id); if(!s) return;
+  const s=structures.find(x=>x.id===id);if(!s)return;
   document.getElementById('m-struct-title').textContent='Modifier la structure';
   document.getElementById('s-save-btn').textContent='💾 Mettre à jour';
   document.getElementById('s-edit-id').value=id;
@@ -1124,203 +1140,185 @@ function openEditStruct(id){
 }
 
 async function saveStruct(){
-  const nom=document.getElementById('s-nom').value.trim();
-  const type=document.getElementById('s-type').value;
-  const ville=document.getElementById('s-ville').value.trim();
-  const ref=document.getElementById('s-referent').value.trim();
-  const tel=document.getElementById('s-tel').value.trim();
-  const code=document.getElementById('s-code').value.trim().toUpperCase();
-  const note=document.getElementById('s-note').value.trim();
-  if(!nom||!ville||!ref||!code){ document.getElementById('s-err').style.display='block'; return; }
+  const nom     = (document.getElementById('s-nom')?.value||'').trim();
+  const type    = document.getElementById('s-type')?.value||'Autre';
+  const ville   = (document.getElementById('s-ville')?.value||'').trim();
+  const referent= (document.getElementById('s-referent')?.value||'').trim();
+  const tel     = (document.getElementById('s-tel')?.value||'').trim();
+  const code    = (document.getElementById('s-code')?.value||'').trim().toUpperCase();
+  const note    = (document.getElementById('s-note')?.value||'').trim();
+  if(!nom||!ville||!referent||!code){
+    document.getElementById('s-err').style.display='block';return;
+  }
   const editId=document.getElementById('s-edit-id').value;
   if(editId){
-    const {error}=await db.from('structures').update({nom,type,ville,referent:ref,tel,code,note}).eq('id',editId);
-    if(error){ showToast('Erreur: '+error.message,'error'); return; }
+    const {error}=await db.from('structures').update({nom,type,ville,referent,tel,code,note}).eq('id',editId);
+    if(error){showToast('Erreur Supabase: '+error.message,'error');return;}
     const idx=structures.findIndex(s=>s.id===editId);
-    if(idx>=0) structures[idx]={...structures[idx],nom,type,ville,referent:ref,tel,code,note};
+    if(idx>=0) structures[idx]={...structures[idx],nom,type,ville,referent,tel,code,note};
     showToast('Structure "'+nom+'" mise à jour ✅','success');
   } else {
-    const ns={id:'s'+Date.now(),nom,type,ville,referent:ref,tel,code,note,tags:[],statut:'active'};
+    const ns={id:'s'+Date.now(),nom,type,ville,referent,tel,code,note,tags:[],statut:'active'};
     const {error}=await db.from('structures').insert(ns);
-    if(error){ showToast('Erreur: '+error.message,'error'); return; }
+    if(error){showToast('Erreur Supabase: '+error.message,'error');return;}
     structures.push(ns);
     showToast('Structure "'+nom+'" créée ✅','success');
   }
   closeModal('m-struct');
   renderStructGrids();
-  renderDashboard();
 }
 
 async function deleteStruct(id,nm){
-  showConfirm('Supprimer "'+nm+'" ?','Cette action est irréversible. Tous les créneaux associés seront libérés.',async()=>{
+  showConfirm('Supprimer "'+nm+'" ?','Cette action est irréversible.',async()=>{
     await db.from('creneaux').update({statut:'libre',par:null}).eq('par',id);
     await db.from('structures').delete().eq('id',id);
     structures=structures.filter(s=>s.id!==id);
-    renderStructGrids(); renderDashboard();
+    renderStructGrids();
     showToast('Structure supprimée','warn');
   });
 }
 
 function genCode(){
-  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const v=Array.from({length:8},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
   const el=document.getElementById('s-code');
-  if(el) el.value=Array.from({length:8},()=>c[Math.floor(Math.random()*c.length)]).join('');
+  if(el){ el.value=v; el.focus(); }
 }
 
 // ── ACCÈS STRUCTURE ───────────────────────────────────────────────────────
 function openAccess(id){
-  const s=structures.find(x=>x.id===id); if(!s) return;
-  currentAccessStruct=s;
-  document.getElementById('access-struct-nm').textContent=s.nom+' — Informations de connexion';
-  document.getElementById('access-code-val').textContent=s.code;
-  const link=SITE_URL+'?struct='+encodeURIComponent(s.id)+'&code='+encodeURIComponent(s.code);
-  document.getElementById('access-link-val').textContent=link;
+  const s=structures.find(x=>x.id===id);if(!s)return;
+  accessStruct=s;
+  document.getElementById('access-struct-nm').textContent=s.nom;
+  document.getElementById('access-code-disp').textContent=s.code;
+  const link=SITE+'?struct='+encodeURIComponent(s.id)+'&code='+encodeURIComponent(s.code);
+  document.getElementById('access-link-disp').textContent=link;
   openModal('m-access');
 }
 
 function copyAccessCode(){
-  const code=document.getElementById('access-code-val').textContent;
-  navigator.clipboard.writeText(code).then(()=>showToast('Code "'+code+'" copié !','success'));
+  const v=document.getElementById('access-code-disp').textContent;
+  navigator.clipboard.writeText(v).then(()=>showToast('Code "'+v+'" copié !','success'));
 }
 
 function copyAccessLink(){
-  const link=document.getElementById('access-link-val').textContent;
-  navigator.clipboard.writeText(link).then(()=>showToast('Lien copié !','success'));
+  const v=document.getElementById('access-link-disp').textContent;
+  navigator.clipboard.writeText(v).then(()=>showToast('Lien copié !','success'));
 }
 
-function sendAccessByEmail(){
-  if(!currentAccessStruct) return;
-  const s=currentAccessStruct;
-  const link=document.getElementById('access-link-val').textContent;
-  const subject=encodeURIComponent('Votre accès SIAO RDV — '+s.nom);
-  const body=encodeURIComponent(
-    'Bonjour,\n\n'+
-    'Voici vos informations de connexion à la plateforme SIAO RDV :\n\n'+
-    '🏠 Structure : '+s.nom+'\n'+
-    '🔑 Code d\'accès : '+s.code+'\n'+
-    '🔗 Lien direct : '+link+'\n\n'+
-    'Comment vous connecter :\n'+
-    '1. Ouvrez le lien ci-dessus\n'+
-    '2. Sélectionnez votre structure\n'+
-    '3. Saisissez votre code d\'accès\n\n'+
-    'Ce code est confidentiel — ne le partagez pas.\n\n'+
-    'Cordialement,\nLe SIAO Gironde\n05 40 54 55 00 — siaogironde@caio-bordeaux.fr'
-  );
-  window.open('mailto:?subject='+subject+'&body='+body);
+function copyText(txt,msg){
+  navigator.clipboard.writeText(txt).then(()=>showToast(msg||'Copié !','success'));
+}
+
+function sendByEmail(){
+  if(!accessStruct) return;
+  const s=accessStruct;
+  const link=document.getElementById('access-link-disp').textContent;
+  const subj=encodeURIComponent('Votre accès SIAO RDV — '+s.nom);
+  const body=encodeURIComponent([
+    'Bonjour,',
+    '',
+    'Voici vos informations de connexion à la plateforme SIAO RDV :',
+    '',
+    '🏠 Structure : '+s.nom,
+    '🔑 Code d'accès : '+s.code,
+    '🔗 Lien direct : '+link,
+    '',
+    'Comment vous connecter :',
+    '1. Ouvrez le lien ci-dessus',
+    '2. Sélectionnez votre structure dans la liste',
+    '3. Saisissez votre code d'accès',
+    '',
+    'Ce code est confidentiel, ne le partagez pas.',
+    '',
+    'Cordialement,',
+    'Le SIAO Gironde',
+    '05 40 54 55 00 — siaogironde@caio-bordeaux.fr'
+  ].join('\n'));
+  window.open('mailto:?subject='+subj+'&body='+body);
 }
 
 // ── NOTES INTERNES ────────────────────────────────────────────────────────
 function openNoteModal(id,nm,note){
-  currentNoteId=id;
+  noteStructId=id;
   document.getElementById('note-struct-nm').textContent=nm+' — Note interne';
   document.getElementById('note-val').value=note||'';
   openModal('m-note');
 }
 
 async function saveNote(){
-  const note=document.getElementById('note-val').value.trim();
-  await db.from('structures').update({note}).eq('id',currentNoteId);
-  const idx=structures.findIndex(s=>s.id===currentNoteId);
+  const note=(document.getElementById('note-val').value||'').trim();
+  const {error}=await db.from('structures').update({note}).eq('id',noteStructId);
+  if(error){showToast('Erreur: '+error.message,'error');return;}
+  const idx=structures.findIndex(s=>s.id===noteStructId);
   if(idx>=0) structures[idx].note=note;
   closeModal('m-note');
   renderStructGrids();
-  showToast('Note enregistrée — invisible pour la structure','success');
+  showToast('Note enregistrée — invisible pour la structure ✅','success');
 }
 
 // ── CRÉNEAUX ──────────────────────────────────────────────────────────────
-function renderCreneaux(){
-  const el=document.getElementById('cren-list'); if(!el) return;
-  const now=new Date();
-  const sorted=creneaux.sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure));
-  if(!sorted.length){ el.innerHTML='<p style="text-align:center;padding:30px;color:var(--text-soft)">Aucun créneau. Cliquez sur <strong>+ Nouveau créneau</strong> pour commencer.</p>'; return; }
-  el.innerHTML=sorted.map(c=>{
-    const d=new Date(c.date+'T00:00:00');
-    const s=c.par?structures.find(x=>x.id===c.par):null;
-    const dest=c.dest?structures.find(x=>x.id===c.dest):null;
-    const past=new Date(c.date+'T'+c.heure)<now;
-    const col=c.statut==='reserve'?'#10b981':'#2152a3';
-    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 15px;margin-bottom:8px;display:flex;align-items:center;gap:12px;border-left:3px solid ${col}${past?';opacity:.6':''}">
-      <div style="text-align:center;min-width:42px;flex-shrink:0">
-        <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--navy)">${d.getDate()}</div>
-        <div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">${d.toLocaleDateString('fr-FR',{month:'short'})}</div>
-      </div>
-      <div style="width:2px;height:28px;background:var(--border);border-radius:2px;flex-shrink:0"></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">
-          ${c.type}
-          <span style="background:${c.statut==='reserve'?'#d1fae5':'var(--primary-soft)'};color:${c.statut==='reserve'?'#059669':'var(--primary)'};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:5px">${c.statut==='reserve'?'Réservé':'Libre'}</span>
-          ${past?'<span style="background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:3px">Passé</span>':''}
-        </div>
-        <div style="font-size:11px;color:var(--text-soft)">🕐 ${c.heure} · ${c.duree}min · ${c.mod}${dest?' · 🏠 '+dest.nom:' · 🌐 Toutes'}${s?' · ✅ '+s.nom:''}</div>
-      </div>
-      <div style="display:flex;gap:5px;flex-shrink:0">
-        ${c.statut==='reserve'?`<button class="btn btn-ghost btn-sm" onclick="liberercren('${c.id}')">Libérer</button>`:'<button class="btn btn-ghost btn-sm" style="cursor:default;opacity:.5">Libre</button>'}
-        <button class="btn btn-danger btn-sm" onclick="deleteCren('${c.id}')">🗑</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-async function liberercren(id){
-  await db.from('creneaux').update({statut:'libre',par:null,msg:''}).eq('id',id);
-  const idx=creneaux.findIndex(c=>c.id===id);
-  if(idx>=0){ creneaux[idx].statut='libre'; creneaux[idx].par=null; }
-  renderCreneaux(); renderDashboard();
-  showToast('Créneau libéré','warn');
-}
-
-async function deleteCren(id){
-  showConfirm('Supprimer ce créneau ?','Cette action est irréversible.', async()=>{
-    await db.from('creneaux').delete().eq('id',id);
-    creneaux=creneaux.filter(c=>c.id!==id);
-    renderCreneaux(); renderDashboard();
-    showToast('Créneau supprimé','warn');
-  });
-}
-
-// ── SAUVEGARDER CRÉNEAU (modal m-cren) ───────────────────────────────────
 async function saveCren(){
-  const date=document.getElementById('c-date')?.value;
+  const date=(document.getElementById('c-date')?.value||'').trim();
+  if(!date){showToast('Veuillez saisir une date','warn');return;}
   const heure=document.getElementById('c-heure')?.value||'09:00';
   const type=document.getElementById('c-type')?.value||'Autre';
   const mod=document.getElementById('c-mod')?.value||'Présentiel — SIAO';
   const dest=document.getElementById('c-dest')?.value||'';
   const notes=document.getElementById('c-notes')?.value||'';
-  if(!date){ showToast('Date requise','warn'); return; }
-  // Récupérer la durée sélectionnée
-  const durSel=document.querySelector('.dur-chip.sel');
-  const duree=parseInt(durSel?.dataset.dur||durSel?.textContent||'60')||60;
+  const sel=document.querySelector('#m-cren .dur-chip.sel');
+  const duree=parseInt(sel?.textContent?.replace(/[^0-9]/g,'')||'60')||60;
   const nc={id:'c'+Date.now(),date,heure,duree,type,mod,dest,notes,statut:'libre',par:null,msg:''};
   const {error}=await db.from('creneaux').insert(nc);
-  if(error){ showToast('Erreur: '+error.message,'error'); return; }
+  if(error){showToast('Erreur: '+error.message,'error');return;}
   creneaux.push(nc);
   closeModal('m-cren');
-  renderCreneaux(); renderDashboard();
+  renderAll();
   showToast('Créneau publié ✅','success');
 }
 
-// ── Pareil pour s-new-cren (page pleine) ─────────────────────────────────
 async function publishCren(){
-  const date=document.getElementById('nc-date')?.value;
-  if(!date){ showToast('Date requise','warn'); return; }
+  const date=(document.getElementById('nc-date')?.value||'').trim();
+  if(!date){showToast('Veuillez saisir une date','warn');return;}
   const heure=document.getElementById('nc-heure')?.value||'09:00';
   const type=document.getElementById('nc-type')?.value||'Autre';
   const mod=document.getElementById('nc-mod')?.value||'Présentiel — SIAO';
   const dest=document.getElementById('nc-dest')?.value||'';
   const notes=document.getElementById('nc-notes')?.value||'';
-  const durSel=document.querySelector('.dur-chip.sel');
-  const duree=parseInt(durSel?.dataset.dur||'60')||60;
+  const sel=document.querySelector('.dur-chip.sel');
+  const duree=parseInt(sel?.textContent?.replace(/[^0-9]/g,'')||'60')||60;
   const nc={id:'c'+Date.now(),date,heure,duree,type,mod,dest,notes,statut:'libre',par:null,msg:''};
   const {error}=await db.from('creneaux').insert(nc);
-  if(error){ showToast('Erreur: '+error.message,'error'); return; }
+  if(error){showToast('Erreur: '+error.message,'error');return;}
   creneaux.push(nc);
-  renderCreneaux(); renderDashboard();
+  renderAll();
   showToast('Créneau publié ✅','success');
   go('s-dashboard',document.querySelectorAll('.dtab')[1]);
   goDash('d-creneaux');
 }
 
-// ── INIT après login ──────────────────────────────────────────────────────
+// ── PARAMÈTRES ────────────────────────────────────────────────────────────
+let adminPwd = 'siao2025';
+
+function changePwd(){
+  const cur=(document.getElementById('pwd-current')?.value||'').trim();
+  const nw =(document.getElementById('pwd-new')?.value||'').trim();
+  const cf =(document.getElementById('pwd-confirm')?.value||'').trim();
+  const err=document.getElementById('pwd-err');
+  const ok =document.getElementById('pwd-ok');
+  err.style.display='none'; ok.style.display='none';
+  if(cur!==adminPwd){err.textContent='Mot de passe actuel incorrect.';err.style.display='block';return;}
+  if(nw.length<6){err.textContent='Le nouveau mot de passe doit faire au moins 6 caractères.';err.style.display='block';return;}
+  if(nw!==cf){err.textContent='Les mots de passe ne correspondent pas.';err.style.display='block';return;}
+  adminPwd=nw;
+  ok.style.display='block';
+  ['pwd-current','pwd-new','pwd-confirm'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  // Mettre à jour loginSIAOMain avec le nouveau mdp
+  showToast('Mot de passe mis à jour ✅','success');
+}
+
+// loginSIAOMain utilise adminPwd dynamique
+
 
 
 // ─── THEME ─────────────────────────────────────────────────────────────────
@@ -1372,9 +1370,9 @@ function goStruct(pid){
 function loginSIAOMain(){
   const pwd=document.getElementById('siao-pwd-main').value;
   const err=document.getElementById('siao-err-main');
-  if(pwd==='siao2025'||pwd===''){
+  if(pwd==='siao2025'){
     err.style.display='none';
-    go('s-dashboard',document.querySelectorAll('.dtab')[1]);
+    go('s-dashboard',document.querySelectorAll('.dtab')[2]);
     showToast('Connexion réussie — Bienvenue Admin SIAO','success');
   }else{err.style.display='block'}
 }
@@ -1398,27 +1396,8 @@ function doLogin(){}
 
 
 // ─── STRUCT CARDS ──────────────────────────────────────────────────────────
-// structs → chargées depuis Supabase
 
-function renderStructCard(s){
-  const stsHtml=s.sts==='active'
-    ?'<div class="struct-sts" style="background:#d1fae5;color:#059669"><span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block"></span> Connectée</div>'
-    :'<div class="struct-sts inactive-badge"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block"></span> En attente</div>';
-  const tagsHtml=s.tags.map(t=>`<span class="internal-tag">🔒 ${t}</span>`).join('');
-  return`<div class="struct-card" onclick="showToast('Fiche: ${s.nm}','info')">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <div class="struct-av" style="background:${s.col}">${s.init}</div>
-      <div><div class="struct-nm">${s.nm}</div><div class="struct-tp">${s.tp}</div></div>
-    </div>
-    <div style="display:flex;gap:12px">
-      <div class="struct-stat" style="flex:1"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.rdv}</div><div style="font-size:10px;color:var(--text-soft)">RDV total</div></div>
-      <div class="struct-stat" style="flex:1"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.av}</div><div style="font-size:10px;color:var(--text-soft)">À venir</div></div>
-    </div>
-    ${stsHtml}
-    ${tagsHtml?`<div class="tags-wrap">${tagsHtml}</div>`:''}
-  </div>`;
-}
-// renderStructGrids → définie dans le bloc Supabase
+
 
 
 // ─── WEEK CALENDAR ─────────────────────────────────────────────────────────
@@ -1580,7 +1559,7 @@ updateRecap();
   <div style="display:flex;align-items:center;gap:16px">
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Mentions légales</a>
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Politique de confidentialité</a>
-    <a href="/cdn-cgi/l/email-protection#d3a0bab2bcb4baa1bcbdb7b693b0b2babcfeb1bca1b7b6b2a6abfdb5a1" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
+    <a href="/cdn-cgi/l/email-protection#57243e3638303e25383933321734363e387a353825333236222f793125" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
   </div>
 </footer>
 
@@ -1605,7 +1584,7 @@ updateRecap();
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">SIRET</span>377 785 290 00034</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Adresse</span>6 rue du Noviciat, 33800 Bordeaux</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Tél.</span>05 40 54 55 00</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="/cdn-cgi/l/email-protection#f3809a929c949a819c9d9796b390929a9cde919c81979692868bdd9581" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="81f2e8e0eee6e8f3eeefe5e4c1e2e0e8eeace3eef3e5e4e0f4f9afe7f3">[email&#160;protected]</span></a></div>
+          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="/cdn-cgi/l/email-protection#becdd7dfd1d9d7ccd1d0dadbfedddfd7d193dcd1ccdadbdfcbc690d8cc" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="86f5efe7e9e1eff4e9e8e2e3c6e5e7efe9abe4e9f4e2e3e7f3fea8e0f4">[email&#160;protected]</span></a></div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Dir. publication</span><span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
@@ -1641,7 +1620,7 @@ updateRecap();
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
       <div class="card"><div class="ch"><div class="ct">3. Vos droits</div></div><div class="cb">
         <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:8px">Accès · Rectification · Effacement · Opposition (art. 15–22 RGPD)</p>
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="/cdn-cgi/l/email-protection#304359515f5759425f5e5455705351595f1d525f4254555145481e5642" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="ddaeb4bcb2bab4afb2b3b9b89dbebcb4b2f0bfb2afb9b8bca8a5f3bbaf">[email&#160;protected]</span></a></p>
+        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="/cdn-cgi/l/email-protection#27544e4648404e55484943426744464e480a454855434246525f094155" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="fa89939b959d938895949e9fba999b9395d79895889e9f9b8f82d49c88">[email&#160;protected]</span></a></p>
         <p style="font-size:13px;color:var(--text-soft);margin-top:6px">DPO : <span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></p>
         <div style="margin-top:10px;padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e">Recours possible auprès de la <a href="https://www.cnil.fr" target="_blank" style="color:#92400e;font-weight:700">CNIL</a>.</div>
       </div></div>
