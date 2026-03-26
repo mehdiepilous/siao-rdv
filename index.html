@@ -9,29 +9,29 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --p:#2152a3;--pl:#3b72d4;--pd:#163a7a;--ps:#eef4ff;
-  --a:#00c6a2;--as:#e6faf7;
-  --g:#10b981;--w:#f59e0b;--d:#ef4444;
-  --bg:#f0f4f9;--sur:#fff;--sur2:#f7f9fc;--sur3:#eef1f6;
-  --tx:#0f1f3d;--txm:#4a5578;--txs:#8c95b0;
-  --b:rgba(15,31,61,.08);--bm:rgba(15,31,61,.14);
-  --navy:#0f1f3d;--navy2:#1a3260;
-  --sh:0 1px 4px rgba(15,31,61,.07);--shm:0 4px 16px rgba(15,31,61,.10);
-  --shl:0 16px 48px rgba(15,31,61,.14);
-  --r:12px;--e:.18s ease;
+--p:#2152a3;--pl:#3b72d4;--pd:#163a7a;--ps:#eef4ff;
+--a:#00c6a2;--as:#e6faf7;
+--g:#10b981;--w:#f59e0b;--d:#ef4444;
+--bg:#f0f4f9;--sur:#fff;--sur2:#f7f9fc;--sur3:#eef1f6;
+--tx:#0f1f3d;--txm:#4a5578;--txs:#8c95b0;
+--b:rgba(15,31,61,.08);--bm:rgba(15,31,61,.14);
+--navy:#0f1f3d;--navy2:#1a3260;
+--sh:0 1px 4px rgba(15,31,61,.07);--shm:0 4px 16px rgba(15,31,61,.10);
+--shl:0 16px 48px rgba(15,31,61,.14);
+--r:12px;--e:.18s ease;
 }
 [data-theme=dark]{
-  --bg:#080d18;--sur:#0f1625;--sur2:#141d2e;--sur3:#192135;
-  --tx:#dde8ff;--txm:#7a93c0;--txs:#3d506b;
-  --b:rgba(255,255,255,.06);--bm:rgba(255,255,255,.1);
-  --navy:#dde8ff;--navy2:#b0c8f0;
+--bg:#080d18;--sur:#0f1625;--sur2:#141d2e;--sur3:#192135;
+--tx:#dde8ff;--txm:#7a93c0;--txs:#3d506b;
+--b:rgba(255,255,255,.06);--bm:rgba(255,255,255,.1);
+--navy:#dde8ff;--navy2:#b0c8f0;
 }
 html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--bm);border-radius:4px}
 .pg{display:none}.pg.on{display:block}
 .sp{display:none}.sp.on{display:block}
 
-/* ── TOPBAR ─────────────────────────────────────────────────────────────── */
+/* ── TOPBAR ── */
 #bar{display:flex;align-items:center;background:var(--sur);border-bottom:1px solid var(--b);padding:0 16px;height:46px;position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
 .tb{display:flex;align-items:center;gap:5px;padding:7px 12px;border:none;background:transparent;color:var(--txs);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;border-radius:7px 7px 0 0;cursor:pointer;height:46px;border-bottom:2px solid transparent;transition:all var(--e);white-space:nowrap}
 .tb:hover{color:var(--tx)}
@@ -39,16 +39,14 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .tb-gap{flex:1}
 .tbtn{background:none;border:1px solid var(--bm);border-radius:7px;padding:4px 9px;cursor:pointer;color:var(--txm);font-size:12px;font-family:'DM Sans',sans-serif}
 
-/* ── CONNEXION ─────────────────────────────────────────────────────────── */
+/* ── CONNEXION ── */
 .login-wrap{min-height:calc(100vh - 46px);display:flex;align-items:stretch;background:var(--bg)}
 .login-left{flex:1;padding:52px 56px;display:flex;flex-direction:column;justify-content:center;max-width:560px}
 .login-right{width:380px;background:var(--sur);border-left:1px solid var(--b);display:flex;align-items:center;justify-content:center;padding:36px 28px;flex-shrink:0}
 .step{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
 .sn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
 .ssep{width:2px;height:10px;background:var(--b);margin-left:14px;margin-bottom:3px}
-.login-card{width:100%}
-.login-card h2{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px;text-align:center}
-.login-card p{font-size:13px;color:var(--txs);text-align:center;margin-bottom:20px}
+
 .fg{margin-bottom:12px}
 .fg label{display:block;font-size:11px;font-weight:700;color:var(--txm);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
 .fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--b);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);background:var(--sur2);outline:none;transition:border-color var(--e)}
@@ -61,10 +59,9 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .btn-w{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
 .btn-full{width:100%;justify-content:center;padding:12px}
 .btn-sm{padding:5px 10px;font-size:11px;border-radius:7px}
-.btn-xs{padding:3px 7px;font-size:10px;border-radius:6px}
 .err-box{background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;color:#dc2626;font-size:12px;display:none;margin-bottom:10px}
 
-/* ── HERO ─────────────────────────────────────────────────────────────── */
+/* ── HERO ── */
 .hero{background:linear-gradient(140deg,var(--navy) 0%,#1e3a7a 50%,#2a4f96 100%);padding:48px;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0,rgba(91,156,246,.15),transparent);pointer-events:none}
 .hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,.75);margin-bottom:16px;position:relative;z-index:1}
@@ -74,7 +71,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .hero h1 em{font-style:normal;color:var(--a)}
 .hero p{font-size:14px;color:rgba(255,255,255,.6);max-width:440px;line-height:1.7;margin:0 auto;position:relative;z-index:1}
 
-/* ── APP LAYOUT ─────────────────────────────────────────────────────────── */
+/* ── APP LAYOUT ── */
 .layout{display:flex;min-height:calc(100vh - 46px)}
 .side{width:210px;background:var(--navy);flex-shrink:0;position:sticky;top:46px;height:calc(100vh - 46px);display:flex;flex-direction:column}
 [data-theme=dark] .side{background:#0a1120}
@@ -97,7 +94,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .logout{margin-left:auto;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.38);width:22px;height:22px;border-radius:6px;cursor:pointer;font-size:11px;transition:all var(--e)}
 .logout:hover{background:rgba(239,68,68,.2);color:#ff7070}
 
-/* ── MAIN ─────────────────────────────────────────────────────────────── */
+/* ── MAIN ── */
 .main{flex:1;min-width:0;display:flex;flex-direction:column}
 .hdr{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .hdr h2{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#fff}
@@ -105,7 +102,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .pill{background:rgba(0,198,162,.15);color:var(--a);border:1px solid rgba(0,198,162,.2);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500}
 .content{padding:18px 20px}
 
-/* ── CARDS ─────────────────────────────────────────────────────────────── */
+/* ── CARDS ── */
 .card{background:var(--sur);border-radius:var(--r);border:1px solid var(--b);box-shadow:var(--sh);overflow:hidden;margin-bottom:13px}
 .ch{padding:12px 15px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b)}
 .ct{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--navy)}
@@ -113,17 +110,17 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .cb{padding:13px 15px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 
-/* ── BADGE ─────────────────────────────────────────────────────────────── */
+/* ── BADGE ── */
 .badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-flex;align-items:center}
 .bg{background:#d1fae5;color:#059669}.bb{background:var(--ps);color:var(--p)}.bo{background:#fef3c7;color:#d97706}.bp{background:#ede9fe;color:#7c3aed}
 
-/* ── RAPPEL ─────────────────────────────────────────────────────────────── */
+/* ── RAPPEL ── */
 .rappel{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.22);border-radius:11px;padding:12px 14px;margin-bottom:13px;display:flex;align-items:center;gap:10px}
 
-/* ── RDV OK ─────────────────────────────────────────────────────────────── */
+/* ── RDV OK ── */
 .rdv-ok{display:flex;align-items:center;gap:12px;background:var(--as);border:1.5px solid rgba(0,198,162,.25);border-radius:var(--r);padding:13px 15px;margin-bottom:13px}
 
-/* ── AVAIL SLOT ─────────────────────────────────────────────────────────── */
+/* ── AVAIL SLOT ── */
 .aslot{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--b);border-radius:var(--r);background:var(--sur);cursor:pointer;transition:all var(--e);margin-bottom:9px}
 .aslot:hover{border-color:var(--a);transform:translateX(3px);box-shadow:0 3px 10px rgba(0,198,162,.08)}
 .dblk{width:42px;text-align:center;background:var(--sur2);border-radius:8px;padding:6px 0;flex-shrink:0}
@@ -132,17 +129,16 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .btn-res{padding:7px 13px;background:linear-gradient(135deg,var(--a),#00b090);color:#fff;border:none;border-radius:8px;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all var(--e);flex-shrink:0}
 .btn-res:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,198,162,.3)}
 
-/* ── HIST ─────────────────────────────────────────────────────────────── */
+/* ── HIST ── */
 .hist{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--b)}
 .hist:last-child{border-bottom:none}
 
-/* ── MESSAGES ─────────────────────────────────────────────────────────── */
+/* ── MESSAGES ── */
 .msg-wrap{display:grid;grid-template-columns:240px 1fr;height:calc(100vh - 46px)}
 .clist{border-right:1px solid var(--b);background:var(--sur);overflow-y:auto}
 .c-hdr{padding:11px 13px;border-bottom:1px solid var(--b);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy)}
 .conv{display:flex;align-items:center;gap:8px;padding:11px 13px;cursor:pointer;border-bottom:1px solid var(--b);transition:background var(--e)}
-.conv:hover{background:var(--bg)}
-.conv.on{background:var(--ps)}
+.conv:hover{background:var(--bg)}.conv.on{background:var(--ps)}
 .c-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
 .c-nm{font-size:13px;font-weight:600;color:var(--navy)}
 .c-pr{font-size:11px;color:var(--txs);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
@@ -159,19 +155,19 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .m-comp textarea:focus{border-color:var(--pl)}
 .send-btn{background:var(--p);color:#fff;border:none;border-radius:8px;padding:9px 12px;cursor:pointer;font-size:14px;flex-shrink:0}
 
-/* ── PROFIL TOGGLES ─────────────────────────────────────────────────────── */
+/* ── PROFIL TOGGLES ── */
 .tog-r{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--sur2);border-radius:9px;cursor:pointer;margin-bottom:7px;border:1px solid var(--b)}
 .tog-sw{width:34px;height:18px;background:var(--bm);border-radius:18px;position:relative;transition:background var(--e);flex-shrink:0}
 .tog-sw.on{background:var(--p)}
 .tog-sw::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform var(--e);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .tog-sw.on::after{transform:translateX(16px)}
 
-/* ── FILTERS ─────────────────────────────────────────────────────────────── */
+/* ── FILTERS ── */
 .filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
 .fb{padding:5px 11px;border:1.5px solid var(--b);border-radius:20px;font-size:11.5px;font-weight:500;background:var(--sur);color:var(--txs);cursor:pointer;transition:all var(--e);font-family:'DM Sans',sans-serif}
 .fb.on{background:var(--p);border-color:var(--p);color:#fff}
 
-/* ── MODAL ─────────────────────────────────────────────────────────────── */
+/* ── MODAL ── */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:400;align-items:center;justify-content:center;padding:16px}
 .ov.open{display:flex}
 .modal{background:var(--sur);border-radius:16px;width:100%;max-width:450px;max-height:88vh;overflow-y:auto;box-shadow:var(--shl);animation:pop .22s cubic-bezier(.34,1.5,.64,1) both}
@@ -184,7 +180,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .mb{padding:15px 18px}
 .mf{padding:10px 18px 14px;display:flex;gap:7px;justify-content:flex-end;border-top:1px solid var(--b)}
 
-/* ── CONFIRM ─────────────────────────────────────────────────────────────── */
+/* ── CONFIRM ── */
 #conf-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:500;display:none;align-items:center;justify-content:center}
 #conf-ov.open{display:flex}
 .conf-b{background:var(--sur);border-radius:14px;padding:24px;max-width:310px;width:90%;text-align:center;box-shadow:var(--shl);animation:pop .22s cubic-bezier(.34,1.5,.64,1) both}
@@ -192,14 +188,14 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .conf-b p{font-size:13px;color:var(--txs);margin-bottom:16px;line-height:1.6}
 .conf-btns{display:flex;gap:8px;justify-content:center}
 
-/* ── TOAST ─────────────────────────────────────────────────────────────── */
+/* ── TOAST ── */
 #toasts{position:fixed;bottom:18px;right:18px;z-index:700;display:flex;flex-direction:column;gap:5px;pointer-events:none}
 .toast{background:var(--navy);color:#fff;padding:10px 14px;border-radius:10px;display:flex;align-items:center;gap:8px;font-size:13px;box-shadow:var(--shl);border-left:3px solid var(--a);animation:tin .25s cubic-bezier(.34,1.5,.64,1) both,tout .2s 3s ease forwards}
 .toast.s{border-left-color:var(--g)}.toast.w{border-left-color:var(--w)}.toast.e{border-left-color:var(--d)}.toast.i{border-left-color:var(--pl)}
 @keyframes tin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
 @keyframes tout{from{opacity:1}to{opacity:0}}
 
-/* ── ONBOARDING ─────────────────────────────────────────────────────────── */
+/* ── ONBOARDING ── */
 .ob-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:600;display:none;align-items:center;justify-content:center;padding:20px}
 .ob-ov.open{display:flex}
 .ob-c{background:var(--sur);border-radius:18px;width:100%;max-width:400px;overflow:hidden;box-shadow:var(--shl);animation:pop .3s cubic-bezier(.34,1.5,.64,1) both}
@@ -214,29 +210,41 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .ob-dot{width:6px;height:6px;border-radius:50%;background:var(--bm);transition:all var(--e)}
 .ob-dot.on{background:var(--p);width:14px;border-radius:3px}
 
-/* ── FOOTER ─────────────────────────────────────────────────────────────── */
+/* ── FOOTER ── */
 footer{background:var(--sur);border-top:1px solid var(--b);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px;font-size:11px;color:var(--txs)}
-footer a{color:var(--txs);text-decoration:none}
-footer a:hover{color:var(--p)}
+footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
 .empty{text-align:center;padding:36px 16px;color:var(--txs)}
 .empty .ei{font-size:36px;opacity:.25;display:block;margin-bottom:10px}
 .empty h3{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--txm);margin-bottom:4px}
 .empty p{font-size:12px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .hero{padding:28px 18px}
+  .hero h1{font-size:22px}
+  .layout{flex-direction:column}
+  .side{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;padding:8px}
+  .s-logo,.s-sec,.s-foot{display:none}
+  .nb{margin:2px;padding:6px 10px;font-size:11px}
+  .msg-wrap{grid-template-columns:1fr}
+  .clist{display:none}
+  .g2{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div id="toasts"></div>
 
-<!-- ██ TAB BAR ████████████████████████████████████████████████████████ -->
+<!-- ██ TAB BAR ██ -->
 <div id="bar">
-  <button class="tb on" id="T-acc"   onclick="goP('acc')">🏠 Accueil</button>
-  <button class="tb"    id="T-esp"   onclick="goP('esp')">📅 Mon espace</button>
-  <button class="tb"    id="T-msg"   onclick="goP('msg')">💬 Messagerie <span id="msg-b" style="background:var(--d);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:6px;margin-left:2px" id="msg-b">1</span></button>
+  <button class="tb on" id="T-acc" onclick="goP('acc')">🏠 Accueil</button>
+  <button class="tb" id="T-esp" onclick="goP('esp')">📅 Mon espace</button>
+  <button class="tb" id="T-msg" onclick="goP('msg')">💬 Messagerie <span id="msg-b" style="background:var(--d);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:6px;margin-left:2px">1</span></button>
   <div class="tb-gap"></div>
   <button class="tbtn" onclick="toggleDark()" id="th-btn">🌙</button>
 </div>
 
-<!-- ██ PAGE : ACCUEIL █████████████████████████████████████████████████ -->
+<!-- ██ PAGE : ACCUEIL ██ -->
 <div id="P-acc" class="pg on">
   <div class="hero">
     <div class="hero-tag"><span class="ldot"></span> Plateforme disponible · Créneaux ouverts</div>
@@ -272,7 +280,7 @@ footer a:hover{color:var(--p)}
         </div>
         <div class="err-box" id="login-err">Code incorrect. Vérifiez avec votre référent SIAO.</div>
         <button class="btn btn-s btn-full" onclick="doLogin()">Accéder à mon espace →</button>
-        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="/cdn-cgi/l/email-protection#fb88929a949c928994959f9ebb989a9294d69994899f9e9a8e83d59d89" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
+        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="mailto:contact@siao33.fr" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
       </div>
     </div>
   </div>
@@ -280,116 +288,114 @@ footer a:hover{color:var(--p)}
     <span>© 2026 CAIO — SIAO Gironde · Association loi 1901 · SIRET 377 785 290 00034</span>
     <div style="display:flex;gap:12px">
       <a href="#" onclick="event.preventDefault();openOv('ov-ml')">Mentions légales</a>
-      <a href="/cdn-cgi/l/email-protection#cbb8a2aaa4aca2b9a4a5afae8ba8aaa2a4e6a9a4b9afaeaabeb3e5adb9">Contact</a>
+      <a href="mailto:contact@siao33.fr">Contact</a>
     </div>
   </footer>
 </div>
 
-<!-- ██ PAGE : MON ESPACE ██████████████████████████████████████████████ -->
+<!-- ██ PAGE : MON ESPACE ██ -->
 <div id="P-esp" class="pg">
-<div class="layout">
-  <nav class="side">
-    <div class="s-logo">
-      <div class="s-ico">🏠</div>
-      <div><div class="s-org" id="sb-org">Structure</div><div class="s-sub">Espace partenaire</div></div>
-    </div>
-    <div class="s-sec">Navigation</div>
-    <button class="nb on" id="N-rdv"    onclick="goS('rdv')"><span class="nb-ico">📅</span> Mes rendez-vous</button>
-    <button class="nb"    id="N-dispo"  onclick="goS('dispo')"><span class="nb-ico">🟢</span> Créneaux dispo <span class="nb-b" id="dispo-nb">0</span></button>
-    <button class="nb"    id="N-hist"   onclick="goS('hist')"><span class="nb-ico">📋</span> Historique</button>
-    <button class="nb"    id="N-profil" onclick="goS('profil')"><span class="nb-ico">👤</span> Mon profil</button>
-    <div class="s-foot">
-      <div class="u-row">
-        <div class="u-av" id="sb-av">?</div>
-        <div><div class="u-nm" id="sb-nm">—</div><div class="u-rl">Espace partenaire</div></div>
-        <button class="logout" onclick="doLogout()">↩</button>
+  <div class="layout">
+    <nav class="side">
+      <div class="s-logo">
+        <div class="s-ico">🏠</div>
+        <div><div class="s-org" id="sb-org">Structure</div><div class="s-sub">Espace partenaire</div></div>
       </div>
-    </div>
-  </nav>
-  <div class="main">
-    <div class="hdr">
-      <div><h2 id="hdr-nm">👋 Bonjour</h2><p>Vos rendez-vous · visibles uniquement par vous</p></div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <div class="pill" id="pill-rdv">—</div>
-        <div class="pill" style="background:rgba(249,115,22,.12);color:#f97316;border-color:rgba(249,115,22,.2)" id="pill-dispo">—</div>
-      </div>
-    </div>
-    <div class="content">
-
-      <!-- RDV -->
-      <div id="S-rdv" class="sp on">
-        <div class="rappel" id="rappel" style="display:none">
-          <span style="font-size:19px;flex-shrink:0">⏰</span>
-          <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--navy)" id="rappel-txt">—</div><div style="font-size:11px;color:var(--txs)" id="rappel-sub">—</div></div>
-          <div style="display:flex;gap:5px;flex-shrink:0" id="rappel-btns"></div>
+      <div class="s-sec">Navigation</div>
+      <button class="nb on" id="N-rdv" onclick="goS('rdv')"><span class="nb-ico">📅</span> Mes rendez-vous</button>
+      <button class="nb" id="N-dispo" onclick="goS('dispo')"><span class="nb-ico">🟢</span> Créneaux dispo <span class="nb-b" id="dispo-nb">0</span></button>
+      <button class="nb" id="N-hist" onclick="goS('hist')"><span class="nb-ico">📋</span> Historique</button>
+      <button class="nb" id="N-profil" onclick="goS('profil')"><span class="nb-ico">👤</span> Mon profil</button>
+      <div class="s-foot">
+        <div class="u-row">
+          <div class="u-av" id="sb-av">?</div>
+          <div><div class="u-nm" id="sb-nm">—</div><div class="u-rl">Espace partenaire</div></div>
+          <button class="logout" onclick="doLogout()">↩</button>
         </div>
-        <div id="rdv-list"></div>
-        <div class="card">
-          <div class="ch"><div><div class="ct">👤 Votre référent SIAO</div><div class="cs">Contact direct</div></div></div>
-          <div class="cb" style="display:flex;align-items:center;gap:12px">
-            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--a));display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0" id="ref-init">—</div>
-            <div style="flex:1">
-              <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px" id="ref-nm">—</div>
-              <div style="font-size:12px;color:var(--txs);margin-bottom:5px">Chargée de convention · SIAO Gironde</div>
-              <div style="display:flex;gap:12px;flex-wrap:wrap">
-                <a id="ref-tel" href="tel:0540545500" style="font-size:12px;color:var(--p);text-decoration:none">📞 —</a>
-                <a href="/cdn-cgi/l/email-protection#65160c040a020c170a0b01002506040c0a48070a17010004101d4b0317" style="font-size:12px;color:var(--p);text-decoration:none">✉️ <span class="__cf_email__" data-cfemail="7b08121a141c120914151f1e3b181a1214561914091f1e1a0e03551d09">[email&#160;protected]</span></a>
+      </div>
+    </nav>
+    <div class="main">
+      <div class="hdr">
+        <div><h2 id="hdr-nm">👋 Bonjour</h2><p>Vos rendez-vous · visibles uniquement par vous</p></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <div class="pill" id="pill-rdv">—</div>
+          <div class="pill" style="background:rgba(249,115,22,.12);color:#f97316;border-color:rgba(249,115,22,.2)" id="pill-dispo">—</div>
+        </div>
+      </div>
+      <div class="content">
+        <!-- RDV -->
+        <div id="S-rdv" class="sp on">
+          <div class="rappel" id="rappel" style="display:none">
+            <span style="font-size:19px;flex-shrink:0">⏰</span>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--navy)" id="rappel-txt">—</div><div style="font-size:11px;color:var(--txs)" id="rappel-sub">—</div></div>
+            <div style="display:flex;gap:5px;flex-shrink:0" id="rappel-btns"></div>
+          </div>
+          <div id="rdv-list"></div>
+          <div class="card">
+            <div class="ch"><div><div class="ct">👤 Votre référent SIAO</div><div class="cs">Contact direct</div></div></div>
+            <div class="cb" style="display:flex;align-items:center;gap:12px">
+              <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--a));display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0" id="ref-init">—</div>
+              <div style="flex:1">
+                <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px" id="ref-nm">—</div>
+                <div style="font-size:12px;color:var(--txs);margin-bottom:5px">Chargée de convention · SIAO Gironde</div>
+                <div style="display:flex;gap:12px;flex-wrap:wrap">
+                  <a id="ref-tel" href="tel:0540545500" style="font-size:12px;color:var(--p);text-decoration:none">📞 —</a>
+                  <a href="mailto:contact@siao33.fr" style="font-size:12px;color:var(--p);text-decoration:none">✉️ contact@siao33.fr</a>
+                </div>
+              </div>
+              <button class="btn btn-g btn-sm" onclick="goP('msg')">💬 Écrire</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DISPO -->
+        <div id="S-dispo" class="sp">
+          <div class="filters">
+            <button class="fb on" onclick="filterDispo(this,'all')">Tous</button>
+            <button class="fb" onclick="filterDispo(this,'week')">Cette semaine</button>
+            <button class="fb" onclick="filterDispo(this,'Bilan')">Bilan</button>
+            <button class="fb" onclick="filterDispo(this,'Réunion')">Réunion</button>
+          </div>
+          <div id="dispo-list"></div>
+        </div>
+
+        <!-- HIST -->
+        <div id="S-hist" class="sp">
+          <div class="card">
+            <div class="ch"><div class="ct">Historique des échanges</div></div>
+            <div class="cb" id="hist-list"></div>
+          </div>
+        </div>
+
+        <!-- PROFIL -->
+        <div id="S-profil" class="sp">
+          <div class="g2">
+            <div class="card">
+              <div class="ch"><div class="ct">Mon profil</div></div>
+              <div class="cb">
+                <div class="fg"><label>Nom de la structure</label><input id="p-nm" value="" readonly></div>
+                <div class="fg"><label>Responsable</label><input id="p-resp" value=""></div>
+                <div class="fg"><label>Email</label><input type="email" id="p-email" value=""></div>
+                <div class="fg"><label>Téléphone</label><input id="p-tel" value=""></div>
+                <button class="btn btn-p btn-sm" onclick="saveProfil()">💾 Sauvegarder</button>
               </div>
             </div>
-            <button class="btn btn-g btn-sm" onclick="goP('msg')">💬 Écrire</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- DISPO -->
-      <div id="S-dispo" class="sp">
-        <div class="filters">
-          <button class="fb on" onclick="afb(this)">Tous</button>
-          <button class="fb" onclick="afb(this)">Cette semaine</button>
-          <button class="fb" onclick="afb(this)">Bilan</button>
-          <button class="fb" onclick="afb(this)">Réunion</button>
-        </div>
-        <div id="dispo-list"></div>
-      </div>
-
-      <!-- HIST -->
-      <div id="S-hist" class="sp">
-        <div class="card">
-          <div class="ch"><div class="ct">Historique des échanges</div></div>
-          <div class="cb" id="hist-list"></div>
-        </div>
-      </div>
-
-      <!-- PROFIL -->
-      <div id="S-profil" class="sp">
-        <div class="g2">
-          <div class="card">
-            <div class="ch"><div class="ct">Mon profil</div></div>
-            <div class="cb">
-              <div class="fg"><label>Nom de la structure</label><input id="p-nm" value=""></div>
-              <div class="fg"><label>Responsable</label><input id="p-resp" value=""></div>
-              <div class="fg"><label>Email</label><input type="email" id="p-email" value=""></div>
-              <div class="fg"><label>Téléphone</label><input id="p-tel" value=""></div>
-              <button class="btn btn-p btn-sm" onclick="toast('Profil mis à jour','s')">💾 Sauvegarder</button>
-            </div>
-          </div>
-          <div class="card">
-            <div class="ch"><div class="ct">Notifications</div></div>
-            <div class="cb">
-              <div class="tog-r"><span style="font-size:13px;flex:1">Email · Nouveau créneau</span><div class="tog-sw on"></div></div>
-              <div class="tog-r"><span style="font-size:13px;flex:1">Email · Rappel 24h avant</span><div class="tog-sw on"></div></div>
-              <div class="tog-r"><span style="font-size:13px;flex:1">Notification · Nouveau message</span><div class="tog-sw"></div></div>
+            <div class="card">
+              <div class="ch"><div class="ct">Notifications</div></div>
+              <div class="cb">
+                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Email · Nouveau créneau</span><div class="tog-sw on"></div></div>
+                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Email · Rappel 24h avant</span><div class="tog-sw on"></div></div>
+                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Notification · Nouveau message</span><div class="tog-sw"></div></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
-</div>
 
-<!-- ██ PAGE : MESSAGERIE ██████████████████████████████████████████████ -->
+<!-- ██ PAGE : MESSAGERIE ██ -->
 <div id="P-msg" class="pg">
   <div class="msg-wrap">
     <div class="clist">
@@ -406,7 +412,7 @@ footer a:hover{color:var(--p)}
     <div class="mpane">
       <div class="m-hdr">
         <div class="c-av" style="background:linear-gradient(135deg,#2152a3,#3b72d4)">SI</div>
-        <div><div style="font-weight:600;font-size:14px;color:var(--navy)">SIAO Gironde</div><div style="font-size:11px;color:var(--txs)">Marie Lefebvre · Chargée de convention</div></div>
+        <div><div style="font-weight:600;font-size:14px;color:var(--navy)">SIAO Gironde</div><div style="font-size:11px;color:var(--txs)">Messagerie sécurisée</div></div>
       </div>
       <div class="m-body" id="msg-body">
         <div style="background:var(--ps);border:1px solid #b3ccf8;border-radius:8px;padding:8px 11px;font-size:12px;color:var(--pd);margin-bottom:4px">📅 Messagerie sécurisée avec le SIAO Gironde</div>
@@ -420,7 +426,7 @@ footer a:hover{color:var(--p)}
   </div>
 </div>
 
-<!-- ██ OVERLAYS ████████████████████████████████████████████████████████ -->
+<!-- ██ OVERLAYS ██ -->
 <div id="conf-ov">
   <div class="conf-b">
     <div style="font-size:30px">⚠️</div>
@@ -453,223 +459,279 @@ footer a:hover{color:var(--p)}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ══════════════════════════════════════════════════════════════════
-// SUPABASE
+// SUPABASE CONFIG — Correct project: elzhfqxysirwqzgihkve
 // ══════════════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://elzhfqxysirwqzgihkve.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsemhmcXh5c2lyd3F6Z2loa3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5OTMwMjQsImV4cCI6MjA1ODU2OTAyNH0.bMSJmFUMbHl3CIIV6E5N8MZlAKSKJyMhVLOxWGYr42c';
+
 const { createClient } = supabase;
-const db = createClient(
-  'https://qsbacmdryccpqsrowylx.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzYmFjbWRyeWNjcHFzcm93eWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzgxNDAsImV4cCI6MjA4OTkxNDE0MH0.k6kLpDoRmR874sQ5nG2KQWi_-6ZRACFUS-W5r_BMres'
-);
-let currentId=null, currentStruct=null, creneaux=[];
-
-// ── Charger les structures dans le select ─────────────────────────────────
-async function initStructures(){
-  const{data}=await db.from('structures').select('*').order('nom');
-  if(!data)return;
-  const sel=document.getElementById('sel-struct');
-  sel.innerHTML='<option value="">— Sélectionner votre structure —</option>';
-  data.forEach(s=>{sel.innerHTML+=`<option value="${s.id}">${s.nom}</option>`;});
-  // Auto-remplir si lien d'invitation
-  const params=new URLSearchParams(window.location.search);
-  if(params.get('struct')&&params.get('code')){
-    sel.value=params.get('struct');
-    document.getElementById('inp-code').value=params.get('code');
-  }
+let db;
+try {
+  db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch(e) {
+  console.error('Supabase init error:', e);
 }
 
-// ── Charger les créneaux ──────────────────────────────────────────────────
-async function loadCreneaux(){
-  const{data}=await db.from('creneaux').select('*').order('date').order('heure');
-  if(data)creneaux=data;
-  renderRDV(); renderDispo(); renderHist(); updatePills();
+let currentId = null, currentStruct = null, creneaux = [], currentFilter = 'all';
+
+// ── Init structures dropdown ──
+async function initStructures() {
+  try {
+    const { data, error } = await db.from('structures').select('*').order('nom');
+    if (error) { console.error('Structures load error:', error); return; }
+    if (!data || !data.length) { console.warn('No structures found'); return; }
+    const sel = document.getElementById('sel-struct');
+    sel.innerHTML = '<option value="">— Sélectionner votre structure —</option>';
+    data.forEach(s => { sel.innerHTML += `<option value="${s.id}">${s.nom}</option>`; });
+    // Auto-fill from URL params
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('struct') && params.get('code')) {
+      sel.value = params.get('struct');
+      document.getElementById('inp-code').value = params.get('code');
+    }
+  } catch(e) { console.error('initStructures error:', e); }
 }
 
-// ── Temps réel ────────────────────────────────────────────────────────────
-function subscribeRT(){
-  db.channel('struct-rt-'+currentId)
-    .on('postgres_changes',{event:'*',schema:'public',table:'creneaux'},()=>loadCreneaux())
+// ── Load creneaux ──
+async function loadCreneaux() {
+  try {
+    const { data, error } = await db.from('creneaux').select('*').order('date').order('heure');
+    if (error) { console.error('Creneaux load error:', error); return; }
+    if (data) creneaux = data;
+    renderRDV(); renderDispo(); renderHist(); updatePills();
+  } catch(e) { console.error('loadCreneaux error:', e); }
+}
+
+// ── Realtime ──
+function subscribeRT() {
+  db.channel('struct-rt-' + currentId)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'creneaux' }, () => loadCreneaux())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'structures' }, () => initStructures())
     .subscribe();
 }
 
-// ── LOGIN ─────────────────────────────────────────────────────────────────
-async function doLogin(){
-  const selId=document.getElementById('sel-struct').value;
-  const code=document.getElementById('inp-code').value.trim().toUpperCase();
-  const err=document.getElementById('login-err');
-  if(!selId){err.textContent='Veuillez sélectionner votre structure.';err.style.display='block';return;}
-  if(!code){err.textContent='Veuillez saisir votre code d\'accès.';err.style.display='block';return;}
-  const{data}=await db.from('structures').select('*').eq('id',selId).single();
-  if(!data||data.code.toUpperCase()!==code){
-    err.textContent='Code incorrect. Vérifiez avec votre référent SIAO.';
-    err.style.display='block';return;
-  }
-  err.style.display='none';
-  enterStruct(data);
+// ── LOGIN ──
+async function doLogin() {
+  const selId = document.getElementById('sel-struct').value;
+  const code = document.getElementById('inp-code').value.trim().toUpperCase();
+  const err = document.getElementById('login-err');
+  if (!selId) { err.textContent = 'Veuillez sélectionner votre structure.'; err.style.display = 'block'; return; }
+  if (!code) { err.textContent = "Veuillez saisir votre code d'accès."; err.style.display = 'block'; return; }
+  try {
+    const { data, error } = await db.from('structures').select('*').eq('id', selId).single();
+    if (error || !data) { err.textContent = 'Structure introuvable.'; err.style.display = 'block'; return; }
+    if (data.code.toUpperCase() !== code) {
+      err.textContent = 'Code incorrect. Vérifiez avec votre référent SIAO.';
+      err.style.display = 'block'; return;
+    }
+    err.style.display = 'none';
+    enterStruct(data);
+  } catch(e) { err.textContent = 'Erreur de connexion: ' + e.message; err.style.display = 'block'; }
 }
-async function enterStruct(s){
-  currentId=s.id; currentStruct=s;
-  const nm=s.nom||'';
-  const ini=nm.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('sb-org').textContent=nm;
-  document.getElementById('sb-av').textContent=ini;
-  document.getElementById('sb-nm').textContent=nm;
-  document.getElementById('hdr-nm').textContent='👋 Bonjour, '+nm;
-  document.getElementById('p-nm').value=nm;
-  if(s.referent){
-    document.getElementById('ref-nm').textContent=s.referent;
-    document.getElementById('ref-init').textContent=s.referent.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+async function enterStruct(s) {
+  currentId = s.id; currentStruct = s;
+  const nm = s.nom || '';
+  const ini = nm.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  document.getElementById('sb-org').textContent = nm;
+  document.getElementById('sb-av').textContent = ini;
+  document.getElementById('sb-nm').textContent = nm;
+  document.getElementById('hdr-nm').textContent = '👋 Bonjour, ' + nm;
+  document.getElementById('p-nm').value = nm;
+  document.getElementById('p-resp').value = s.responsable || '';
+  document.getElementById('p-email').value = s.email || '';
+  document.getElementById('p-tel').value = s.telephone || '';
+  if (s.referent) {
+    document.getElementById('ref-nm').textContent = s.referent;
+    document.getElementById('ref-init').textContent = s.referent.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
   }
-  if(s.tel){
-    document.getElementById('ref-tel').textContent='📞 '+s.tel;
-    document.getElementById('ref-tel').href='tel:'+s.tel.replace(/\s/g,'');
+  if (s.tel) {
+    document.getElementById('ref-tel').textContent = '📞 ' + s.tel;
+    document.getElementById('ref-tel').href = 'tel:' + s.tel.replace(/\s/g, '');
   }
   goP('esp'); goS('rdv');
   await loadCreneaux();
   subscribeRT();
   document.getElementById('ob-ov').classList.add('open');
 }
-function doLogout(){
-  currentId=null;currentStruct=null;creneaux=[];
+
+function doLogout() {
+  currentId = null; currentStruct = null; creneaux = [];
   goP('acc');
-  document.getElementById('sel-struct').value='';
-  document.getElementById('inp-code').value='';
-  document.getElementById('login-err').style.display='none';
+  document.getElementById('sel-struct').value = '';
+  document.getElementById('inp-code').value = '';
+  document.getElementById('login-err').style.display = 'none';
 }
 
-// ── RENDER RDV ────────────────────────────────────────────────────────────
-function renderRDV(){
-  const mes=creneaux.filter(c=>c.par===currentId).sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure));
-  const now=new Date();
-  const el=document.getElementById('rdv-list');if(!el)return;
-  // Rappel
-  const prochain=mes.find(c=>new Date(c.date+'T'+c.heure)>=now);
-  const rp=document.getElementById('rappel');
-  if(prochain){
-    const diff=Math.round((new Date(prochain.date+'T'+prochain.heure)-now)/86400000);
-    const d=new Date(prochain.date+'T00:00:00');
-    document.getElementById('rappel-txt').textContent=diff<=2?`Rappel — votre RDV est ${diff<=0?"aujourd'hui":diff===1?"demain":"dans "+diff+" jours"}`:`Prochain RDV : ${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}`;
-    document.getElementById('rappel-sub').textContent=`${prochain.type} · ${prochain.heure} · ${prochain.mod}`;
-    document.getElementById('rappel-btns').innerHTML=diff<=2?`<button class="btn btn-w btn-sm" onclick="toast('Présence confirmée ✓','s')">✓ Je serai là</button><button class="btn btn-g btn-sm" onclick="toast('Le SIAO a été notifié','w')">Reporter</button>`:'';
-    rp.style.display='flex';
-  }else{rp.style.display='none';}
-  if(!mes.length){el.innerHTML='<div class="empty"><span class="ei">📅</span><h3>Aucun rendez-vous confirmé</h3><p>Consultez les créneaux disponibles pour en réserver un.</p></div>';return;}
-  el.innerHTML=mes.map(c=>{
-    const d=new Date(c.date+'T00:00:00');
-    const past=new Date(c.date+'T'+c.heure)<now;
-    return`<div class="rdv-ok" style="${past?'border-color:var(--b);background:var(--sur2)':''}">
-      <div style="font-size:22px">${past?'📋':'✅'}</div>
-      <div style="flex:1"><div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px">${c.type} · ${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'long'})} · ${c.heure}</div><div style="font-size:12px;color:var(--txs)">${c.mod} · ${c.duree}min${past?' · Passé':''}</div></div>
-      ${!past?`<button class="btn btn-d btn-sm" onclick="annuler('${c.id}')">Annuler</button>`:''}
+// ── RENDER RDV ──
+function renderRDV() {
+  const mes = creneaux.filter(c => c.par === currentId).sort((a, b) => new Date(a.date + 'T' + a.heure) - new Date(b.date + 'T' + b.heure));
+  const now = new Date();
+  const el = document.getElementById('rdv-list'); if (!el) return;
+  const prochain = mes.find(c => new Date(c.date + 'T' + c.heure) >= now);
+  const rp = document.getElementById('rappel');
+  if (prochain) {
+    const diff = Math.round((new Date(prochain.date + 'T' + prochain.heure) - now) / 86400000);
+    const d = new Date(prochain.date + 'T00:00:00');
+    document.getElementById('rappel-txt').textContent = diff <= 2 ? `Rappel — votre RDV est ${diff <= 0 ? "aujourd'hui" : diff === 1 ? "demain" : "dans " + diff + " jours"}` : `Prochain RDV : ${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`;
+    document.getElementById('rappel-sub').textContent = `${prochain.type || ''} · ${prochain.heure} · ${prochain.mod || ''}`;
+    document.getElementById('rappel-btns').innerHTML = diff <= 2 ? `<button class="btn btn-w btn-sm" onclick="toast('Présence confirmée ✓','s')">✓ Je serai là</button><button class="btn btn-g btn-sm" onclick="toast('Le SIAO a été notifié','w')">Reporter</button>` : '';
+    rp.style.display = 'flex';
+  } else { rp.style.display = 'none'; }
+  if (!mes.length) { el.innerHTML = '<div class="empty"><span class="ei">📅</span><h3>Aucun rendez-vous confirmé</h3><p>Consultez les créneaux disponibles pour en réserver un.</p></div>'; return; }
+  el.innerHTML = mes.map(c => {
+    const d = new Date(c.date + 'T00:00:00');
+    const past = new Date(c.date + 'T' + c.heure) < now;
+    return `<div class="rdv-ok" style="${past ? 'border-color:var(--b);background:var(--sur2)' : ''}">
+      <div style="font-size:22px">${past ? '📋' : '✅'}</div>
+      <div style="flex:1"><div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px">${c.type || 'RDV'} · ${d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'long' })} · ${c.heure}</div><div style="font-size:12px;color:var(--txs)">${c.mod || ''} · ${c.duree || 30}min${past ? ' · Passé' : ''}</div></div>
+      ${!past ? `<button class="btn btn-d btn-sm" onclick="annuler('${c.id}')">Annuler</button>` : ''}
     </div>`;
   }).join('');
 }
 
-// ── RENDER DISPO ──────────────────────────────────────────────────────────
-function renderDispo(){
-  const now=new Date();
-  const list=creneaux.filter(c=>c.statut==='libre'&&(!c.dest||c.dest===''||c.dest===currentId)&&new Date(c.date+'T'+c.heure)>=now).sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure));
-  const nb=document.getElementById('dispo-nb');if(nb)nb.textContent=list.length;
-  const el=document.getElementById('dispo-list');if(!el)return;
-  if(!list.length){el.innerHTML='<div class="empty"><span class="ei">🟢</span><h3>Aucun créneau disponible</h3><p>Le SIAO publiera prochainement de nouveaux créneaux.</p></div>';return;}
-  el.innerHTML=list.map(c=>{
-    const d=new Date(c.date+'T00:00:00');
-    return`<div class="aslot">
-      <div class="dblk"><div class="dd">${d.getDate()}</div><div class="dm">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-      <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:2px">${c.type}</div><div style="font-size:12px;color:var(--txs)">🕐 ${c.heure} · ${c.duree}min · ${c.mod}</div></div>
+// ── RENDER DISPO ──
+function renderDispo() {
+  const now = new Date();
+  let list = creneaux.filter(c => c.statut === 'libre' && (!c.dest || c.dest === '' || c.dest === currentId) && new Date(c.date + 'T' + c.heure) >= now);
+  // Apply filter
+  if (currentFilter === 'week') {
+    const weekEnd = new Date(); weekEnd.setDate(weekEnd.getDate() + 7);
+    list = list.filter(c => new Date(c.date + 'T' + c.heure) <= weekEnd);
+  } else if (currentFilter !== 'all') {
+    list = list.filter(c => c.type && c.type.toLowerCase().includes(currentFilter.toLowerCase()));
+  }
+  list.sort((a, b) => new Date(a.date + 'T' + a.heure) - new Date(b.date + 'T' + b.heure));
+  const nb = document.getElementById('dispo-nb'); if (nb) nb.textContent = list.length;
+  const el = document.getElementById('dispo-list'); if (!el) return;
+  if (!list.length) { el.innerHTML = '<div class="empty"><span class="ei">🟢</span><h3>Aucun créneau disponible</h3><p>Le SIAO publiera prochainement de nouveaux créneaux.</p></div>'; return; }
+  el.innerHTML = list.map(c => {
+    const d = new Date(c.date + 'T00:00:00');
+    return `<div class="aslot">
+      <div class="dblk"><div class="dd">${d.getDate()}</div><div class="dm">${d.toLocaleDateString('fr-FR', { month: 'short' })}</div></div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:2px">${c.type || 'RDV'}</div><div style="font-size:12px;color:var(--txs)">🕐 ${c.heure} · ${c.duree || 30}min · ${c.mod || ''}</div></div>
       <button class="btn-res" onclick="reserver('${c.id}')">Réserver</button>
     </div>`;
   }).join('');
 }
 
-// ── RENDER HIST ───────────────────────────────────────────────────────────
-function renderHist(){
-  const list=creneaux.filter(c=>c.par===currentId).sort((a,b)=>new Date(b.date+'T'+b.heure)-new Date(a.date+'T'+a.heure));
-  const el=document.getElementById('hist-list');if(!el)return;
-  if(!list.length){el.innerHTML='<p style="color:var(--txs);font-size:13px;padding:10px 0">Aucun échange pour le moment.</p>';return;}
-  el.innerHTML=list.map(c=>{
-    const d=new Date(c.date+'T00:00:00');
-    const past=new Date(c.date+'T'+c.heure)<new Date();
-    return`<div class="hist">
-      <div style="width:38px;text-align:center;flex-shrink:0"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:var(--navy)">${d.getDate()}</div><div style="font-size:9px;color:var(--txs);text-transform:uppercase">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-      <div style="flex:1;margin-left:8px"><div style="font-size:13px;font-weight:500;color:var(--tx)">${c.type} · ${c.mod}</div><div style="font-size:11px;color:var(--txs);margin-top:1px">${c.duree}min · ${past?'Réalisé ✅':'À venir'}</div></div>
-      <span class="badge bb">${c.type.split(' ')[0]}</span>
+function filterDispo(btn, filter) {
+  btn.closest('.filters').querySelectorAll('.fb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  currentFilter = filter;
+  renderDispo();
+}
+
+// ── RENDER HIST ──
+function renderHist() {
+  const list = creneaux.filter(c => c.par === currentId).sort((a, b) => new Date(b.date + 'T' + b.heure) - new Date(a.date + 'T' + a.heure));
+  const el = document.getElementById('hist-list'); if (!el) return;
+  if (!list.length) { el.innerHTML = '<p style="color:var(--txs);font-size:13px;padding:10px 0">Aucun échange pour le moment.</p>'; return; }
+  el.innerHTML = list.map(c => {
+    const d = new Date(c.date + 'T00:00:00');
+    const past = new Date(c.date + 'T' + c.heure) < new Date();
+    return `<div class="hist">
+      <div style="width:38px;text-align:center;flex-shrink:0"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:var(--navy)">${d.getDate()}</div><div style="font-size:9px;color:var(--txs);text-transform:uppercase">${d.toLocaleDateString('fr-FR', { month: 'short' })}</div></div>
+      <div style="flex:1;margin-left:8px"><div style="font-size:13px;font-weight:500;color:var(--tx)">${c.type || 'RDV'} · ${c.mod || ''}</div><div style="font-size:11px;color:var(--txs);margin-top:1px">${c.duree || 30}min · ${past ? 'Réalisé ✅' : 'À venir'}</div></div>
+      <span class="badge bb">${(c.type || 'RDV').split(' ')[0]}</span>
     </div>`;
   }).join('');
 }
 
-function updatePills(){
-  const now=new Date();
-  const confirmed=creneaux.filter(c=>c.par===currentId&&new Date(c.date+'T'+c.heure)>=now).length;
-  const dispo=creneaux.filter(c=>c.statut==='libre'&&(!c.dest||c.dest===''||c.dest===currentId)&&new Date(c.date+'T'+c.heure)>=now).length;
-  const p1=document.getElementById('pill-rdv');const p2=document.getElementById('pill-dispo');
-  if(p1)p1.textContent=`✅ ${confirmed} RDV confirmé${confirmed>1?'s':''}`;
-  if(p2)p2.textContent=`🟢 ${dispo} créneau${dispo>1?'x':''} libre${dispo>1?'s':''}`;
+function updatePills() {
+  const now = new Date();
+  const confirmed = creneaux.filter(c => c.par === currentId && new Date(c.date + 'T' + c.heure) >= now).length;
+  const dispo = creneaux.filter(c => c.statut === 'libre' && (!c.dest || c.dest === '' || c.dest === currentId) && new Date(c.date + 'T' + c.heure) >= now).length;
+  const p1 = document.getElementById('pill-rdv');
+  const p2 = document.getElementById('pill-dispo');
+  if (p1) p1.textContent = `✅ ${confirmed} RDV confirmé${confirmed > 1 ? 's' : ''}`;
+  if (p2) p2.textContent = `🟢 ${dispo} créneau${dispo > 1 ? 'x' : ''} libre${dispo > 1 ? 's' : ''}`;
 }
 
-// ── ACTIONS ───────────────────────────────────────────────────────────────
-async function reserver(id){
-  const{error}=await db.from('creneaux').update({statut:'reserve',par:currentId,msg:''}).eq('id',id);
-  if(error){toast('Erreur: '+error.message,'e');return;}
-  const idx=creneaux.findIndex(c=>c.id===id);if(idx>=0){creneaux[idx].statut='reserve';creneaux[idx].par=currentId;}
-  renderRDV();renderDispo();renderHist();updatePills();
-  toast('Réservation confirmée !','s');
+// ── ACTIONS ──
+async function reserver(id) {
+  const { error } = await db.from('creneaux').update({ statut: 'reserve', par: currentId }).eq('id', id);
+  if (error) { toast('Erreur: ' + error.message, 'e'); return; }
+  await loadCreneaux();
+  toast('Réservation confirmée !', 's');
   goS('rdv');
 }
-async function annuler(id){
-  confirm2('Annuler ce rendez-vous ?','Cette action est irréversible. Le SIAO sera notifié.',async()=>{
-    await db.from('creneaux').update({statut:'libre',par:null,msg:''}).eq('id',id);
-    const idx=creneaux.findIndex(c=>c.id===id);if(idx>=0){creneaux[idx].statut='libre';creneaux[idx].par=null;}
-    renderRDV();renderDispo();renderHist();updatePills();
-    toast('Rendez-vous annulé','w');
+
+async function annuler(id) {
+  confirm2('Annuler ce rendez-vous ?', 'Cette action est irréversible. Le SIAO sera notifié.', async () => {
+    await db.from('creneaux').update({ statut: 'libre', par: null }).eq('id', id);
+    await loadCreneaux();
+    toast('Rendez-vous annulé', 'w');
   });
 }
 
-// ── MESSAGERIE ────────────────────────────────────────────────────────────
-async function sendMsg(){
-  const ta=document.getElementById('msg-in');
-  const txt=ta.value.trim();if(!txt)return;
-  if(currentId)await db.from('messages').insert({struct_id:currentId,contenu:txt,expediteur:'structure'});
-  const body=document.getElementById('msg-body');
-  const bub=document.createElement('div');
-  bub.className='bub sent';
-  bub.innerHTML=txt+`<div class="bub-t">${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>`;
-  body.appendChild(bub);body.scrollTop=body.scrollHeight;ta.value='';
-  document.getElementById('unr').style.display='none';
-  const b=document.getElementById('msg-b');if(b)b.style.display='none';
-  setTimeout(()=>{
-    const rep=document.createElement('div');rep.className='bub recv';
-    rep.innerHTML='Message bien reçu, nous revenons vers vous rapidement. — SIAO<div class="bub-t">'+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'</div>';
-    body.appendChild(rep);body.scrollTop=body.scrollHeight;
-  },1400);
+async function saveProfil() {
+  if (!currentId) return;
+  const updates = {
+    responsable: document.getElementById('p-resp').value,
+    email: document.getElementById('p-email').value,
+    telephone: document.getElementById('p-tel').value
+  };
+  const { error } = await db.from('structures').update(updates).eq('id', currentId);
+  if (error) { toast('Erreur: ' + error.message, 'e'); return; }
+  toast('Profil mis à jour', 's');
 }
 
-// ── NAVIGATION ────────────────────────────────────────────────────────────
-function goP(id){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.tb').forEach(t=>t.classList.remove('on'));
-  const p=document.getElementById('P-'+id);if(p)p.classList.add('on');
-  const t=document.getElementById('T-'+id);if(t)t.classList.add('on');
-  if(id==='msg'){const b=document.getElementById('msg-b');if(b)b.style.display='none';}
-}
-function goS(id){
-  document.querySelectorAll('.sp').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
-  const s=document.getElementById('S-'+id);if(s)s.classList.add('on');
-  const n=document.getElementById('N-'+id);if(n)n.classList.add('on');
+// ── MESSAGERIE ──
+async function sendMsg() {
+  const ta = document.getElementById('msg-in');
+  const txt = ta.value.trim(); if (!txt) return;
+  if (currentId) {
+    await db.from('messages').insert({ struct_id: currentId, contenu: txt, expediteur: 'structure' }).catch(() => {});
+  }
+  const body = document.getElementById('msg-body');
+  const bub = document.createElement('div');
+  bub.className = 'bub sent';
+  bub.innerHTML = txt + `<div class="bub-t">${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>`;
+  body.appendChild(bub); body.scrollTop = body.scrollHeight; ta.value = '';
+  document.getElementById('unr').style.display = 'none';
+  const b = document.getElementById('msg-b'); if (b) b.style.display = 'none';
 }
 
-// ── UTILITAIRES ───────────────────────────────────────────────────────────
-function afb(btn){btn.closest('.filters').querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
-function toggleDark(){const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');document.getElementById('th-btn').textContent=d?'🌙':'☀️';}
-function openOv(id){document.getElementById(id).classList.add('open');}
-function closeOv(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-let _cb=null;
-function confirm2(t,m,cb){document.getElementById('conf-t').textContent=t;document.getElementById('conf-m').textContent=m;_cb=cb;document.getElementById('conf-ov').classList.add('open');document.getElementById('conf-ok').onclick=()=>{closeConf();if(_cb)_cb();};}
-function closeConf(){document.getElementById('conf-ov').classList.remove('open');}
-function toast(msg,type){const w=document.getElementById('toasts');const t=document.createElement('div');t.className='toast '+(type||'s');const ico={s:'✅',w:'⚠️',e:'❌',i:'ℹ️'};t.innerHTML=`<span>${ico[type]||'✅'}</span><span>${msg}</span>`;w.appendChild(t);setTimeout(()=>{if(t.parentNode)t.parentNode.removeChild(t);},3500);}
-function obn(n){document.querySelectorAll('.ob-s').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.ob-dot').forEach(d=>d.classList.remove('on'));document.getElementById('ob'+n).classList.add('on');document.getElementById('ob-fill').style.width=(n/3*100)+'%';}
-function obc(){document.getElementById('ob-ov').classList.remove('open');toast('Bienvenue ! Votre espace est prêt.','s');}
-document.querySelectorAll('
+// ── NAVIGATION ──
+function goP(id) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(t => t.classList.remove('on'));
+  const p = document.getElementById('P-' + id); if (p) p.classList.add('on');
+  const t = document.getElementById('T-' + id); if (t) t.classList.add('on');
+  if (id === 'msg') { const b = document.getElementById('msg-b'); if (b) b.style.display = 'none'; }
+}
+
+function goS(id) {
+  document.querySelectorAll('.sp').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  const s = document.getElementById('S-' + id); if (s) s.classList.add('on');
+  const n = document.getElementById('N-' + id); if (n) n.classList.add('on');
+}
+
+// ── UTILITIES ──
+function toggleDark() { const d = document.documentElement.getAttribute('data-theme') === 'dark'; document.documentElement.setAttribute('data-theme', d ? 'light' : 'dark'); document.getElementById('th-btn').textContent = d ? '🌙' : '☀️'; }
+function openOv(id) { document.getElementById(id).classList.add('open'); }
+function closeOv(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.ov').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+
+let _cb = null;
+function confirm2(t, m, cb) { document.getElementById('conf-t').textContent = t; document.getElementById('conf-m').textContent = m; _cb = cb; document.getElementById('conf-ov').classList.add('open'); document.getElementById('conf-ok').onclick = () => { closeConf(); if (_cb) _cb(); }; }
+function closeConf() { document.getElementById('conf-ov').classList.remove('open'); }
+
+function toast(msg, type) { const w = document.getElementById('toasts'); const t = document.createElement('div'); t.className = 'toast ' + (type || 's'); const ico = { s: '✅', w: '⚠️', e: '❌', i: 'ℹ️' }; t.innerHTML = `<span>${ico[type] || '✅'}</span><span>${msg}</span>`; w.appendChild(t); setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 3500); }
+
+function obn(n) { document.querySelectorAll('.ob-s').forEach(s => s.classList.remove('on')); document.querySelectorAll('.ob-dot').forEach(d => d.classList.remove('on')); document.getElementById('ob' + n).classList.add('on'); document.getElementById('ob-fill').style.width = (n / 3 * 100) + '%'; }
+function obc() { document.getElementById('ob-ov').classList.remove('open'); toast('Bienvenue ! Votre espace est prêt.', 's'); }
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  initStructures();
+  document.getElementById('conv-time').textContent = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('conv-prev').textContent = 'Bienvenue sur votre espace...';
+});
+</script>
+</body>
+</html>
