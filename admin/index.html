@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIAO RDV — Administration</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
@@ -418,6 +418,20 @@ select option{background:var(--surface)}
 .tag:hover{border-color:var(--primary-light);color:var(--primary)}
 .tag.active{background:var(--primary-soft);border-color:var(--primary-light);color:var(--primary)}
 </style>
+<style>
+.scard-act-btn{padding:5px 9px;border-radius:7px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--surface2);color:var(--text-mid);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.scard-act-btn:hover{background:var(--primary-soft);border-color:var(--primary-light);color:var(--primary)}
+.scard-act-btn.danger{border-color:#fecaca;background:#fee2e2;color:#dc2626}
+.scard-act-btn.danger:hover{background:#fca5a5}
+.access-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px}
+.access-code{font-family:'DM Mono',monospace;font-size:20px;font-weight:700;letter-spacing:.12em;color:var(--primary);text-align:center;padding:11px;background:var(--primary-soft);border-radius:8px;margin:8px 0;cursor:pointer}
+.access-link{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-soft);word-break:break-all;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:9px 11px;margin:6px 0;line-height:1.6;cursor:pointer}
+.copy-btn{width:100%;padding:9px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;transition:background .2s}
+.copy-btn:hover{filter:brightness(1.1)}
+.fb{padding:6px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;background:var(--surface);color:var(--text-soft);cursor:pointer;transition:all .2s}
+.fb.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.struct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+</style>
 </head>
 <body>
 
@@ -566,7 +580,7 @@ select option{background:var(--surface)}
       <!-- D-OVERVIEW -->
       <div id="d-overview">
         <div class="kpi-grid">
-          <div class="kpi blue" onclick="showToast('Détail des créneaux','info')"><div class="kpi-ico">📅</div><div class="kpi-val">12</div><div class="kpi-lbl">Créneaux à venir</div><div class="kpi-trend up">↑ +3 sem.</div></div>
+          <div class="kpi blue" onclick="goDash('d-creneaux')"><div class="kpi-ico">📅</div><div class="kpi-val">12</div><div class="kpi-lbl">Créneaux à venir</div><div class="kpi-trend up">↑ +3 sem.</div></div>
           <div class="kpi green"><div class="kpi-ico">✅</div><div class="kpi-val">8</div><div class="kpi-lbl">Réservations confirmées</div><div class="kpi-trend up">↑ 97%</div></div>
           <div class="kpi orange"><div class="kpi-ico">⏳</div><div class="kpi-val">2</div><div class="kpi-lbl">En attente</div><div class="kpi-trend dn">↓ Action requise</div></div>
           <div class="kpi purple"><div class="kpi-ico">🏠</div><div class="kpi-val">24</div><div class="kpi-lbl">Structures partenaires</div><div class="kpi-trend up">↑ +2 mois</div></div>
@@ -618,6 +632,20 @@ select option{background:var(--surface)}
 
       <!-- D-STRUCTURES -->
       <div id="d-structures" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div style="display:flex;gap:7px;flex-wrap:wrap" id="struct-filters">
+            <button class="fb active" onclick="setFilter('tous',this)">Tous</button>
+            <button class="fb" onclick="setFilter('CHRS',this)">CHRS</button>
+            <button class="fb" onclick="setFilter('CADA',this)">CADA</button>
+            <button class="fb" onclick="setFilter('ALT',this)">ALT</button>
+            <button class="fb" onclick="setFilter('Résidence accueil',this)">Résidence</button>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="struct-search" placeholder="🔍 Rechercher…" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--surface);outline:none;width:200px" oninput="renderStructGrids()">
+            <button class="btn btn-primary btn-sm" onclick="openAddStruct()">+ Nouvelle structure</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-soft);margin-bottom:12px"><span id="struct-count-lbl">—</span></div>
         <div class="struct-grid" id="struct-grid-full"></div>
       </div>
 
@@ -793,19 +821,108 @@ select option{background:var(--surface)}
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+
+<!-- ═══ MODAL AJOUT/MODIF STRUCTURE ══════════════════════════════════════════ -->
+<div class="modal-ov" id="m-struct">
+  <div class="modal">
+    <div class="modal-h">
+      <div><div class="modal-title" id="m-struct-title">Nouvelle structure</div><div class="modal-sub">Renseignez les informations de la structure partenaire</div></div>
+      <button class="close-x" onclick="closeModal('m-struct')">✕</button>
+    </div>
+    <div class="modal-b">
+      <input type="hidden" id="s-edit-id">
+      <div class="fg-row">
+        <div class="fg"><label>Nom de la structure *</label><input type="text" id="s-nom" placeholder="Ex : CHRS La Boussole"></div>
+        <div class="fg"><label>Type *</label><select id="s-type"><option value="CHRS">CHRS</option><option value="CADA">CADA</option><option value="ALT">ALT</option><option value="Résidence accueil">Résidence accueil</option><option value="Foyer">Foyer</option><option value="Autre">Autre</option></select></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Ville *</label><input type="text" id="s-ville" placeholder="Ex : Bordeaux"></div>
+        <div class="fg"><label>Référent SIAO *</label><input type="text" id="s-referent" placeholder="Prénom Nom"></div>
+      </div>
+      <div class="fg"><label>Téléphone référent</label><input type="tel" id="s-tel" placeholder="05 XX XX XX XX"></div>
+      <div class="fg">
+        <label>Code d'accès *</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="s-code" placeholder="Ex : BOUSSOLE25" style="flex:1;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+          <button class="btn btn-ghost btn-sm" onclick="genCode()" style="flex-shrink:0;white-space:nowrap">🎲 Générer</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-soft);margin-top:4px">Transmis à la structure pour se connecter — confidentiel</div>
+      </div>
+      <div class="fg"><label>Note interne (optionnel)</label><textarea id="s-note" rows="2" style="resize:none" placeholder="Visible uniquement par le SIAO…"></textarea></div>
+      <div id="s-err" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;color:#dc2626;font-size:12px;display:none;margin-top:6px">Veuillez remplir tous les champs obligatoires (*).</div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost" onclick="closeModal('m-struct')">Annuler</button>
+      <button class="btn btn-success" id="s-save-btn" onclick="saveStruct()">✅ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL ACCÈS STRUCTURE ═══════════════════════════════════════════════ -->
+<div class="modal-ov" id="m-access">
+  <div class="modal">
+    <div class="modal-h">
+      <div><div class="modal-title">🔑 Accès structure</div><div class="modal-sub" id="access-struct-nm">—</div></div>
+      <button class="close-x" onclick="closeModal('m-access')">✕</button>
+    </div>
+    <div class="modal-b">
+      <p style="font-size:13px;color:var(--text-soft);margin-bottom:14px;line-height:1.6">Transmettez ces informations à votre interlocuteur pour qu'il puisse accéder à son espace.</p>
+      <div class="access-box">
+        <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Code d'accès</div>
+        <div class="access-code" id="access-code-val" onclick="copyAccessCode()">—</div>
+        <button class="copy-btn" onclick="copyAccessCode()">📋 Copier le code</button>
+      </div>
+      <div class="access-box">
+        <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Lien direct (avec code pré-rempli)</div>
+        <div class="access-link" id="access-link-val" onclick="copyAccessLink()">—</div>
+        <button class="copy-btn" onclick="copyAccessLink()">🔗 Copier le lien</button>
+      </div>
+      <div style="padding:12px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:9px;font-size:12px;color:var(--text-soft);line-height:1.7">
+        <strong style="color:#059669">Comment l'envoyer ?</strong><br>
+        Copiez le <strong>code</strong> ou le <strong>lien</strong> et transmettez-le par email ou messagerie à votre interlocuteur. Il pourra se connecter directement depuis son navigateur, sans installation.
+      </div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost" onclick="closeModal('m-access')">Fermer</button>
+      <button class="btn btn-primary" id="access-email-btn" onclick="sendAccessByEmail()">✉️ Ouvrir un email</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL NOTE INTERNE ════════════════════════════════════════════════════ -->
+<div class="modal-ov" id="m-note">
+  <div class="modal">
+    <div class="modal-h">
+      <div><div class="modal-title">🔒 Note interne</div><div class="modal-sub" id="note-struct-nm">Visible uniquement par le SIAO</div></div>
+      <button class="close-x" onclick="closeModal('m-note')">✕</button>
+    </div>
+    <div class="modal-b">
+      <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:9px;padding:10px 13px;font-size:12px;color:#92400e;margin-bottom:13px">🔒 Cette note est <strong>strictement interne</strong> — la structure ne peut jamais la voir.</div>
+      <div class="fg"><label>Note</label><textarea id="note-val" rows="4" style="resize:vertical" placeholder="Renouvellement à prévoir, points de vigilance, suivi en cours…"></textarea></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost" onclick="closeModal('m-note')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveNote()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <script>
 
 // ══════════════════════════════════════════════════════════════════
-// SUPABASE — Configuration et chargement des données
+// SUPABASE — DONNÉES EN TEMPS RÉEL
 // ══════════════════════════════════════════════════════════════════
 const { createClient } = supabase;
 const db = createClient('https://qsbacmdryccpqsrowylx.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzYmFjbWRyeWNjcHFzcm93eWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzgxNDAsImV4cCI6MjA4OTkxNDE0MH0.k6kLpDoRmR874sQ5nG2KQWi_-6ZRACFUS-W5r_BMres');
 
-let structures = [];
-let creneaux   = [];
+let structures  = [];
+let creneaux    = [];
+let currentNoteId = null;
+let currentAccessStruct = null;
+let structFilter = 'tous';
 
-// Couleurs par défaut pour les structures
-const STRUCT_COLORS = [
+const SITE_URL  = 'https://mehdiepilous.github.io/siao-rdv';
+const GRAD_COLS = [
   'linear-gradient(135deg,#3b72d4,#7c3aed)',
   'linear-gradient(135deg,#059669,#10b981)',
   'linear-gradient(135deg,#f97316,#fbbf24)',
@@ -813,176 +930,235 @@ const STRUCT_COLORS = [
   'linear-gradient(135deg,#0ea5e9,#38bdf8)',
   'linear-gradient(135deg,#ec4899,#f43f5e)',
 ];
-function getColor(idx){ return STRUCT_COLORS[idx % STRUCT_COLORS.length]; }
-function getInit(nom){ return (nom||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+function getCoul(i){ return GRAD_COLS[i % GRAD_COLS.length]; }
+function getInit(nm){ return (nm||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
 
-// Convertir une ligne Supabase en format attendu par l'UI
-function toStructUI(row, idx){
-  return {
-    id:   row.id,
-    init: getInit(row.nom),
-    nm:   row.nom,
-    tp:   row.type + ' · ' + row.ville,
-    type: row.type,
-    ville:row.ville,
-    rdv:  creneaux.filter(c=>c.par===row.id).length,
-    av:   creneaux.filter(c=>c.par===row.id && c.statut==='reserve' && new Date(c.date+'T'+c.heure)>=new Date()).length,
-    col:  row.couleur || getColor(idx),
-    sts:  row.statut || 'active',
-    tags: row.tags || [],
-    note: row.note || '',
-    code: row.code,
-    referent: row.referent || '',
-    tel:  row.tel || ''
-  };
-}
-
-// Charger toutes les données au démarrage
+// ── Charger tout ──────────────────────────────────────────────────────────
 async function loadAll(){
-  const [r1, r2] = await Promise.all([
+  const [r1,r2] = await Promise.all([
     db.from('structures').select('*').order('nom'),
     db.from('creneaux').select('*').order('date').order('heure')
   ]);
   if(r1.data) structures = r1.data;
   if(r2.data) creneaux   = r2.data;
-  // Peupler les selects
+  renderAll();
+  // Peupler select destinations créneaux
   const sel = document.getElementById('c-dest');
   if(sel){
     sel.innerHTML='<option value="">Toutes les structures</option>';
-    structures.forEach(s=>{ sel.innerHTML+=`<option value="${s.id}">${s.nom}</option>`; });
+    structures.forEach(s=>{sel.innerHTML+=`<option value="${s.id}">${s.nom}</option>`;});
   }
-  // Peupler le select login structure côté structure
-  const selLogin = document.getElementById('login-struct');
-  if(selLogin){
-    selLogin.innerHTML='<option value="">— Chargement… —</option>';
-    structures.forEach(s=>{ selLogin.innerHTML+=`<option value="${s.id}">${s.nom}</option>`; });
-  }
-  // Render initial
-  renderStructGrids();
-  renderDashboard();
-  renderCreneauxList();
 }
 
-// Abonnement temps réel
-function subscribeRealtime(){
-  db.channel('admin-live')
+function renderAll(){
+  renderStructGrids();
+  renderDashboard();
+  renderCreneaux();
+}
+
+// ── Temps réel ────────────────────────────────────────────────────────────
+function subscribeRT(){
+  db.channel('admin-rt')
     .on('postgres_changes',{event:'*',schema:'public',table:'structures'}, async ()=>{
-      const r = await db.from('structures').select('*').order('nom');
-      if(r.data) structures = r.data;
-      renderStructGrids(); renderDashboard();
+      const r=await db.from('structures').select('*').order('nom');
+      if(r.data){ structures=r.data; renderAll(); }
     })
     .on('postgres_changes',{event:'*',schema:'public',table:'creneaux'}, async ()=>{
-      const r = await db.from('creneaux').select('*').order('date').order('heure');
-      if(r.data) creneaux = r.data;
-      renderStructGrids(); renderDashboard(); renderCreneauxList();
+      const r=await db.from('creneaux').select('*').order('date').order('heure');
+      if(r.data){ creneaux=r.data; renderAll(); }
     })
     .subscribe();
 }
 
-// ─── RENDER DASHBOARD ───────────────────────────────────────────────────────
+// ── DASHBOARD ─────────────────────────────────────────────────────────────
 function renderDashboard(){
-  const lib = creneaux.filter(c=>c.statut==='libre').length;
-  const res = creneaux.filter(c=>c.statut==='reserve').length;
-  const el = document.getElementById('a-stats');
-  if(el) el.innerHTML=[
-    {c:'--blue',  v:creneaux.length,   l:'Créneaux total'},
-    {c:'--green', v:lib,               l:'Disponibles'},
-    {c:'--orange',v:res,               l:'Réservés'},
-    {c:'--accent',v:structures.length, l:'Structures'},
-  ].map(s=>`<div class="stat" style="--c:var(${s.c})"><div class="stat-v">${s.v}</div><div class="stat-l">${s.l}</div></div>`).join('');
+  const libres = creneaux.filter(c=>c.statut==='libre');
+  const resas  = creneaux.filter(c=>c.statut==='reserve');
+  const now    = new Date();
 
+  // KPIs
+  [
+    ['k-cren',  creneaux.length],
+    ['k-libre', libres.length],
+    ['k-resa',  resas.length],
+    ['k-str',   structures.length],
+  ].forEach(([id,v])=>{ const el=document.getElementById(id); if(el) el.textContent=v; });
+
+  // Prochains libres
   const nextEl = document.getElementById('a-next');
   if(nextEl){
-    const next = creneaux.filter(c=>c.statut==='libre').sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure)).slice(0,4);
+    const next = libres.filter(c=>new Date(c.date+'T'+c.heure)>=now)
+      .sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure)).slice(0,5);
     nextEl.innerHTML = next.length ? next.map(c=>{
       const d=new Date(c.date+'T00:00:00');
+      const dest = c.dest ? structures.find(s=>s.id===c.dest) : null;
       return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-        <div style="text-align:center;min-width:36px"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:var(--navy)">${d.getDate()}</div><div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-        <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text)">${c.type}</div><div style="font-size:11px;color:var(--text-soft)">${c.heure} · ${c.mod}</div></div>
+        <div style="text-align:center;min-width:38px"><div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:800;color:var(--navy)">${d.getDate()}</div><div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
+        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${c.type}</div><div style="font-size:11px;color:var(--text-soft)">${c.heure} · ${c.mod}${dest?' · '+dest.nom:' · Toutes structures'}</div></div>
         <span style="background:var(--primary-soft);color:var(--primary);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700">${c.duree}min</span>
       </div>`;
-    }).join('') : '<p style="color:var(--text-soft);font-size:13px;padding:10px 0">Aucun créneau libre</p>';
+    }).join('') : '<p style="color:var(--text-soft);font-size:13px;padding:10px 0">Aucun créneau libre à venir</p>';
   }
 
+  // Dernières réservations
   const resaEl = document.getElementById('a-resa-r');
   if(resaEl){
-    const resas = creneaux.filter(c=>c.statut==='reserve').sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,4);
-    resaEl.innerHTML = resas.length ? resas.map(c=>{
-      const s = structures.find(x=>x.id===c.par);
-      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
-        <div><div style="font-size:12px;font-weight:600;color:var(--text)">${s?.nom||'—'}</div><div style="font-size:11px;color:var(--text-soft)">${c.type} · ${c.date}</div></div>
+    const sorted = resas.sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+    resaEl.innerHTML = sorted.length ? sorted.map(c=>{
+      const s=structures.find(x=>x.id===c.par);
+      const d=new Date(c.date+'T00:00:00');
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${s?.nom||'—'}</div><div style="font-size:11px;color:var(--text-soft)">${c.type} · ${d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}</div></div>
         <span style="background:#d1fae5;color:#059669;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700">Réservé</span>
       </div>`;
     }).join('') : '<p style="color:var(--text-soft);font-size:12px;padding:10px 0">Aucune réservation</p>';
   }
 }
 
-// ─── RENDER CRÉNEAUX ────────────────────────────────────────────────────────
-function renderCreneauxList(){
-  const el = document.getElementById('a-cren-list');
-  if(!el) return;
-  const list = creneaux.sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure));
-  el.innerHTML = list.length ? list.map(c=>{
-    const d = new Date(c.date+'T00:00:00');
-    const s = c.par ? structures.find(x=>x.id===c.par) : null;
-    const dest = c.dest ? structures.find(x=>x.id===c.dest) : null;
-    const col = c.statut==='reserve' ? 'var(--green,#10b981)' : 'var(--blue,#2152a3)';
-    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-bottom:8px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;border-left:3px solid ${col}">
-      <div style="text-align:center;min-width:46px"><div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:var(--navy)">${d.getDate()}</div><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--text-soft)">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-      <div><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">${c.type} <span style="background:${c.statut==='reserve'?'#d1fae5':'var(--primary-soft)'};color:${c.statut==='reserve'?'#059669':'var(--primary)'};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700">${c.statut==='reserve'?'Réservé':'Libre'}</span></div>
-        <div style="font-size:11px;color:var(--text-soft)">🕐 ${c.heure} · ${c.duree}min · ${c.mod}${dest?' · '+dest.nom:' · Toutes'}${s?' · ✅ '+s.nom:''}</div></div>
-      <div style="display:flex;gap:5px"><button onclick="deleteCren('${c.id}')" style="background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:7px;padding:4px 10px;cursor:pointer;font-size:11px">🗑</button></div>
-    </div>`;
-  }).join('') : '<p style="padding:20px;text-align:center;color:var(--text-soft)">Aucun créneau</p>';
+// ── STRUCTURES ────────────────────────────────────────────────────────────
+function renderStructGrids(){
+  const q    = (document.getElementById('struct-search')?.value||'').toLowerCase();
+  const list = structures.filter((s,i)=>{
+    const matchType   = structFilter==='tous'||s.type===structFilter;
+    const matchSearch = !q||s.nom.toLowerCase().includes(q)||s.ville?.toLowerCase().includes(q)||s.type?.toLowerCase().includes(q);
+    return matchType && matchSearch;
+  });
+
+  const lbl = document.getElementById('struct-count-lbl');
+  if(lbl) lbl.textContent=`${list.length} structure${list.length>1?'s':''}`;
+
+  const g1=document.getElementById('struct-grid-main');
+  const g2=document.getElementById('struct-grid-full');
+  const html=list.length
+    ? list.map((s,i)=>renderStructCard({
+        id:s.id, init:getInit(s.nom), nm:s.nom, tp:s.type+' · '+(s.ville||''), type:s.type,
+        rdv:creneaux.filter(c=>c.par===s.id).length,
+        av:creneaux.filter(c=>c.par===s.id&&c.statut==='reserve'&&new Date(c.date+'T'+c.heure)>=new Date()).length,
+        col:getCoul(i), sts:s.statut||'active', tags:s.tags||[], note:s.note||'', code:s.code
+      })).join('')
+    : `<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-soft)">
+        <div style="font-size:40px;opacity:.3;margin-bottom:10px">🏠</div>
+        <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:600;color:var(--text-mid);margin-bottom:6px">Aucune structure</div>
+        <p style="font-size:13px">Cliquez sur <strong>+ Nouvelle structure</strong> pour commencer</p>
+      </div>`;
+  if(g1) g1.innerHTML=html;
+  if(g2) g2.innerHTML=html;
 }
 
-// ─── CRUD CRÉNEAUX ──────────────────────────────────────────────────────────
-async function saveCren(){
-  const dt = document.getElementById('c-date')?.value;
-  if(!dt){ showToast('Date requise','warn'); return; }
-  const cren = {
-    id:'c'+Date.now(), date:dt,
-    heure: document.getElementById('c-heure')?.value||'09:00',
-    duree: parseInt(document.getElementById('c-duree')?.value||'60'),
-    type:  document.getElementById('c-type')?.value||'Autre',
-    mod:   document.getElementById('c-mod')?.value||'Présentiel — SIAO',
-    dest:  document.getElementById('c-dest')?.value||'',
-    notes: document.getElementById('c-notes')?.value||'',
-    statut:'libre', par:null, msg:''
-  };
-  const {error} = await db.from('creneaux').insert(cren);
-  if(error){ showToast('Erreur: '+error.message,'error'); return; }
-  creneaux.push(cren);
-  closeModal('m-cren');
-  renderDashboard(); renderCreneauxList();
-  showToast('Créneau publié ✅','success');
+function renderStructCard(s){
+  const stsHtml=s.sts==='active'
+    ?'<div style="display:inline-flex;align-items:center;gap:4px;background:#d1fae5;color:#059669;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:8px"><span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block"></span> Active</div>'
+    :'<div style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#d97706;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:8px"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block"></span> En attente</div>';
+  const tagsHtml=s.tags.map(t=>`<span class="internal-tag">🔒 ${t}</span>`).join('');
+  const noteHtml=s.note?`<div style="margin-top:8px;padding:6px 9px;background:rgba(245,158,11,.07);border-left:3px solid var(--warn);border-radius:0 7px 7px 0;font-size:11px;color:var(--text-mid);line-height:1.4;font-style:italic">🔒 ${s.note}</div>`:'';
+  const nm_s=s.nm.replace(/'/g,"\\'");
+  const note_s=(s.note||'').replace(/'/g,"\\'");
+  const TYPE_COLOR={'CHRS':'#3b72d4','CADA':'#f59e0b','ALT':'#8b5cf6','Résidence accueil':'#10b981','Foyer':'#ec4899'}[s.type]||'#64748b';
+  return`<div class="struct-card">
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+      <div class="struct-av" style="background:${s.col}">${s.init}</div>
+      <div style="flex:1;min-width:0">
+        <div class="struct-nm">${s.nm}</div>
+        <div class="struct-tp">${s.tp}</div>
+      </div>
+      <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:${TYPE_COLOR}18;color:${TYPE_COLOR};flex-shrink:0">${s.type}</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:9px">
+      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px">
+        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.rdv}</div>
+        <div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">RDV total</div>
+      </div>
+      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px">
+        <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.av}</div>
+        <div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">À venir</div>
+      </div>
+      <div style="flex:1;text-align:center;background:var(--surface2);border-radius:7px;padding:7px 4px">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--primary);margin-top:3px;font-weight:700">${s.code}</div>
+        <div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">Code</div>
+      </div>
+    </div>
+    ${stsHtml}
+    ${tagsHtml?`<div class="tags-wrap">${tagsHtml}</div>`:''}
+    ${noteHtml}
+    <div style="display:flex;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+      <button class="scard-act-btn" style="flex:1" onclick="event.stopPropagation();openEditStruct('${s.id}')">✏️ Modifier</button>
+      <button class="scard-act-btn" style="flex:1" onclick="event.stopPropagation();openNoteModal('${s.id}','${nm_s}','${note_s}')">🔒 Note</button>
+      <button class="scard-act-btn" style="flex:1" onclick="event.stopPropagation();openAccess('${s.id}')">🔑 Accès</button>
+      <button class="scard-act-btn danger" onclick="event.stopPropagation();deleteStruct('${s.id}','${nm_s}')">🗑</button>
+    </div>
+  </div>`;
 }
 
-async function deleteCren(id){
-  if(!confirm('Supprimer ce créneau ?')) return;
-  await db.from('creneaux').delete().eq('id',id);
-  creneaux = creneaux.filter(c=>c.id!==id);
-  renderDashboard(); renderCreneauxList();
-  showToast('Créneau supprimé','warn');
-}
-
-// ─── CRUD STRUCTURES ────────────────────────────────────────────────────────
-async function saveStr(){
-  const nom  = document.getElementById('s-nom')?.value?.trim();
-  const code = document.getElementById('s-code')?.value?.trim()?.toUpperCase();
-  if(!nom||!code){ showToast('Nom et code requis','warn'); return; }
-  const s = {
-    id:'s'+Date.now(), nom,
-    type:  document.getElementById('s-type')?.value||'Autre',
-    ville: document.getElementById('s-ville')?.value?.trim()||'',
-    code, referent:'', tel:'', note:'', tags:[], statut:'active'
-  };
-  const {error} = await db.from('structures').insert(s);
-  if(error){ showToast('Erreur: '+error.message,'error'); return; }
-  structures.push(s);
-  closeModal('m-str');
+function setFilter(f,btn){
+  structFilter=f;
+  document.querySelectorAll('#struct-filters .fb').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
   renderStructGrids();
-  showToast('Structure "'+nom+'" créée ✅','success');
+}
+
+// ── CRUD STRUCTURES ───────────────────────────────────────────────────────
+function openAddStruct(){
+  document.getElementById('m-struct-title').textContent='Nouvelle structure';
+  document.getElementById('s-save-btn').textContent='✅ Enregistrer';
+  document.getElementById('s-edit-id').value='';
+  ['s-nom','s-ville','s-referent','s-tel','s-code','s-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('s-type').value='CHRS';
+  document.getElementById('s-err').style.display='none';
+  openModal('m-struct');
+}
+
+function openEditStruct(id){
+  const s=structures.find(x=>x.id===id); if(!s) return;
+  document.getElementById('m-struct-title').textContent='Modifier la structure';
+  document.getElementById('s-save-btn').textContent='💾 Mettre à jour';
+  document.getElementById('s-edit-id').value=id;
+  document.getElementById('s-nom').value=s.nom||'';
+  document.getElementById('s-type').value=s.type||'CHRS';
+  document.getElementById('s-ville').value=s.ville||'';
+  document.getElementById('s-referent').value=s.referent||'';
+  document.getElementById('s-tel').value=s.tel||'';
+  document.getElementById('s-code').value=s.code||'';
+  document.getElementById('s-note').value=s.note||'';
+  document.getElementById('s-err').style.display='none';
+  openModal('m-struct');
+}
+
+async function saveStruct(){
+  const nom=document.getElementById('s-nom').value.trim();
+  const type=document.getElementById('s-type').value;
+  const ville=document.getElementById('s-ville').value.trim();
+  const ref=document.getElementById('s-referent').value.trim();
+  const tel=document.getElementById('s-tel').value.trim();
+  const code=document.getElementById('s-code').value.trim().toUpperCase();
+  const note=document.getElementById('s-note').value.trim();
+  if(!nom||!ville||!ref||!code){ document.getElementById('s-err').style.display='block'; return; }
+  const editId=document.getElementById('s-edit-id').value;
+  if(editId){
+    const {error}=await db.from('structures').update({nom,type,ville,referent:ref,tel,code,note}).eq('id',editId);
+    if(error){ showToast('Erreur: '+error.message,'error'); return; }
+    const idx=structures.findIndex(s=>s.id===editId);
+    if(idx>=0) structures[idx]={...structures[idx],nom,type,ville,referent:ref,tel,code,note};
+    showToast('Structure "'+nom+'" mise à jour ✅','success');
+  } else {
+    const ns={id:'s'+Date.now(),nom,type,ville,referent:ref,tel,code,note,tags:[],statut:'active'};
+    const {error}=await db.from('structures').insert(ns);
+    if(error){ showToast('Erreur: '+error.message,'error'); return; }
+    structures.push(ns);
+    showToast('Structure "'+nom+'" créée ✅','success');
+  }
+  closeModal('m-struct');
+  renderStructGrids();
+  renderDashboard();
+}
+
+async function deleteStruct(id,nm){
+  showConfirm('Supprimer "'+nm+'" ?','Cette action est irréversible. Tous les créneaux associés seront libérés.',async()=>{
+    await db.from('creneaux').update({statut:'libre',par:null}).eq('par',id);
+    await db.from('structures').delete().eq('id',id);
+    structures=structures.filter(s=>s.id!==id);
+    renderStructGrids(); renderDashboard();
+    showToast('Structure supprimée','warn');
+  });
 }
 
 function genCode(){
@@ -991,6 +1167,160 @@ function genCode(){
   if(el) el.value=Array.from({length:8},()=>c[Math.floor(Math.random()*c.length)]).join('');
 }
 
+// ── ACCÈS STRUCTURE ───────────────────────────────────────────────────────
+function openAccess(id){
+  const s=structures.find(x=>x.id===id); if(!s) return;
+  currentAccessStruct=s;
+  document.getElementById('access-struct-nm').textContent=s.nom+' — Informations de connexion';
+  document.getElementById('access-code-val').textContent=s.code;
+  const link=SITE_URL+'?struct='+encodeURIComponent(s.id)+'&code='+encodeURIComponent(s.code);
+  document.getElementById('access-link-val').textContent=link;
+  openModal('m-access');
+}
+
+function copyAccessCode(){
+  const code=document.getElementById('access-code-val').textContent;
+  navigator.clipboard.writeText(code).then(()=>showToast('Code "'+code+'" copié !','success'));
+}
+
+function copyAccessLink(){
+  const link=document.getElementById('access-link-val').textContent;
+  navigator.clipboard.writeText(link).then(()=>showToast('Lien copié !','success'));
+}
+
+function sendAccessByEmail(){
+  if(!currentAccessStruct) return;
+  const s=currentAccessStruct;
+  const link=document.getElementById('access-link-val').textContent;
+  const subject=encodeURIComponent('Votre accès SIAO RDV — '+s.nom);
+  const body=encodeURIComponent(
+    'Bonjour,\n\n'+
+    'Voici vos informations de connexion à la plateforme SIAO RDV :\n\n'+
+    '🏠 Structure : '+s.nom+'\n'+
+    '🔑 Code d\'accès : '+s.code+'\n'+
+    '🔗 Lien direct : '+link+'\n\n'+
+    'Comment vous connecter :\n'+
+    '1. Ouvrez le lien ci-dessus\n'+
+    '2. Sélectionnez votre structure\n'+
+    '3. Saisissez votre code d\'accès\n\n'+
+    'Ce code est confidentiel — ne le partagez pas.\n\n'+
+    'Cordialement,\nLe SIAO Gironde\n05 40 54 55 00 — siaogironde@caio-bordeaux.fr'
+  );
+  window.open('mailto:?subject='+subject+'&body='+body);
+}
+
+// ── NOTES INTERNES ────────────────────────────────────────────────────────
+function openNoteModal(id,nm,note){
+  currentNoteId=id;
+  document.getElementById('note-struct-nm').textContent=nm+' — Note interne';
+  document.getElementById('note-val').value=note||'';
+  openModal('m-note');
+}
+
+async function saveNote(){
+  const note=document.getElementById('note-val').value.trim();
+  await db.from('structures').update({note}).eq('id',currentNoteId);
+  const idx=structures.findIndex(s=>s.id===currentNoteId);
+  if(idx>=0) structures[idx].note=note;
+  closeModal('m-note');
+  renderStructGrids();
+  showToast('Note enregistrée — invisible pour la structure','success');
+}
+
+// ── CRÉNEAUX ──────────────────────────────────────────────────────────────
+function renderCreneaux(){
+  const el=document.getElementById('cren-list'); if(!el) return;
+  const now=new Date();
+  const sorted=creneaux.sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure));
+  if(!sorted.length){ el.innerHTML='<p style="text-align:center;padding:30px;color:var(--text-soft)">Aucun créneau. Cliquez sur <strong>+ Nouveau créneau</strong> pour commencer.</p>'; return; }
+  el.innerHTML=sorted.map(c=>{
+    const d=new Date(c.date+'T00:00:00');
+    const s=c.par?structures.find(x=>x.id===c.par):null;
+    const dest=c.dest?structures.find(x=>x.id===c.dest):null;
+    const past=new Date(c.date+'T'+c.heure)<now;
+    const col=c.statut==='reserve'?'#10b981':'#2152a3';
+    return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 15px;margin-bottom:8px;display:flex;align-items:center;gap:12px;border-left:3px solid ${col}${past?';opacity:.6':''}">
+      <div style="text-align:center;min-width:42px;flex-shrink:0">
+        <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--navy)">${d.getDate()}</div>
+        <div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">${d.toLocaleDateString('fr-FR',{month:'short'})}</div>
+      </div>
+      <div style="width:2px;height:28px;background:var(--border);border-radius:2px;flex-shrink:0"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">
+          ${c.type}
+          <span style="background:${c.statut==='reserve'?'#d1fae5':'var(--primary-soft)'};color:${c.statut==='reserve'?'#059669':'var(--primary)'};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:5px">${c.statut==='reserve'?'Réservé':'Libre'}</span>
+          ${past?'<span style="background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:3px">Passé</span>':''}
+        </div>
+        <div style="font-size:11px;color:var(--text-soft)">🕐 ${c.heure} · ${c.duree}min · ${c.mod}${dest?' · 🏠 '+dest.nom:' · 🌐 Toutes'}${s?' · ✅ '+s.nom:''}</div>
+      </div>
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        ${c.statut==='reserve'?`<button class="btn btn-ghost btn-sm" onclick="liberercren('${c.id}')">Libérer</button>`:'<button class="btn btn-ghost btn-sm" style="cursor:default;opacity:.5">Libre</button>'}
+        <button class="btn btn-danger btn-sm" onclick="deleteCren('${c.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function liberercren(id){
+  await db.from('creneaux').update({statut:'libre',par:null,msg:''}).eq('id',id);
+  const idx=creneaux.findIndex(c=>c.id===id);
+  if(idx>=0){ creneaux[idx].statut='libre'; creneaux[idx].par=null; }
+  renderCreneaux(); renderDashboard();
+  showToast('Créneau libéré','warn');
+}
+
+async function deleteCren(id){
+  showConfirm('Supprimer ce créneau ?','Cette action est irréversible.', async()=>{
+    await db.from('creneaux').delete().eq('id',id);
+    creneaux=creneaux.filter(c=>c.id!==id);
+    renderCreneaux(); renderDashboard();
+    showToast('Créneau supprimé','warn');
+  });
+}
+
+// ── SAUVEGARDER CRÉNEAU (modal m-cren) ───────────────────────────────────
+async function saveCren(){
+  const date=document.getElementById('c-date')?.value;
+  const heure=document.getElementById('c-heure')?.value||'09:00';
+  const type=document.getElementById('c-type')?.value||'Autre';
+  const mod=document.getElementById('c-mod')?.value||'Présentiel — SIAO';
+  const dest=document.getElementById('c-dest')?.value||'';
+  const notes=document.getElementById('c-notes')?.value||'';
+  if(!date){ showToast('Date requise','warn'); return; }
+  // Récupérer la durée sélectionnée
+  const durSel=document.querySelector('.dur-chip.sel');
+  const duree=parseInt(durSel?.dataset.dur||durSel?.textContent||'60')||60;
+  const nc={id:'c'+Date.now(),date,heure,duree,type,mod,dest,notes,statut:'libre',par:null,msg:''};
+  const {error}=await db.from('creneaux').insert(nc);
+  if(error){ showToast('Erreur: '+error.message,'error'); return; }
+  creneaux.push(nc);
+  closeModal('m-cren');
+  renderCreneaux(); renderDashboard();
+  showToast('Créneau publié ✅','success');
+}
+
+// ── Pareil pour s-new-cren (page pleine) ─────────────────────────────────
+async function publishCren(){
+  const date=document.getElementById('nc-date')?.value;
+  if(!date){ showToast('Date requise','warn'); return; }
+  const heure=document.getElementById('nc-heure')?.value||'09:00';
+  const type=document.getElementById('nc-type')?.value||'Autre';
+  const mod=document.getElementById('nc-mod')?.value||'Présentiel — SIAO';
+  const dest=document.getElementById('nc-dest')?.value||'';
+  const notes=document.getElementById('nc-notes')?.value||'';
+  const durSel=document.querySelector('.dur-chip.sel');
+  const duree=parseInt(durSel?.dataset.dur||'60')||60;
+  const nc={id:'c'+Date.now(),date,heure,duree,type,mod,dest,notes,statut:'libre',par:null,msg:''};
+  const {error}=await db.from('creneaux').insert(nc);
+  if(error){ showToast('Erreur: '+error.message,'error'); return; }
+  creneaux.push(nc);
+  renderCreneaux(); renderDashboard();
+  showToast('Créneau publié ✅','success');
+  go('s-dashboard',document.querySelectorAll('.dtab')[1]);
+  goDash('d-creneaux');
+}
+
+// ── INIT après login ──────────────────────────────────────────────────────
 
 
 // ─── THEME ─────────────────────────────────────────────────────────────────
@@ -1045,8 +1375,7 @@ function loginSIAOMain(){
   if(pwd==='siao2025'||pwd===''){
     err.style.display='none';
     go('s-dashboard',document.querySelectorAll('.dtab')[1]);
-    loadAll().then(()=>subscribeRealtime());
-    showToast('Connexion réussie — Bienvenue Admin SIAO ✓','success');
+    showToast('Connexion réussie — Bienvenue Admin SIAO','success');
   }else{err.style.display='block'}
 }
 function loginStructMain(){
@@ -1069,13 +1398,8 @@ function doLogin(){}
 
 
 // ─── STRUCT CARDS ──────────────────────────────────────────────────────────
-const structs=[
-  {init:'FC',nm:'Foyer La Caravelle',tp:'CHRS · Lyon 3e',rdv:7,av:1,col:'linear-gradient(135deg,#3b72d4,#7c3aed)',sts:'active',tags:['renouvellement','priorité']},
-  {init:'CE',nm:'CHRS Espoir',tp:'CHRS · Villeurbanne',rdv:5,av:1,col:'linear-gradient(135deg,#059669,#10b981)',sts:'pending',tags:['inactif']},
-  {init:'CH',nm:'CADA Harmonie',tp:'CADA · Bron',rdv:3,av:1,col:'linear-gradient(135deg,#f97316,#fbbf24)',sts:'active',tags:[]},
-  {init:'AH',nm:'ALT Horizon',tp:'ALT · Pessac',rdv:8,av:0,col:'linear-gradient(135deg,#8b5cf6,#a78bfa)',sts:'active',tags:['suivi']},
-  {init:'RL',nm:'Rés. Lumière',tp:'Résidence accueil · Talence',rdv:4,av:2,col:'linear-gradient(135deg,#0ea5e9,#38bdf8)',sts:'active',tags:[]},
-];
+// structs → chargées depuis Supabase
+
 function renderStructCard(s){
   const stsHtml=s.sts==='active'
     ?'<div class="struct-sts" style="background:#d1fae5;color:#059669"><span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block"></span> Connectée</div>'
@@ -1094,14 +1418,8 @@ function renderStructCard(s){
     ${tagsHtml?`<div class="tags-wrap">${tagsHtml}</div>`:''}
   </div>`;
 }
-function renderStructGrids(){
-  const list = structures.map((s,i)=>toStructUI(s,i));
-  const g1=document.getElementById('struct-grid-main');
-  const g2=document.getElementById('struct-grid-full');
-  const html = list.length ? list.map(renderStructCard).join('') : '<p style="padding:20px;text-align:center;color:var(--text-soft)">Aucune structure</p>';
-  if(g1) g1.innerHTML=html;
-  if(g2) g2.innerHTML=html;
-}
+// renderStructGrids → définie dans le bloc Supabase
+
 
 // ─── WEEK CALENDAR ─────────────────────────────────────────────────────────
 let weekOffset=0;
@@ -1262,7 +1580,7 @@ updateRecap();
   <div style="display:flex;align-items:center;gap:16px">
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Mentions légales</a>
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Politique de confidentialité</a>
-    <a href="/cdn-cgi/l/email-protection#a2d1cbc3cdc5cbd0cdccc6c7e2c1c3cbcd8fc0cdd0c6c7c3d7da8cc4d0" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
+    <a href="/cdn-cgi/l/email-protection#d3a0bab2bcb4baa1bcbdb7b693b0b2babcfeb1bca1b7b6b2a6abfdb5a1" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
   </div>
 </footer>
 
@@ -1287,7 +1605,7 @@ updateRecap();
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">SIRET</span>377 785 290 00034</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Adresse</span>6 rue du Noviciat, 33800 Bordeaux</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Tél.</span>05 40 54 55 00</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="/cdn-cgi/l/email-protection#e2918b838d858b908d8c8687a281838b8dcf808d90868783979acc8490" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="b7c4ded6d8d0dec5d8d9d3d2f7d4d6ded89ad5d8c5d3d2d6c2cf99d1c5">[email&#160;protected]</span></a></div>
+          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="/cdn-cgi/l/email-protection#f3809a929c949a819c9d9796b390929a9cde919c81979692868bdd9581" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="81f2e8e0eee6e8f3eeefe5e4c1e2e0e8eeace3eef3e5e4e0f4f9afe7f3">[email&#160;protected]</span></a></div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Dir. publication</span><span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
@@ -1323,7 +1641,7 @@ updateRecap();
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
       <div class="card"><div class="ch"><div class="ct">3. Vos droits</div></div><div class="cb">
         <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:8px">Accès · Rectification · Effacement · Opposition (art. 15–22 RGPD)</p>
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="/cdn-cgi/l/email-protection#57243e3638303e25383933321734363e387a353825333236222f793125" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="384b5159575f514a57565c5d785b595157155a574a5c5d594d40165e4a">[email&#160;protected]</span></a></p>
+        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="/cdn-cgi/l/email-protection#304359515f5759425f5e5455705351595f1d525f4254555145481e5642" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="ddaeb4bcb2bab4afb2b3b9b89dbebcb4b2f0bfb2afb9b8bca8a5f3bbaf">[email&#160;protected]</span></a></p>
         <p style="font-size:13px;color:var(--text-soft);margin-top:6px">DPO : <span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></p>
         <div style="margin-top:10px;padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e">Recours possible auprès de la <a href="https://www.cnil.fr" target="_blank" style="color:#92400e;font-weight:700">CNIL</a>.</div>
       </div></div>
