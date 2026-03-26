@@ -272,7 +272,7 @@ footer a:hover{color:var(--p)}
         </div>
         <div class="err-box" id="login-err">Code incorrect. Vérifiez avec votre référent SIAO.</div>
         <button class="btn btn-s btn-full" onclick="doLogin()">Accéder à mon espace →</button>
-        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="mailto:siaogironde@caio-bordeaux.fr" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
+        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="/cdn-cgi/l/email-protection#fb88929a949c928994959f9ebb989a9294d69994899f9e9a8e83d59d89" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
       </div>
     </div>
   </div>
@@ -280,7 +280,7 @@ footer a:hover{color:var(--p)}
     <span>© 2026 CAIO — SIAO Gironde · Association loi 1901 · SIRET 377 785 290 00034</span>
     <div style="display:flex;gap:12px">
       <a href="#" onclick="event.preventDefault();openOv('ov-ml')">Mentions légales</a>
-      <a href="mailto:siaogironde@caio-bordeaux.fr">Contact</a>
+      <a href="/cdn-cgi/l/email-protection#cbb8a2aaa4aca2b9a4a5afae8ba8aaa2a4e6a9a4b9afaeaabeb3e5adb9">Contact</a>
     </div>
   </footer>
 </div>
@@ -333,7 +333,7 @@ footer a:hover{color:var(--p)}
               <div style="font-size:12px;color:var(--txs);margin-bottom:5px">Chargée de convention · SIAO Gironde</div>
               <div style="display:flex;gap:12px;flex-wrap:wrap">
                 <a id="ref-tel" href="tel:0540545500" style="font-size:12px;color:var(--p);text-decoration:none">📞 —</a>
-                <a href="mailto:siaogironde@caio-bordeaux.fr" style="font-size:12px;color:var(--p);text-decoration:none">✉️ siaogironde@caio-bordeaux.fr</a>
+                <a href="/cdn-cgi/l/email-protection#65160c040a020c170a0b01002506040c0a48070a17010004101d4b0317" style="font-size:12px;color:var(--p);text-decoration:none">✉️ <span class="__cf_email__" data-cfemail="7b08121a141c120914151f1e3b181a1214561914091f1e1a0e03551d09">[email&#160;protected]</span></a>
               </div>
             </div>
             <button class="btn btn-g btn-sm" onclick="goP('msg')">💬 Écrire</button>
@@ -453,7 +453,7 @@ footer a:hover{color:var(--p)}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════════════════════════
 // SUPABASE
 // ══════════════════════════════════════════════════════════════════
@@ -630,7 +630,7 @@ async function annuler(id){
 async function sendMsg(){
   const ta=document.getElementById('msg-in');
   const txt=ta.value.trim();if(!txt)return;
-  if(currentId)await db.from('messages').insert({id:'m'+Date.now(),struct_id:currentId,contenu:txt,expediteur:'structure'});
+  if(currentId)await db.from('messages').insert({struct_id:currentId,contenu:txt,expediteur:'structure'});
   const body=document.getElementById('msg-body');
   const bub=document.createElement('div');
   bub.className='bub sent';
@@ -672,10 +672,4 @@ function closeConf(){document.getElementById('conf-ov').classList.remove('open')
 function toast(msg,type){const w=document.getElementById('toasts');const t=document.createElement('div');t.className='toast '+(type||'s');const ico={s:'✅',w:'⚠️',e:'❌',i:'ℹ️'};t.innerHTML=`<span>${ico[type]||'✅'}</span><span>${msg}</span>`;w.appendChild(t);setTimeout(()=>{if(t.parentNode)t.parentNode.removeChild(t);},3500);}
 function obn(n){document.querySelectorAll('.ob-s').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.ob-dot').forEach(d=>d.classList.remove('on'));document.getElementById('ob'+n).classList.add('on');document.getElementById('ob-fill').style.width=(n/3*100)+'%';}
 function obc(){document.getElementById('ob-ov').classList.remove('open');toast('Bienvenue ! Votre espace est prêt.','s');}
-document.querySelectorAll('.tog-r').forEach(r=>r.addEventListener('click',()=>r.querySelector('.tog-sw').classList.toggle('on')));
-
-// ── INIT ──────────────────────────────────────────────────────────────────
-initStructures();
-</script>
-</body>
-</html>
+document.querySelectorAll('
