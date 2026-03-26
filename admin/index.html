@@ -506,15 +506,8 @@ select option{background:var(--surface)}
           Accéder au tableau de bord →
         </button>
 
-        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
-          <div style="font-size:11px;color:var(--text-soft);text-align:center;margin-bottom:12px">Accès rapide (prototype)</div>
-          <button style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:10px;font-size:12px;color:var(--text-mid);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[1]);showToast('Connecté en tant qu\'Admin SIAO','success')">
-            🔓 Connexion démo sans mot de passe
-          </button>
-        </div>
-
         <div style="margin-top:20px;text-align:center;font-size:12px;color:var(--text-soft)">
-          Problème de connexion ? <a href="#" style="color:var(--primary)">contact@siao33.fr</a>
+          Problème de connexion ? <a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a>
         </div>
       </div>
     </div>
@@ -612,6 +605,10 @@ select option{background:var(--surface)}
 
       <!-- D-STRUCTURES -->
       <div id="d-structures" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div><span style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--navy)">Toutes les structures</span></div>
+          <button class="btn-new" onclick="openNewStructModal()">+ Nouvelle structure</button>
+        </div>
         <div class="struct-grid" id="struct-grid-full"></div>
       </div>
 
@@ -757,6 +754,41 @@ select option{background:var(--surface)}
 <!-- ═══════════════════════════════════════════════════════════════════
      MODALS
 ═══════════════════════════════════════════════════════════════════ -->
+<!-- Modal structure CRUD -->
+<div class="modal-ov" id="m-str">
+  <div class="modal" style="max-width:540px">
+    <div class="modal-h"><div><div class="modal-title" id="str-modal-title">Nouvelle structure</div><div class="modal-sub">Remplissez les informations de la structure partenaire</div></div><button class="close-x" onclick="closeModal('m-str')">✕</button></div>
+    <div class="modal-b">
+      <input type="hidden" id="s-edit-id">
+      <div class="fg-row">
+        <div class="fg"><label>Nom de la structure</label><input id="s-nom" placeholder="Ex: CHRS Saint-Michel"></div>
+        <div class="fg"><label>Type</label><select id="s-type"><option value="CHRS">CHRS</option><option value="Foyer">Foyer</option><option value="CADA">CADA</option><option value="ALT">ALT</option><option value="Résidence accueil">Résidence accueil</option><option value="Pension de famille">Pension de famille</option><option value="Maison relais">Maison relais</option><option value="Autre">Autre</option></select></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Ville</label><input id="s-ville" placeholder="Ex: Bordeaux"></div>
+        <div class="fg"><label>Responsable</label><input id="s-responsable" placeholder="Ex: Jean Dupont"></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Email</label><input id="s-email" type="email" placeholder="contact@structure.fr"></div>
+        <div class="fg"><label>Téléphone</label><input id="s-tel-field" placeholder="05 xx xx xx xx"></div>
+      </div>
+      <div class="fg"><label>Référent SIAO</label><input id="s-referent" placeholder="Ex: Marie Lefebvre"></div>
+      <div class="fg">
+        <label>Code d'accès structure</label>
+        <div style="display:flex;gap:8px">
+          <input id="s-code" placeholder="CODE123" style="flex:1;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:2px;font-size:15px;font-weight:600">
+          <button class="btn btn-ghost" onclick="genCode()" style="white-space:nowrap">🎲 Générer</button>
+        </div>
+        <div style="font-size:10px;color:var(--text-soft);margin-top:4px">Ce code sera transmis à la structure pour se connecter</div>
+      </div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-ghost" onclick="closeModal('m-str')">Annuler</button>
+      <button class="btn btn-primary" id="str-save-btn" onclick="saveStr()">Créer la structure</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal créneau rapide -->
 <div class="modal-ov" id="m-cren">
   <div class="modal">
@@ -960,18 +992,23 @@ function renderStructCard(s){
   const stsHtml=s.sts==='active'
     ?'<div class="struct-sts" style="background:#d1fae5;color:#059669"><span style="width:5px;height:5px;border-radius:50%;background:#10b981;display:inline-block"></span> Connectée</div>'
     :'<div class="struct-sts inactive-badge"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;display:inline-block"></span> En attente</div>';
-  const tagsHtml=s.tags.map(t=>`<span class="internal-tag">🔒 ${t}</span>`).join('');
-  return`<div class="struct-card" onclick="showToast('Fiche: ${s.nm}','info')">
+  return`<div class="struct-card">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
       <div class="struct-av" style="background:${s.col}">${s.init}</div>
-      <div><div class="struct-nm">${s.nm}</div><div class="struct-tp">${s.tp}</div></div>
+      <div style="flex:1"><div class="struct-nm">${s.nm}</div><div class="struct-tp">${s.tp}</div></div>
     </div>
-    <div style="display:flex;gap:12px">
+    <div style="display:flex;gap:12px;margin-bottom:8px">
       <div class="struct-stat" style="flex:1"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.rdv}</div><div style="font-size:10px;color:var(--text-soft)">RDV total</div></div>
       <div class="struct-stat" style="flex:1"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">${s.av}</div><div style="font-size:10px;color:var(--text-soft)">À venir</div></div>
     </div>
-    ${stsHtml}
-    ${tagsHtml?`<div class="tags-wrap">${tagsHtml}</div>`:''}
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+      <span style="font-size:10px;color:var(--text-soft);background:var(--surface3);padding:3px 8px;border-radius:6px;font-family:'DM Mono',monospace;letter-spacing:1px">🔑 ${s.code||'—'}</span>
+      ${stsHtml}
+    </div>
+    <div style="display:flex;gap:6px;padding-top:10px;border-top:1px solid var(--border)">
+      <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openEditStructModal('${s.id}')">✏️ Modifier</button>
+      <button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteStructure('${s.id}','${(s.nm||'').replace(/'/g,"\\'")}')">🗑 Supprimer</button>
+    </div>
   </div>`;
 }
 function renderStructGrids(){
@@ -1283,24 +1320,78 @@ async function saveNewCren(){
   go('s-dashboard',document.querySelectorAll('.dtab')[1]);
 }
 
-// ─── SAUVEGARDE STRUCTURES (Supabase) ────────────────────────────────────────
+// ─── STRUCTURES CRUD COMPLET ─────────────────────────────────────────────────
+function openNewStructModal(){
+  document.getElementById('s-edit-id').value='';
+  document.getElementById('s-nom').value='';
+  document.getElementById('s-type').value='CHRS';
+  document.getElementById('s-ville').value='';
+  document.getElementById('s-responsable').value='';
+  document.getElementById('s-email').value='';
+  document.getElementById('s-tel-field').value='';
+  document.getElementById('s-referent').value='';
+  document.getElementById('s-code').value='';
+  document.getElementById('str-modal-title').textContent='Nouvelle structure';
+  document.getElementById('str-save-btn').textContent='Créer la structure';
+  openModal('m-str');
+}
+function openEditStructModal(id){
+  const s=structures.find(x=>x.id===id);
+  if(!s)return;
+  document.getElementById('s-edit-id').value=s.id;
+  document.getElementById('s-nom').value=s.nom||'';
+  document.getElementById('s-type').value=s.type||'CHRS';
+  document.getElementById('s-ville').value=s.ville||'';
+  document.getElementById('s-responsable').value=s.responsable||'';
+  document.getElementById('s-email').value=s.email||'';
+  document.getElementById('s-tel-field').value=s.telephone||s.tel||'';
+  document.getElementById('s-referent').value=s.referent||'';
+  document.getElementById('s-code').value=s.code||'';
+  document.getElementById('str-modal-title').textContent='Modifier la structure';
+  document.getElementById('str-save-btn').textContent='Enregistrer';
+  openModal('m-str');
+}
 async function saveStr(){
-  const nom  = document.getElementById('s-nom')?.value?.trim();
-  const code = document.getElementById('s-code')?.value?.trim()?.toUpperCase();
-  if(!nom||!code){ showToast('Nom et code requis','warn'); return; }
-  const s = {
+  const editId=document.getElementById('s-edit-id').value;
+  const nom=document.getElementById('s-nom')?.value?.trim();
+  const code=document.getElementById('s-code')?.value?.trim()?.toUpperCase();
+  if(!nom){showToast('Le nom est obligatoire','warn');return;}
+  if(!code){showToast("Le code d'accès est obligatoire",'warn');return;}
+  const row={
     nom,
-    type:   document.getElementById('s-type')?.value || 'Autre',
-    ville:  document.getElementById('s-ville')?.value?.trim() || '',
-    code
+    type:document.getElementById('s-type')?.value||'Autre',
+    ville:document.getElementById('s-ville')?.value?.trim()||'',
+    code,
+    responsable:document.getElementById('s-responsable')?.value?.trim()||'',
+    email:document.getElementById('s-email')?.value?.trim()||'',
+    telephone:document.getElementById('s-tel-field')?.value?.trim()||'',
+    referent:document.getElementById('s-referent')?.value?.trim()||''
   };
-  const {error} = await db.from('structures').insert(s);
-  if(error){ showToast('Erreur: '+error.message,'error'); return; }
-  const r = await db.from('structures').select('*').order('nom');
-  if(r.data) structures = r.data;
+  let error;
+  if(editId){
+    ({error}=await db.from('structures').update(row).eq('id',editId));
+    if(error){showToast('Erreur: '+error.message,'error');return;}
+    showToast('Structure "'+nom+'" modifiée ✅','success');
+  }else{
+    ({error}=await db.from('structures').insert(row));
+    if(error){showToast('Erreur: '+error.message,'error');return;}
+    showToast('Structure "'+nom+'" créée ✅','success');
+  }
+  const r=await db.from('structures').select('*').order('nom');
+  if(r.data) structures=r.data;
   closeModal('m-str');
-  renderStructGrids(); renderEnsemble();
-  showToast('Structure "'+nom+'" créée ✅','success');
+  renderStructGrids();renderEnsemble();
+  const sel=document.getElementById('c-dest');
+  if(sel){sel.innerHTML='<option value="">Toutes les structures</option>';structures.forEach(s=>{sel.innerHTML+=`<option value="${s.id}">${s.nom}</option>`;});}
+}
+async function deleteStructure(id,nom){
+  showConfirm('Supprimer "'+nom+'" ?','Cette structure ne pourra plus se connecter.',async()=>{
+    const{error}=await db.from('structures').delete().eq('id',id);
+    if(error){showToast('Erreur: '+error.message,'error');return;}
+    structures=structures.filter(x=>x.id!==id);
+    renderStructGrids();renderEnsemble();
+    showToast('Structure supprimée','warn');
+  });
 }
 
 // Générateur de code
