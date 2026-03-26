@@ -565,21 +565,17 @@ select option{background:var(--surface)}
 
       <!-- D-OVERVIEW -->
       <div id="d-overview">
-        <div class="kpi-grid">
-          <div class="kpi blue" onclick="showToast('Détail des créneaux','info')"><div class="kpi-ico">📅</div><div class="kpi-val">12</div><div class="kpi-lbl">Créneaux à venir</div><div class="kpi-trend up">↑ +3 sem.</div></div>
-          <div class="kpi green"><div class="kpi-ico">✅</div><div class="kpi-val">8</div><div class="kpi-lbl">Réservations confirmées</div><div class="kpi-trend up">↑ 97%</div></div>
-          <div class="kpi orange"><div class="kpi-ico">⏳</div><div class="kpi-val">2</div><div class="kpi-lbl">En attente</div><div class="kpi-trend dn">↓ Action requise</div></div>
-          <div class="kpi purple"><div class="kpi-ico">🏠</div><div class="kpi-val">24</div><div class="kpi-lbl">Structures partenaires</div><div class="kpi-trend up">↑ +2 mois</div></div>
-          <div class="kpi red"><div class="kpi-ico">🚨</div><div class="kpi-val">1</div><div class="kpi-lbl">Inactive 60j+</div><div class="kpi-trend dn">À relancer</div></div>
+        <div class="kpi-grid" id="kpi-grid">
+          <div class="kpi blue"><div class="kpi-ico">📅</div><div class="kpi-val" id="kpi-cren">0</div><div class="kpi-lbl">Créneaux total</div></div>
+          <div class="kpi green"><div class="kpi-ico">✅</div><div class="kpi-val" id="kpi-resa">0</div><div class="kpi-lbl">Réservés</div></div>
+          <div class="kpi orange"><div class="kpi-ico">🟢</div><div class="kpi-val" id="kpi-libre">0</div><div class="kpi-lbl">Libres</div></div>
+          <div class="kpi purple"><div class="kpi-ico">🏠</div><div class="kpi-val" id="kpi-struct">0</div><div class="kpi-lbl">Structures</div></div>
         </div>
         <div class="two-col" style="margin-bottom:16px">
           <div class="card">
-            <div class="ch"><div><div class="ct">Prochains créneaux</div><div class="cs">Cette semaine</div></div><div class="filters" style="margin:0;gap:5px"><button class="fb active" style="padding:4px 9px;font-size:10.5px">Tous</button><button class="fb" style="padding:4px 9px;font-size:10.5px">Libres</button><button class="fb" style="padding:4px 9px;font-size:10.5px">Réservés</button></div></div>
-            <div class="cb" style="display:flex;flex-direction:column;gap:8px">
-              <div class="slot-item"><div class="slot-time"><div>09:00</div><div class="slot-sub">Lun 24</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Bilan d'activité</div><div class="slot-struct">Foyer La Caravelle</div></div><span class="badge badge-red">Réservé</span><span class="slot-mode">💻</span></div>
-              <div class="slot-item"><div class="slot-time"><div>14:30</div><div class="slot-sub">Mar 25</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Réunion partenariale</div><div class="slot-struct">Toutes structures</div></div><span class="badge badge-green">Libre</span><span class="slot-mode">🏢</span></div>
-              <div class="slot-item"><div class="slot-time"><div>10:00</div><div class="slot-sub">Jeu 27</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Point de suivi</div><div class="slot-struct">CHRS Espoir</div></div><span class="badge badge-orange">En attente</span><span class="slot-mode">📞</span></div>
-              <div class="slot-item"><div class="slot-time"><div>11:00</div><div class="slot-sub">Ven 28</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Formation SI SIAO</div><div class="slot-struct">CADA Harmonie</div></div><span class="badge badge-green">Libre</span><span class="slot-mode">💻</span></div>
+            <div class="ch"><div><div class="ct">Prochains créneaux</div><div class="cs">Depuis Supabase</div></div></div>
+            <div class="cb" style="display:flex;flex-direction:column;gap:8px" id="dash-next-slots">
+              <div style="color:var(--text-soft);font-size:13px;padding:12px 0;text-align:center">Chargement…</div>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:14px">
@@ -595,24 +591,22 @@ select option{background:var(--surface)}
                 <div class="cal-d">31</div>
               </div>
             </div></div>
-            <div class="card" style="flex:1"><div class="ch"><div class="ct">Activité récente</div></div><div class="cb" style="padding-top:8px">
-              <div class="act-item"><div class="act-dot" style="background:var(--success)"></div><div><div class="act-txt"><strong>Foyer La Caravelle</strong> a confirmé le RDV du 24 mars</div><div class="act-time">Il y a 12 min</div></div></div>
-              <div class="act-item"><div class="act-dot" style="background:var(--primary-light)"></div><div><div class="act-txt">Nouveau créneau créé — <strong>Ven 28 mars</strong></div><div class="act-time">Il y a 1h</div></div></div>
-              <div class="act-item"><div class="act-dot" style="background:var(--warn)"></div><div><div class="act-txt"><strong>CHRS Espoir</strong> a demandé un créneau hors planning</div><div class="act-time">Hier 16:42</div></div></div>
-              <div class="act-item"><div class="act-dot" style="background:var(--success)"></div><div><div class="act-txt">Structure <strong>CADA Harmonie</strong> ajoutée avec succès</div><div class="act-time">Hier 10:15</div></div></div>
+            <div class="card" style="flex:1"><div class="ch"><div class="ct">Dernières réservations</div></div><div class="cb" style="padding-top:8px" id="dash-recent-resa">
+              <div style="color:var(--text-soft);font-size:13px;padding:12px 0;text-align:center">Chargement…</div>
             </div></div>
           </div>
         </div>
-        <div class="card"><div class="ch"><div><div class="ct">Structures partenaires</div><div class="cs">24 structures actives</div></div><button class="btn btn-ghost btn-sm">+ Nouvelle structure</button></div><div class="cb"><div class="struct-grid" id="struct-grid-main"></div></div></div>
+        <div class="card"><div class="ch"><div><div class="ct">Structures partenaires</div><div class="cs" id="struct-count-label">Chargement…</div></div><button class="btn btn-ghost btn-sm" onclick="openNewStructModal()">+ Nouvelle structure</button></div><div class="cb"><div class="struct-grid" id="struct-grid-main"></div></div></div>
       </div>
 
       <!-- D-CRENEAUX -->
       <div id="d-creneaux" style="display:none">
-        <div class="filters"><button class="fb active">Tous</button><button class="fb">Libres</button><button class="fb">Réservés</button><button class="fb">Cette semaine</button></div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div class="slot-item"><div class="slot-time"><div>09:00</div><div class="slot-sub">Lun 24</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Bilan d'activité</div><div class="slot-struct">Foyer La Caravelle · 1h · Visio</div></div><span class="badge badge-red">Réservé</span><button class="btn btn-ghost btn-xs" onclick="showConfirm('Annuler ce créneau ?','Cette action est irréversible.',()=>showToast('Créneau annulé','warn'))">🗑</button></div>
-          <div class="slot-item"><div class="slot-time"><div>14:30</div><div class="slot-sub">Mar 25</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Réunion partenariale</div><div class="slot-struct">Toutes structures · 1h30 · Présentiel</div></div><span class="badge badge-green">Libre</span><button class="btn btn-ghost btn-xs" onclick="showConfirm('Supprimer ce créneau ?','Aucune réservation en cours.',()=>showToast('Créneau supprimé','warn'))">🗑</button></div>
-          <div class="slot-item"><div class="slot-time"><div>10:00</div><div class="slot-sub">Jeu 27</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Point de suivi CHRS Espoir</div><div class="slot-struct">45min · Téléphone</div></div><span class="badge badge-orange">En attente</span><button class="btn btn-success btn-xs">✓ Valider</button></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div><span style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--navy)">Tous les créneaux</span></div>
+          <button class="btn-new" onclick="openModal('m-cren')">+ Nouveau créneau</button>
+        </div>
+        <div id="d-cren-list" style="display:flex;flex-direction:column;gap:8px">
+          <div style="color:var(--text-soft);font-size:13px;padding:20px;text-align:center">Chargement…</div>
         </div>
       </div>
 
@@ -623,9 +617,8 @@ select option{background:var(--surface)}
 
       <!-- D-RESERVATIONS -->
       <div id="d-reservations" style="display:none">
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div class="slot-item"><div class="slot-time"><div>09:00</div><div class="slot-sub">Lun 24</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Bilan d'activité</div><div class="slot-struct">Foyer La Caravelle · Message : "Merci pour ce créneau !"</div></div><span class="badge badge-red">Confirmé</span><button class="btn btn-danger btn-xs" onclick="showConfirm('Annuler la réservation ?','La structure sera notifiée.',()=>showToast('Réservation annulée','warn'))">Annuler</button></div>
-          <div class="slot-item"><div class="slot-time"><div>10:00</div><div class="slot-sub">Jeu 27</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">Point de suivi CHRS Espoir</div><div class="slot-struct">En attente de confirmation</div></div><span class="badge badge-orange">En attente</span><button class="btn btn-success btn-xs">✓ Confirmer</button></div>
+        <div id="d-resa-list" style="display:flex;flex-direction:column;gap:8px">
+          <div style="color:var(--text-soft);font-size:13px;padding:20px;text-align:center">Chargement…</div>
         </div>
       </div>
 
@@ -989,62 +982,112 @@ function renderStructGrids(){
   if(g2) g2.innerHTML=list.length ? list.map(renderStructCard).join('') : '<div style="padding:20px;color:var(--text-soft);text-align:center">Aucune structure</div>';
 }
 function renderEnsemble(){
-  // Mettre à jour les KPIs sur le dashboard
   const cren = getCren();
   const lib  = cren.filter(c=>c.statut==='libre').length;
   const res  = cren.filter(c=>c.statut==='reserve').length;
-  const stats = document.getElementById('a-stats');
-  if(stats) stats.innerHTML=[
-    {c:'--blue',  v:cren.length,      l:'Créneaux total'},
-    {c:'--green', v:lib,              l:'Disponibles'},
-    {c:'--orange',v:res,              l:'Réservés'},
-    {c:'--accent',v:structures.length,l:'Structures'},
-  ].map(s=>`<div class="stat" style="--c:var(${s.c})"><div class="stat-v">${s.v}</div><div class="stat-l">${s.l}</div></div>`).join('');
-  // Prochains créneaux libres
-  const nextEl = document.getElementById('a-next');
+
+  // KPIs
+  const kc=document.getElementById('kpi-cren'); if(kc) kc.textContent=cren.length;
+  const kr=document.getElementById('kpi-resa'); if(kr) kr.textContent=res;
+  const kl=document.getElementById('kpi-libre'); if(kl) kl.textContent=lib;
+  const ks=document.getElementById('kpi-struct'); if(ks) ks.textContent=structures.length;
+
+  // Struct count
+  const lbl=document.getElementById('struct-count-label');
+  if(lbl) lbl.textContent=structures.length+' structures actives';
+
+  // Prochains créneaux (dashboard overview)
+  const nextEl = document.getElementById('dash-next-slots');
   if(nextEl){
-    const next = cren.filter(c=>c.statut==='libre').sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure)).slice(0,4);
+    const next = cren.sort((a,b)=>new Date(a.date+'T'+a.heure)-new Date(b.date+'T'+b.heure)).slice(0,6);
     nextEl.innerHTML = next.length ? next.map(c=>{
       const d=new Date(c.date+'T00:00:00');
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-        <div style="text-align:center;min-width:36px"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800">${d.getDate()}</div><div style="font-size:9px;color:var(--text-soft);text-transform:uppercase">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-        <div style="flex:1"><div style="color:var(--white);font-size:12px;font-weight:500">${c.type}</div><div style="color:var(--gray);font-size:11px">${c.heure} · ${c.mod}</div></div>
-        <span class="badge b-blue">${c.duree}m</span></div>`;
-    }).join('') : '<div style="color:var(--text-soft);font-size:13px;padding:10px 0">Aucun créneau libre</div>';
+      const s = c.par ? structures.find(x=>x.id===c.par) : null;
+      const dest = c.dest ? structures.find(x=>x.id===c.dest) : null;
+      const badge = c.statut==='reserve' ? '<span class="badge badge-red">Réservé</span>' : '<span class="badge badge-green">Libre</span>';
+      const structNm = c.statut==='reserve' && s ? s.nom : (dest ? dest.nom : 'Toutes structures');
+      return `<div class="slot-item">
+        <div class="slot-time"><div>${c.heure}</div><div class="slot-sub">${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric'})}</div></div>
+        <div class="slot-sep"></div>
+        <div class="slot-info-wrap"><div class="slot-type">${c.type}</div><div class="slot-struct">${structNm} · ${c.duree}min · ${c.mod}</div></div>
+        ${badge}
+        <button class="btn btn-ghost btn-xs" onclick="deleteCren('${c.id}')">🗑</button>
+      </div>`;
+    }).join('') : '<div style="color:var(--text-soft);font-size:13px;padding:12px 0;text-align:center">Aucun créneau</div>';
   }
-  // Dernières réservations
-  const resaEl = document.getElementById('a-resa-r');
+
+  // Dernières réservations (dashboard overview)
+  const resaEl = document.getElementById('dash-recent-resa');
   if(resaEl){
-    const resas = cren.filter(c=>c.statut==='reserve').sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,4);
+    const resas = cren.filter(c=>c.statut==='reserve').slice(0,4);
     resaEl.innerHTML = resas.length ? resas.map(c=>{
       const s = structures.find(x=>x.id===c.par);
-      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600">${s?.nom||'—'}</div><div style="font-size:11px;color:var(--text-soft)">${c.type} · ${c.date}</div></div><span class="badge b-green">Réservé</span></div>`;
-    }).join('') : '<div style="color:var(--text-soft);font-size:12px;padding:10px 0">Aucune réservation</div>';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div><div style="font-size:12px;font-weight:600;color:var(--navy)">${s?.nom||'—'}</div><div style="font-size:11px;color:var(--text-soft)">${c.type} · ${c.date}</div></div>
+        <span class="badge badge-green">Réservé</span>
+      </div>`;
+    }).join('') : '<div style="color:var(--text-soft);font-size:12px;padding:10px 0;text-align:center">Aucune réservation</div>';
   }
 }
+
 function renderAllCreneaux(){
-  const listEl = document.getElementById('a-cren-list');
+  // D-CRENEAUX list
+  const listEl = document.getElementById('d-cren-list');
   if(!listEl) return;
-  const cren = getCren();
-  listEl.innerHTML = cren.length ? cren.map(c=>{
+  const cren = getCren().sort((a,b)=>new Date(b.date+'T'+b.heure)-new Date(a.date+'T'+a.heure));
+  if(!cren.length){
+    listEl.innerHTML='<div style="color:var(--text-soft);font-size:13px;padding:20px;text-align:center">Aucun créneau. Cliquez "+ Nouveau créneau" pour en créer un.</div>';
+    return;
+  }
+  listEl.innerHTML = cren.map(c=>{
     const d = new Date(c.date+'T00:00:00');
     const s = c.par ? structures.find(x=>x.id===c.par) : null;
     const dest = c.dest ? structures.find(x=>x.id===c.dest) : null;
-    const col = c.statut==='reserve' ? 'var(--green)' : 'var(--blue)';
-    return `<div class="cr-card" style="--c:${col}">
-      <div class="cr-date"><div class="cr-day">${d.getDate()}</div><div class="cr-mon">${d.toLocaleDateString('fr-FR',{month:'short'})}</div></div>
-      <div class="cr-info"><h3>${c.type} <span class="badge ${c.statut==='reserve'?'b-green':'b-blue'}">${c.statut==='reserve'?'Réservé':'Libre'}</span></h3>
-        <div class="cr-meta"><span>🕐 ${c.heure} · ${c.duree}min</span><span>📍 ${c.mod}</span>${dest?`<span>🏠 ${dest.nom}</span>`:'<span>🌐 Toutes</span>'}${s?`<span style="color:var(--green)">✅ ${s.nom}</span>`:''}</div></div>
-      <div class="cr-act"><button class="btn btn-g btn-sm" onclick="showToast('${c.type} · ${c.date}','info')">Détail</button><button class="btn btn-d btn-sm" onclick="deleteCren('${c.id}')">🗑</button></div>
+    const badge = c.statut==='reserve' ? '<span class="badge badge-red">Réservé</span>' : '<span class="badge badge-green">Libre</span>';
+    const structInfo = c.statut==='reserve' && s ? s.nom+' · ' : '';
+    const destInfo = dest ? dest.nom : 'Toutes structures';
+    return `<div class="slot-item">
+      <div class="slot-time"><div>${c.heure}</div><div class="slot-sub">${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}</div></div>
+      <div class="slot-sep"></div>
+      <div class="slot-info-wrap"><div class="slot-type">${c.type}</div><div class="slot-struct">${structInfo}${destInfo} · ${c.duree}min · ${c.mod}</div></div>
+      ${badge}
+      <button class="btn btn-ghost btn-xs" onclick="deleteCren('${c.id}')">🗑</button>
+      ${c.statut==='reserve'?`<button class="btn btn-ghost btn-xs" onclick="liberCren('${c.id}')">Libérer</button>`:''}
     </div>`;
-  }).join('') : '<div style="padding:20px;text-align:center;color:var(--text-soft)">Aucun créneau</div>';
+  }).join('');
+
+  // D-RESERVATIONS list
+  const resaEl = document.getElementById('d-resa-list');
+  if(resaEl){
+    const resas = cren.filter(c=>c.statut==='reserve');
+    resaEl.innerHTML = resas.length ? resas.map(c=>{
+      const d = new Date(c.date+'T00:00:00');
+      const s = structures.find(x=>x.id===c.par);
+      return `<div class="slot-item">
+        <div class="slot-time"><div>${c.heure}</div><div class="slot-sub">${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})}</div></div>
+        <div class="slot-sep"></div>
+        <div class="slot-info-wrap"><div class="slot-type">${c.type}</div><div class="slot-struct">${s?.nom||'—'} · ${c.duree}min · ${c.mod}</div></div>
+        <span class="badge badge-red">Confirmé</span>
+        <button class="btn btn-danger btn-xs" onclick="liberCren('${c.id}')">Annuler</button>
+      </div>`;
+    }).join('') : '<div style="color:var(--text-soft);font-size:13px;padding:20px;text-align:center">Aucune réservation</div>';
+  }
 }
 async function deleteCren(id){
-  if(!confirm('Supprimer ce créneau ?')) return;
-  await db.from('creneaux').delete().eq('id',id);
-  creneaux = creneaux.filter(c=>c.id!==id);
+  showConfirm('Supprimer ce créneau ?','Cette action est irréversible.',async()=>{
+    await db.from('creneaux').delete().eq('id',id);
+    creneaux = creneaux.filter(c=>c.id!==id);
+    renderAllCreneaux(); renderEnsemble();
+    showToast('Créneau supprimé','warn');
+  });
+}
+async function liberCren(id){
+  const {error} = await db.from('creneaux').update({statut:'libre',par:null}).eq('id',id);
+  if(error){ showToast('Erreur: '+error.message,'error'); return; }
+  const idx = creneaux.findIndex(c=>c.id===id);
+  if(idx>=0){ creneaux[idx].statut='libre'; creneaux[idx].par=null; }
   renderAllCreneaux(); renderEnsemble();
-  showToast('Créneau supprimé','warn');
+  showToast('Créneau libéré','success');
 }
 
 // ─── WEEK CALENDAR ─────────────────────────────────────────────────────────
@@ -1272,13 +1315,15 @@ updateRecap();
   try{
     await loadAll();
     subscribeRealtime();
-    // Pré-remplir le select des structures dans le modal créneau
+    renderStructGrids();
+    renderEnsemble();
+    renderAllCreneaux();
+    // Pré-remplir les selects
     const sel = document.getElementById('c-dest');
     if(sel){
       sel.innerHTML='<option value="">Toutes les structures</option>';
       structures.forEach(s=>{ sel.innerHTML+=`<option value="${s.id}">${s.nom}</option>`; });
     }
-    // Pré-remplir le select login structure
     const selLogin = document.getElementById('login-struct');
     if(selLogin){
       selLogin.innerHTML='<option value="">— Sélectionner —</option>';
