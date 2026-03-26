@@ -933,30 +933,30 @@ function getInit(nom){
 function toStruct(row){
   return {
     id:   row.id,
-    init: getInit(row.nom),
-    nm:   row.nom,
-    tp:   row.type + ' · ' + row.ville,
-    type: row.type,
-    ville:row.ville,
+    init: getInit(row.nom||''),
+    nm:   row.nom||'',
+    tp:   (row.type||'') + ' · ' + (row.ville||''),
+    type: row.type||'',
+    ville:row.ville||'',
     rdv:  creneaux.filter(c=>c.par===row.id).length,
-    av:   creneaux.filter(c=>c.par===row.id && c.statut==='reserve' && new Date(c.date+'T'+c.heure)>=new Date()).length,
+    av:   creneaux.filter(c=>c.par===row.id && c.statut==='reserve' && new Date(c.date+'T'+(c.heure||'00:00'))>=new Date()).length,
     col:  getCoul(row),
     sts:  row.statut||'active',
-    tags: row.tags||[],
+    tags: (Array.isArray(row.tags) ? row.tags : []),
     note: row.note||'',
-    code: row.code,
+    code: row.code||'',
     referent: row.referent||'',
-    tel:  row.tel||''
+    tel:  row.telephone||row.tel||''
   };
 }
 function toCren(row){
   return {
     id:     row.id,
-    date:   row.date,
-    heure:  row.heure,
-    duree:  row.duree,
-    type:   row.type,
-    mod:    row.mod,
+    date:   row.date||'',
+    heure:  row.heure||'',
+    duree:  row.duree||60,
+    type:   row.type||'',
+    mod:    row.mod||'',
     dest:   row.dest||null,
     notes:  row.notes||'',
     statut: row.statut||'libre',
