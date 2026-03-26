@@ -244,7 +244,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
     <div class="err-box" id="li-err">Identifiants incorrects.</div>
     <button class="btn btn-p btn-full" onclick="doLogin()">Accéder au tableau de bord →</button>
     <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--txs)">
-      SIAO Gironde · <a href="mailto:siaogironde@caio-bordeaux.fr" style="color:var(--p)">siaogironde@caio-bordeaux.fr</a>
+      SIAO Gironde · <a href="/cdn-cgi/l/email-protection#a1d2c8c0cec6c8d3cecfc5c4e1c2c0c8ce8cc3ced3c5c4c0d4d98fc7d3" style="color:var(--p)"><span class="__cf_email__" data-cfemail="186b7179777f716a77767c7d587b797177357a776a7c7d796d60367e6a">[email&#160;protected]</span></a>
     </div>
   </div>
 </div>
@@ -532,7 +532,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════════════════════════
 // SUPABASE
 // ══════════════════════════════════════════════════════════════════
@@ -753,7 +753,7 @@ async function saveStruct(){
     if(idx>=0)structures[idx]={...structures[idx],nom,type,ville,referent,tel,code,note};
     toast('Structure "'+nom+'" mise à jour ✅','s');
   }else{
-    const ns={id:'s'+Date.now(),nom,type,ville,referent,tel,code,note,tags:[],statut:'active'};
+    const ns={nom,type,ville,referent,tel,code,note,tags:[],statut:'active'};
     const{error}=await db.from('structures').insert(ns);
     if(error){toast('Erreur: '+error.message,'e');return;}
     structures.push(ns);
@@ -874,7 +874,7 @@ async function saveCren(){
   const mod=document.getElementById('c-mod')?.value||'Présentiel — SIAO';
   const dest=document.getElementById('c-dest')?.value||'';
   const notes=document.getElementById('c-notes')?.value||'';
-  const nc={id:'c'+Date.now(),date,heure,duree:durSel,type,mod,dest,notes,statut:'libre',par:null,msg:''};
+  const nc={date,heure,duree:durSel,type,mod,dest,notes,statut:'libre',par:null,msg:''};
   const{error}=await db.from('creneaux').insert(nc);
   if(error){toast('Erreur: '+error.message,'e');return;}
   creneaux.push(nc);
@@ -987,11 +987,4 @@ function toast(msg,type){
   w.appendChild(t);
   setTimeout(()=>{if(t.parentNode)t.parentNode.removeChild(t);},3500);
 }
-function toggleDark(){
-  const d=document.documentElement.getAttribute('data-theme')==='dark';
-  document.documentElement.setAttribute('data-theme',d?'light':'dark');
-  document.getElementById('th-btn').textContent=d?'🌙':'☀️';
-}
-</script>
-</body>
-</html>
+f
