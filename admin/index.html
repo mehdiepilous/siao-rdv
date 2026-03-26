@@ -1,213 +1,287 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin SIAO</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .login-box, .admin-box {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        input, button {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        button {
-            background: #3b82f6;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-        button:hover { background: #2563eb; }
-        .error { color: red; margin: 10px 0; }
-        .success { color: green; margin: 10px 0; }
-        .structure {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 8px;
-        }
-        .admin-box { display: none; }
-        .logout {
-            background: #ef4444;
-            margin-top: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIAO RDV — Administration</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0f1f3d;--navy2:#1a3260;
+  --p:#2152a3;--pl:#3b72d4;--pd:#163a7a;--ps:#eef4ff;
+  --a:#00c6a2;--as:#e6faf7;
+  --g:#10b981;--w:#f59e0b;--d:#ef4444;
+  --bg:#f0f4f9;--sur:#fff;--sur2:#f7f9fc;--sur3:#eef1f6;
+  --tx:#0f1f3d;--txm:#4a5578;--txs:#8c95b0;
+  --b:rgba(15,31,61,.08);--bm:rgba(15,31,61,.14);
+  --sh:0 1px 4px rgba(15,31,61,.07);--shm:0 4px 16px rgba(15,31,61,.10);
+  --shl:0 16px 48px rgba(15,31,61,.14);
+  --r:12px;--e:.18s ease;
+}
+[data-theme=dark]{
+  --bg:#080d18;--sur:#0f1625;--sur2:#141d2e;--sur3:#192135;
+  --tx:#dde8ff;--txm:#7a93c0;--txs:#3d506b;
+  --b:rgba(255,255,255,.06);--bm:rgba(255,255,255,.1);
+  --navy:#dde8ff;--navy2:#b0c8f0;
+}
+html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--bm);border-radius:4px}
+
+/* ── LOGIN PAGE ─────────────────────────────────────────────────────────── */
+#login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(140deg,var(--navy) 0%,#1e3a7a 45%,#2a4f96 100%);padding:20px}
+.login-card{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-radius:20px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 24px 80px rgba(0,0,0,.25)}
+[data-theme=dark] .login-card{background:var(--sur)}
+.login-logo{width:56px;height:56px;background:linear-gradient(135deg,var(--p),var(--a));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 16px}
+.login-card h1{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--navy);text-align:center;margin-bottom:5px}
+.login-card p{font-size:13px;color:var(--txs);text-align:center;margin-bottom:24px}
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:11px;font-weight:700;color:var(--txm);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:1.5px solid var(--b);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);background:var(--sur2);outline:none;transition:border-color var(--e)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pl);background:var(--sur)}
+.btn{border:none;border-radius:9px;padding:10px 18px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:all var(--e);display:inline-flex;align-items:center;gap:6px}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--pd)}
+.btn-s{background:var(--g);color:#fff}.btn-s:hover{filter:brightness(1.08)}
+.btn-g{background:var(--sur2);border:1.5px solid var(--b);color:var(--txm)}.btn-g:hover{background:var(--sur3)}
+.btn-d{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}.btn-d:hover{background:#fca5a5}
+.btn-w{background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.btn-full{width:100%;justify-content:center;padding:12px}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:7px}
+.btn-xs{padding:3px 8px;font-size:10px;border-radius:6px}
+.err-box{background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;color:#dc2626;font-size:12px;display:none;margin-bottom:12px}
+.ok-box{background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:9px 12px;color:#059669;font-size:12px;display:none;margin-bottom:12px}
+
+/* ── APP SHELL ──────────────────────────────────────────────────────────── */
+#app{display:none;flex-direction:column;min-height:100vh}
+#app.on{display:flex}
+
+/* ── TOPBAR ─────────────────────────────────────────────────────────────── */
+#topbar{background:var(--navy);height:50px;display:flex;align-items:center;padding:0 20px;gap:4px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.tl{display:flex;align-items:center;gap:10px;margin-right:16px;padding-right:16px;border-right:1px solid rgba(255,255,255,.1)}
+.tl-ico{width:28px;height:28px;background:linear-gradient(135deg,var(--pl),var(--a));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.tl-nm{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#fff}
+.ttab{border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:7px 13px;border-radius:7px 7px 0 0;cursor:pointer;height:50px;border-bottom:2px solid transparent;transition:all var(--e);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.ttab:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}
+.ttab.on{color:#fff;font-weight:600;border-bottom-color:var(--a)}
+.t-gap{flex:1}
+.t-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:5px 10px;color:rgba(255,255,255,.65);cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all var(--e)}
+.t-btn:hover{background:rgba(255,255,255,.15)}
+
+/* ── PAGES ─────────────────────────────────────────────────────────────── */
+.pg{display:none;flex:1}.pg.on{display:flex;flex-direction:column}
+
+/* ── LAYOUT (sidebar + main) ─────────────────────────────────────────────── */
+.layout{display:flex;flex:1;overflow:hidden}
+.side{width:220px;background:var(--navy);flex-shrink:0;overflow-y:auto;display:flex;flex-direction:column}
+[data-theme=dark] .side{background:#0a1120}
+.sb-day{margin:10px 10px 4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 12px}
+.sb-day-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.sb-day-ln{font-size:11px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.sb-sec{padding:12px 12px 3px;font-size:9px;font-weight:700;color:rgba(255,255,255,.22);text-transform:uppercase;letter-spacing:1px}
+.nb{display:flex;align-items:center;gap:8px;width:calc(100% - 12px);margin:1px 6px;padding:8px 10px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.5);font-size:12.5px;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;transition:all var(--e);position:relative}
+.nb:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.nb.on{background:rgba(255,255,255,.1);color:#fff;font-weight:600}
+.nb.on::before{content:'';position:absolute;left:-6px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--a);border-radius:0 3px 3px 0}
+.nb-ico{font-size:14px;width:16px;text-align:center;flex-shrink:0}
+.nb-b{margin-left:auto;font-size:9px;font-weight:700;padding:2px 5px;border-radius:7px;color:#fff}
+.nb-b.g{background:var(--g)}.nb-b.r{background:var(--d)}.nb-b.o{background:var(--w)}
+.sb-foot{margin-top:auto;padding:10px;border-top:1px solid rgba(255,255,255,.06)}
+.u-row{display:flex;align-items:center;gap:8px;padding:7px;border-radius:8px}
+.u-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--pl),var(--a));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.u-nm{font-size:12px;font-weight:600;color:rgba(255,255,255,.8)}
+.u-rl{font-size:10px;color:rgba(255,255,255,.35)}
+.logout-btn{margin-left:auto;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.38);width:22px;height:22px;border-radius:6px;cursor:pointer;font-size:11px;transition:all var(--e)}
+.logout-btn:hover{background:rgba(239,68,68,.2);color:#ff7070}
+
+/* ── MAIN CONTENT ─────────────────────────────────────────────────────────── */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.topbar2{background:var(--sur);border-bottom:1px solid var(--b);padding:0 22px;height:52px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:100}
+.tb2-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)}
+.tb2-sub{font-size:10px;color:var(--txs);margin-top:1px}
+.tb2-r{display:flex;align-items:center;gap:7px}
+.srch{background:var(--sur2);border:1.5px solid var(--b);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--tx);font-family:'DM Sans',sans-serif;outline:none;width:180px;transition:all var(--e)}
+.srch:focus{border-color:var(--pl);width:210px}
+.content{padding:18px 22px}
+
+/* ── CARDS ─────────────────────────────────────────────────────────────── */
+.card{background:var(--sur);border-radius:var(--r);border:1px solid var(--b);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.ch{padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b)}
+.ct{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--navy)}
+.cs{font-size:11px;color:var(--txs);margin-top:1px}
+.cb{padding:14px 16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* ── KPIs ─────────────────────────────────────────────────────────────── */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;margin-bottom:18px}
+.kpi{background:var(--sur);border:1px solid var(--b);border-radius:var(--r);padding:15px 17px;cursor:pointer;transition:all var(--e);position:relative;overflow:hidden}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shm)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi.blue::before{background:linear-gradient(90deg,var(--pd),var(--pl))}
+.kpi.green::before{background:linear-gradient(90deg,#059669,#10b981)}
+.kpi.orange::before{background:linear-gradient(90deg,#d97706,#f59e0b)}
+.kpi.red::before{background:linear-gradient(90deg,#dc2626,#ef4444)}
+.kpi-v{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:3px}
+.kpi-l{font-size:11px;color:var(--txs)}
+
+/* ── STRUCT GRID ─────────────────────────────────────────────────────────── */
+.struct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:13px}
+.sc{background:var(--sur);border:1px solid var(--b);border-radius:var(--r);overflow:hidden;transition:all var(--e)}
+.sc:hover{box-shadow:var(--shm);transform:translateY(-2px)}
+.sc-head{padding:14px 15px 12px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--b)}
+.sc-av{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.sc-nm{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy);line-height:1.2}
+.sc-tp{font-size:11px;color:var(--txs);margin-top:2px}
+.sc-body{padding:11px 14px}
+.sc-stats{display:flex;gap:7px;margin-bottom:10px}
+.sc-stat{flex:1;text-align:center;background:var(--sur2);border-radius:7px;padding:6px 4px}
+.sc-sv{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--navy)}
+.sc-sl{font-size:9px;color:var(--txs);text-transform:uppercase;letter-spacing:.3px}
+.sc-code{font-family:'DM Mono',monospace;font-size:11px;color:var(--p);background:var(--ps);border-radius:6px;padding:4px 8px;display:inline-block;margin-bottom:8px;font-weight:600}
+.sc-note{font-size:11px;color:var(--txm);font-style:italic;padding:6px 8px;background:rgba(245,158,11,.06);border-left:2px solid var(--w);border-radius:0 6px 6px 0;margin-top:6px;line-height:1.5}
+.sc-acts{display:flex;gap:4px;padding:10px 14px;border-top:1px solid var(--b)}
+.sa{flex:1;padding:5px;border:1px solid var(--b);border-radius:7px;font-size:11px;font-weight:600;background:var(--sur2);color:var(--txm);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all var(--e);white-space:nowrap;text-align:center}
+.sa:hover{background:var(--ps);border-color:var(--pl);color:var(--p)}
+.sa.danger{border-color:#fecaca;background:#fee2e2;color:#dc2626}.sa.danger:hover{background:#fca5a5}
+
+/* ── CREN ITEMS ─────────────────────────────────────────────────────────── */
+.ci{background:var(--sur);border:1px solid var(--b);border-radius:var(--r);padding:12px 15px;margin-bottom:8px;display:flex;align-items:center;gap:11px;transition:all var(--e)}
+.ci:hover{box-shadow:var(--sh)}
+.ci-date{text-align:center;min-width:40px;flex-shrink:0}
+.ci-day{font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--navy);line-height:1}
+.ci-mon{font-size:9px;color:var(--txs);text-transform:uppercase}
+.ci-sep{width:2px;height:28px;background:var(--b);border-radius:2px;flex-shrink:0}
+.ci-info{flex:1;min-width:0}
+.ci-type{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px}
+.ci-meta{font-size:11px;color:var(--txs)}
+
+/* ── BADGES ─────────────────────────────────────────────────────────────── */
+.badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-flex;align-items:center}
+.bg{background:#d1fae5;color:#059669}.bb{background:var(--ps);color:var(--p)}.bo{background:#fef3c7;color:#d97706}.bd{background:#fee2e2;color:#dc2626}.bpu{background:#ede9fe;color:#7c3aed}
+
+/* ── FILTERS ─────────────────────────────────────────────────────────────── */
+.filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px}
+.fb{padding:5px 11px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;font-weight:500;background:var(--sur);color:var(--txs);cursor:pointer;transition:all var(--e);font-family:'DM Sans',sans-serif}
+.fb:hover{border-color:var(--pl);color:var(--p)}
+.fb.on{background:var(--p);border-color:var(--p);color:#fff}
+
+/* ── SLOT ITEMS ─────────────────────────────────────────────────────────── */
+.si{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b)}
+.si:last-child{border-bottom:none}
+.si-time{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy);min-width:44px;text-align:center}
+.si-sub{font-size:9px;color:var(--txs);text-transform:uppercase;letter-spacing:.3px}
+.si-sep{width:2px;height:22px;background:var(--b);border-radius:2px;flex-shrink:0}
+.si-info{flex:1;min-width:0}
+.si-type{font-size:12px;font-weight:600;color:var(--tx)}
+.si-struct{font-size:11px;color:var(--txs);margin-top:1px}
+
+/* ── ACTIVITY ─────────────────────────────────────────────────────────────── */
+.ai{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--b)}
+.ai:last-child{border-bottom:none}
+.ai-dot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.ai-txt{font-size:12px;color:var(--tx);flex:1;line-height:1.5}
+.ai-txt strong{font-weight:500;color:var(--navy)}
+.ai-time{font-size:10px;color:var(--txs);margin-top:1px}
+
+/* ── MODAL ─────────────────────────────────────────────────────────────── */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:500;align-items:center;justify-content:center;padding:16px}
+.ov.open{display:flex}
+.modal{background:var(--sur);border-radius:16px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--shl);animation:pop .22s cubic-bezier(.34,1.5,.64,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:none}}
+.mh{padding:15px 20px 12px;border-bottom:1px solid var(--b);display:flex;align-items:flex-start;justify-content:space-between}
+.mt{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--navy)}
+.ms{font-size:11px;color:var(--txs);margin-top:2px}
+.cx{background:var(--sur2);border:none;border-radius:7px;width:26px;height:26px;cursor:pointer;font-size:13px;color:var(--txs);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cx:hover{background:#fee2e2;color:#dc2626}
+.mb{padding:16px 20px}
+.mf{padding:10px 20px 14px;display:flex;gap:7px;justify-content:flex-end;border-top:1px solid var(--b)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ── CONFIRM ─────────────────────────────────────────────────────────────── */
+#conf-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:600;display:none;align-items:center;justify-content:center}
+#conf-ov.open{display:flex}
+.conf-box{background:var(--sur);border-radius:14px;padding:24px;max-width:320px;width:90%;text-align:center;box-shadow:var(--shl);animation:pop .22s cubic-bezier(.34,1.5,.64,1) both}
+.conf-box h3{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy);margin:10px 0 6px}
+.conf-box p{font-size:13px;color:var(--txs);margin-bottom:16px;line-height:1.6}
+.conf-btns{display:flex;gap:8px;justify-content:center}
+
+/* ── TOAST ─────────────────────────────────────────────────────────────── */
+#toasts{position:fixed;bottom:18px;right:18px;z-index:700;display:flex;flex-direction:column;gap:5px;pointer-events:none}
+.toast{background:var(--navy);color:#fff;padding:10px 14px;border-radius:10px;display:flex;align-items:center;gap:8px;font-size:13px;box-shadow:var(--shl);border-left:3px solid var(--a);animation:tin .25s cubic-bezier(.34,1.5,.64,1) both,tout .2s 3s ease forwards}
+.toast.s{border-left-color:var(--g)}.toast.w{border-left-color:var(--w)}.toast.e{border-left-color:var(--d)}.toast.i{border-left-color:var(--pl)}
+@keyframes tin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes tout{from{opacity:1}to{opacity:0}}
+
+/* ── ACCESS MODAL ─────────────────────────────────────────────────────────── */
+.ac-box{background:var(--sur2);border:1px solid var(--b);border-radius:10px;padding:14px;margin-bottom:12px}
+.ac-lbl{font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.ac-code{font-family:'DM Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.14em;color:var(--p);text-align:center;padding:12px;background:var(--ps);border-radius:8px;margin-bottom:9px;cursor:pointer;user-select:all}
+.ac-link{font-family:'DM Mono',monospace;font-size:11px;color:var(--txs);word-break:break-all;background:var(--sur3);border:1px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:9px;line-height:1.6;cursor:pointer;user-select:all}
+.cp-btn{width:100%;padding:9px;background:var(--p);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all var(--e)}
+.cp-btn:hover{background:var(--pd)}
+
+/* ── DUR CHIPS (créneaux) ─────────────────────────────────────────────────── */
+.dur-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.dc{padding:6px 12px;border:1.5px solid var(--b);border-radius:20px;font-size:12px;color:var(--txs);cursor:pointer;transition:all var(--e);background:var(--sur2);font-family:'DM Sans',sans-serif}
+.dc.on{border-color:var(--p);background:var(--ps);color:var(--p);font-weight:600}
+
+/* ── PARAMÈTRES ─────────────────────────────────────────────────────────── */
+.params-wrap{max-width:600px;margin:0 auto;padding:22px}
+</style>
 </head>
 <body>
+<div id="toasts"></div>
 
-<!-- Écran de connexion -->
-<div id="loginScreen" class="login-box">
-    <h2>🏛 Administration SIAO</h2>
-    <input type="password" id="passwordInput" placeholder="Mot de passe">
-    <button id="loginBtn">Se connecter</button>
-    <div id="loginError" class="error"></div>
+<!-- ██ LOGIN ████████████████████████████████████████████████████████████ -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">🏛</div>
+    <h1>Administration SIAO</h1>
+    <p>Accès réservé aux équipes SIAO Gironde</p>
+    <div class="fg"><label>Identifiant</label><input type="text" id="li-user" value="admin@siao.fr" placeholder="admin@siao.fr"></div>
+    <div class="fg"><label>Mot de passe</label><input type="password" id="li-pwd" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="err-box" id="li-err">Identifiants incorrects.</div>
+    <button class="btn btn-p btn-full" onclick="doLogin()">Accéder au tableau de bord →</button>
+    <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--txs)">
+      SIAO Gironde · <a href="/cdn-cgi/l/email-protection#a1d2c8c0cec6c8d3cecfc5c4e1c2c0c8ce8cc3ced3c5c4c0d4d98fc7d3" style="color:var(--p)"><span class="__cf_email__" data-cfemail="186b7179777f716a77767c7d587b797177357a776a7c7d796d60367e6a">[email&#160;protected]</span></a>
+    </div>
+  </div>
 </div>
 
-<!-- Interface admin -->
-<div id="adminScreen" class="admin-box">
-    <h2>🏛 Administration SIAO</h2>
-    <button id="logoutBtn" class="logout" style="background:#ef4444; margin-bottom:20px">Déconnexion</button>
-    
-    <h3>➕ Nouvelle structure</h3>
-    <input type="text" id="nomInput" placeholder="Nom de la structure">
-    <input type="text" id="villeInput" placeholder="Ville">
-    <button id="createBtn">Créer</button>
-    
-    <h3>📋 Structures existantes</h3>
-    <div id="listeStructures">Chargement...</div>
-</div>
+<!-- ██ APP ███████████████████████████████████████████████████████████████ -->
+<div id="app">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    // Initialisation Supabase
-    const supabaseClient = createClient(
-        'https://qsbacmdryccpqsrowylx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzYmFjbWRyeWNjcHFzcm93eWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzgxNDAsImV4cCI6MjA4OTkxNDE0MH0.k6kLpDoRmR874sQ5nG2KQWi_-6ZRACFUS-W5r_BMres'
-    );
-    
-    const MOT_DE_PASSE = "siao2025";
-    
-    // Éléments DOM
-    const loginScreen = document.getElementById('loginScreen');
-    const adminScreen = document.getElementById('adminScreen');
-    const passwordInput = document.getElementById('passwordInput');
-    const loginError = document.getElementById('loginError');
-    const listeStructures = document.getElementById('listeStructures');
-    const nomInput = document.getElementById('nomInput');
-    const villeInput = document.getElementById('villeInput');
-    
-    // Vérifier si déjà connecté
-    if (sessionStorage.getItem('admin_logged') === 'true') {
-        loginScreen.style.display = 'none';
-        adminScreen.style.display = 'block';
-        chargerStructures();
-    }
-    
-    // Événements
-    document.getElementById('loginBtn').onclick = function() {
-        const pwd = passwordInput.value;
-        if (pwd === MOT_DE_PASSE) {
-            sessionStorage.setItem('admin_logged', 'true');
-            loginScreen.style.display = 'none';
-            adminScreen.style.display = 'block';
-            chargerStructures();
-        } else {
-            loginError.textContent = '❌ Mot de passe incorrect';
-        }
-    };
-    
-    document.getElementById('logoutBtn').onclick = function() {
-        sessionStorage.removeItem('admin_logged');
-        loginScreen.style.display = 'block';
-        adminScreen.style.display = 'none';
-        passwordInput.value = '';
-        loginError.textContent = '';
-    };
-    
-    document.getElementById('createBtn').onclick = function() {
-        const nom = nomInput.value.trim();
-        const ville = villeInput.value.trim();
-        
-        if (!nom) {
-            alert('Veuillez saisir un nom');
-            return;
-        }
-        
-        const code = nom.substring(0, 4).toUpperCase() + Math.floor(Math.random() * 100);
-        
-        supabaseClient
-            .from('structures')
-            .insert([{ nom: nom, ville: ville, code: code }])
-            .then(result => {
-                if (result.error) {
-                    alert('Erreur: ' + result.error.message);
-                } else {
-                    alert('✅ Structure "' + nom + '" créée ! Code: ' + code);
-                    nomInput.value = '';
-                    villeInput.value = '';
-                    chargerStructures();
-                }
-            });
-    };
-    
-    function chargerStructures() {
-        listeStructures.innerHTML = 'Chargement...';
-        
-        supabaseClient
-            .from('structures')
-            .select('*')
-            .order('nom')
-            .then(result => {
-                if (result.error) {
-                    listeStructures.innerHTML = '❌ Erreur: ' + result.error.message;
-                    return;
-                }
-                
-                const data = result.data;
-                if (!data || data.length === 0) {
-                    listeStructures.innerHTML = 'Aucune structure';
-                    return;
-                }
-                
-                let html = '';
-                for (let s of data) {
-                    html += `
-                        <div class="structure">
-                            <strong>${s.nom}</strong><br>
-                            ${s.ville ? 'Ville: ' + s.ville + '<br>' : ''}
-                            Code: ${s.code || 'non généré'}<br>
-                            <button class="deleteBtn" data-id="${s.id}" style="background:#ef4444; margin-top:8px; width:auto">🗑 Supprimer</button>
-                        </div>
-                    `;
-                }
-                listeStructures.innerHTML = html;
-                
-                // Ajouter les événements supprimer
-                document.querySelectorAll('.deleteBtn').forEach(btn => {
-                    btn.onclick = function() {
-                        const id = this.getAttribute('data-id');
-                        if (confirm('Supprimer cette structure ?')) {
-                            supabaseClient
-                                .from('structures')
-                                .delete()
-                                .eq('id', id)
-                                .then(result => {
-                                    if (result.error) {
-                                        alert('Erreur: ' + result.error.message);
-                                    } else {
-                                        alert('✅ Structure supprimée');
-                                        chargerStructures();
-                                    }
-                                });
-                        }
-                    };
-                });
-            });
-    }
-    
-    // Permettre la touche Entrée
-    passwordInput.onkeypress = function(e) {
-        if (e.key === 'Enter') {
-            document.getElementById('loginBtn').click();
-        }
-    };
-</script>
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div class="tl"><div class="tl-ico">🏛</div><div class="tl-nm">SIAO RDV</div></div>
+    <button class="ttab on" id="T-dash"    onclick="goPg('dash')">📊 Dashboard</button>
+    <button class="ttab"    id="T-struct"  onclick="goPg('struct')">🏠 Structures</button>
+    <button class="ttab"    id="T-cren"    onclick="goPg('cren')">📅 Créneaux</button>
+    <button class="ttab"    id="T-msg"     onclick="goPg('msg')">💬 Messagerie</button>
+    <button class="ttab"    id="T-params"  onclick="goPg('params')">⚙️ Paramètres</button>
+    <div class="t-gap"></div>
+    <div style="display:flex;align-items:center;gap:5px;margin-right:12px;font-size:11px;color:rgba(255,255,255,.4)"><span style="width:6px;height:6px;border-radius:50%;background:var(--a);animation:pulse 2s infinite;display:inline-block"></span> En ligne</div>
+    <button class="t-btn" onclick="toggleDark()" id="th-btn">🌙</button>
+    <button class="t-btn" onclick="doLogout()" style="margin-left:5px">↩ Déconnexion</button>
+  </div>
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-</body>
-</html>
+  <!-- ── PAGE DASHBOARD ─────────────────────────────────────────────── -->
+  <div id="P-dash" class="pg on">
+    <div class="layout">
+      <nav class="side">
+        <div class="sb-day">
+          <div class="sb-day-lbl">Aujourd'hui</div>
+          <div class="sb-day-ln">📅 <span id="sb-cren-today">— créneaux</span></div>
+          <div class="sb-day-ln">🏠 <span id="sb-struct-count">— structures</span></div>
+        </div>
+        <div class="sb-sec">Vues</div>
+        <button class="nb on" id="N-overview"  onclick="goSub('overview')"><span class="nb-ico">📊</span> Vue d'ensemble</button>
+        <button class="nb"    id="N-resa"       onclick="goSub('resa')"><span class="nb-ico">✅</span> Réservations <span class="nb-b g" id="nb-resa-count">0</span></button>
+        <button class="nb"    id="N-inact"      onclick="goSub('inact')"><span class="nb-ico">🚨</span> Inactivité</button>
+        <div class="sb-sec">Raccourcis</div>
+        <button class="nb" onclick="goPg('struct')"><span class="nb-ico">🏠</span> Structures</button>
+        <button class="nb" onclick="goPg('cren')"><span class="nb-ico">📅</span> Créneaux</button>
+        <button class="nb" onclick="openAddStruct()"><span class="nb-ico">➕</span> Nouvelle structure</button>
+        <div class="sb-foot"><div class="u-row"><div class="u-av">SA</div><div><div class="u-nm">SIAO Admin</div><div class="u-rl">Accès complet</div></div><button
