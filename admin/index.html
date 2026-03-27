@@ -1397,7 +1397,7 @@ function openEditStructModal(id){
   document.getElementById('str-save-btn').textContent='Enregistrer';
   openModal('m-str');
 }
-async function saveStr(){
+async async function saveStr(){
   const editId=document.getElementById('s-edit-id').value;
   const nom=document.getElementById('s-nom')?.value?.trim();
   const code=document.getElementById('s-code')?.value?.trim()?.toUpperCase();
@@ -1408,10 +1408,11 @@ async function saveStr(){
     type:document.getElementById('s-type')?.value||'Autre',
     ville:document.getElementById('s-ville')?.value?.trim()||'',
     code,
-    responsable:document.getElementById('s-responsable')?.value?.trim()||'',
-    email:document.getElementById('s-email')?.value?.trim()||'',
-    telephone:document.getElementById('s-tel-field')?.value?.trim()||'',
-    referent:document.getElementById('s-referent')?.value?.trim()||''
+    referent:document.getElementById('s-referent')?.value?.trim()||'',
+    tel:document.getElementById('s-tel-field')?.value?.trim()||'',
+    note:'',
+    tags:[],
+    statut:'active'
   };
   let error;
   if(editId){
