@@ -238,10 +238,11 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
 <!-- ██ TAB BAR ██ -->
 <div id="bar">
   <button class="tb on" id="T-acc" onclick="goP('acc')">🏠 Accueil</button>
-  <button class="tb" id="T-esp" onclick="goP('esp')">📅 Mon espace</button>
-  <button class="tb" id="T-msg" onclick="goP('msg')">💬 Messagerie <span id="msg-b" style="background:var(--d);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:6px;margin-left:2px">1</span></button>
+  <button class="tb" id="T-esp" onclick="ifLogged('esp')" style="display:none">📅 Mon espace</button>
+  <button class="tb" id="T-msg" onclick="ifLogged('msg')\" style="display:none">💬 Messagerie <span id="msg-b" style="background:var(--d);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:6px;margin-left:2px">1</span></button>
   <div class="tb-gap"></div>
   <button class="tbtn" onclick="toggleDark()" id="th-btn">🌙</button>
+  <button class="tbtn" id="btn-logout" onclick="doLogout()" style="display:none;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#dc2626">↩ Déconnexion</button>
 </div>
 
 <!-- ██ PAGE : ACCUEIL ██ -->
@@ -280,7 +281,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
         </div>
         <div class="err-box" id="login-err">Code incorrect. Vérifiez avec votre référent SIAO.</div>
         <button class="btn btn-s btn-full" onclick="doLogin()">Accéder à mon espace →</button>
-        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="mailto:contact@siao33.fr" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
+        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="/cdn-cgi/l/email-protection#d8bbb7b6acb9bbac98abb1b9b7ebebf6beaa" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
       </div>
     </div>
   </div>
@@ -288,7 +289,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
     <span>© 2026 CAIO — SIAO Gironde · Association loi 1901 · SIRET 377 785 290 00034</span>
     <div style="display:flex;gap:12px">
       <a href="#" onclick="event.preventDefault();openOv('ov-ml')">Mentions légales</a>
-      <a href="mailto:contact@siao33.fr">Contact</a>
+      <a href="/cdn-cgi/l/email-protection#f4979b9a80959780b4879d959bc7c7da9286">Contact</a>
     </div>
   </footer>
 </div>
@@ -340,7 +341,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
                 <div style="font-size:12px;color:var(--txs);margin-bottom:5px">Chargée de convention · SIAO Gironde</div>
                 <div style="display:flex;gap:12px;flex-wrap:wrap">
                   <a id="ref-tel" href="tel:0540545500" style="font-size:12px;color:var(--p);text-decoration:none">📞 —</a>
-                  <a href="mailto:contact@siao33.fr" style="font-size:12px;color:var(--p);text-decoration:none">✉️ contact@siao33.fr</a>
+                  <a href="/cdn-cgi/l/email-protection#472428293326243307342e26287474692135" style="font-size:12px;color:var(--p);text-decoration:none">✉️ <span class="__cf_email__" data-cfemail="274448495346445367544e46481414094155">[email&#160;protected]</span></a>
                 </div>
               </div>
               <button class="btn btn-g btn-sm" onclick="goP('msg')">💬 Écrire</button>
@@ -459,7 +460,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════════════════════════
 // SUPABASE CONFIG — Correct project: elzhfqxysirwqzgihkve
 // ══════════════════════════════════════════════════════════════════
@@ -551,6 +552,9 @@ async function enterStruct(s) {
     document.getElementById('ref-tel').textContent = '📞 ' + s.tel;
     document.getElementById('ref-tel').href = 'tel:' + s.tel.replace(/\s/g, '');
   }
+  document.getElementById('T-esp').style.display='flex';
+  document.getElementById('T-msg').style.display='flex';
+  document.getElementById('btn-logout').style.display='inline-flex';
   goP('esp'); goS('rdv');
   await loadCreneaux();
   subscribeRT();
@@ -559,6 +563,9 @@ async function enterStruct(s) {
 
 function doLogout() {
   currentId = null; currentStruct = null; creneaux = [];
+  document.getElementById('T-esp').style.display='none';
+  document.getElementById('T-msg').style.display='none';
+  document.getElementById('btn-logout').style.display='none';
   goP('acc');
   document.getElementById('sel-struct').value = '';
   document.getElementById('inp-code').value = '';
@@ -697,12 +704,14 @@ async function sendMsg() {
 
 // ── NAVIGATION ──
 function goP(id) {
+  if ((id==='esp'||id==='msg') && !currentId) return;
   document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
   document.querySelectorAll('.tb').forEach(t => t.classList.remove('on'));
   const p = document.getElementById('P-' + id); if (p) p.classList.add('on');
   const t = document.getElementById('T-' + id); if (t) t.classList.add('on');
   if (id === 'msg') { const b = document.getElementById('msg-b'); if (b) b.style.display = 'none'; }
 }
+function ifLogged(id){ if(currentId) goP(id); }
 
 function goS(id) {
   document.querySelectorAll('.sp').forEach(p => p.classList.remove('on'));
@@ -727,11 +736,4 @@ function obn(n) { document.querySelectorAll('.ob-s').forEach(s => s.classList.re
 function obc() { document.getElementById('ob-ov').classList.remove('open'); toast('Bienvenue ! Votre espace est prêt.', 's'); }
 
 // ── INIT ──
-document.addEventListener('DOMContentLoaded', () => {
-  initStructures();
-  document.getElementById('conv-time').textContent = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  document.getElementById('conv-prev').textContent = 'Bienvenue sur votre espace...';
-});
-</script>
-</body>
-</html>
+document.add
