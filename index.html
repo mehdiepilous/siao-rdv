@@ -238,10 +238,11 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
 <!-- ██ TAB BAR ██ -->
 <div id="bar">
   <button class="tb on" id="T-acc" onclick="goP('acc')">🏠 Accueil</button>
-  <button class="tb" id="T-esp" onclick="goP('esp')">📅 Mon espace</button>
-  <button class="tb" id="T-msg" onclick="goP('msg')">💬 Messagerie <span id="msg-b" style="background:var(--d);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:6px;margin-left:2px">1</span></button>
+  <button class="tb" id="T-esp" onclick="goP('esp')" style="display:none">📅 Mon espace</button>
   <div class="tb-gap"></div>
   <button class="tbtn" onclick="toggleDark()" id="th-btn">🌙</button>
+  <button class="tbtn" id="btn-aide" onclick="openOv('ov-aide')" style="display:none">❓ Aide</button>
+  <button class="tbtn" id="btn-logout" onclick="doLogout()" style="display:none;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#dc2626">↩ Déconnexion</button>
 </div>
 
 <!-- ██ PAGE : ACCUEIL ██ -->
@@ -280,7 +281,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
         </div>
         <div class="err-box" id="login-err">Code incorrect. Vérifiez avec votre référent SIAO.</div>
         <button class="btn btn-s btn-full" onclick="doLogin()">Accéder à mon espace →</button>
-        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="mailto:contact@siao33.fr" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
+        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <button onclick="openOv('ov-code-perdu')" style="background:none;border:none;color:var(--a);font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;text-decoration:underline">Demander mon code</button></div>
       </div>
     </div>
   </div>
@@ -288,7 +289,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
     <span>© 2026 CAIO — SIAO Gironde · Association loi 1901 · SIRET 377 785 290 00034</span>
     <div style="display:flex;gap:12px">
       <a href="#" onclick="event.preventDefault();openOv('ov-ml')">Mentions légales</a>
-      <a href="mailto:contact@siao33.fr">Contact</a>
+      <a href="/cdn-cgi/l/email-protection#93f0fcfde7f2f0e7d3e0faf2fca0a0bdf5e1">Contact</a>
     </div>
   </footer>
 </div>
@@ -340,7 +341,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
                 <div style="font-size:12px;color:var(--txs);margin-bottom:5px">Chargée de convention · SIAO Gironde</div>
                 <div style="display:flex;gap:12px;flex-wrap:wrap">
                   <a id="ref-tel" href="tel:0540545500" style="font-size:12px;color:var(--p);text-decoration:none">📞 —</a>
-                  <a href="mailto:contact@siao33.fr" style="font-size:12px;color:var(--p);text-decoration:none">✉️ contact@siao33.fr</a>
+                  <a href="/cdn-cgi/l/email-protection#d2b1bdbca6b3b1a692a1bbb3bde1e1fcb4a0" style="font-size:12px;color:var(--p);text-decoration:none">✉️ <span class="__cf_email__" data-cfemail="88ebe7e6fce9ebfcc8fbe1e9e7bbbba6eefa">[email&#160;protected]</span></a>
                 </div>
               </div>
               <button class="btn btn-g btn-sm" onclick="goP('msg')">💬 Écrire</button>
@@ -396,35 +397,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
 </div>
 
 <!-- ██ PAGE : MESSAGERIE ██ -->
-<div id="P-msg" class="pg">
-  <div class="msg-wrap">
-    <div class="clist">
-      <div class="c-hdr">Messagerie</div>
-      <div class="conv on">
-        <div class="c-av" style="background:linear-gradient(135deg,#2152a3,#3b72d4)">SI</div>
-        <div style="flex:1;min-width:0"><div class="c-nm">SIAO Gironde</div><div class="c-pr" id="conv-prev">—</div></div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
-          <div style="font-size:10px;color:var(--txs)" id="conv-time">—</div>
-          <div class="unr" id="unr">1</div>
-        </div>
-      </div>
-    </div>
-    <div class="mpane">
-      <div class="m-hdr">
-        <div class="c-av" style="background:linear-gradient(135deg,#2152a3,#3b72d4)">SI</div>
-        <div><div style="font-weight:600;font-size:14px;color:var(--navy)">SIAO Gironde</div><div style="font-size:11px;color:var(--txs)">Messagerie sécurisée</div></div>
-      </div>
-      <div class="m-body" id="msg-body">
-        <div style="background:var(--ps);border:1px solid #b3ccf8;border-radius:8px;padding:8px 11px;font-size:12px;color:var(--pd);margin-bottom:4px">📅 Messagerie sécurisée avec le SIAO Gironde</div>
-        <div class="bub recv">Bienvenue sur votre espace SIAO RDV. N'hésitez pas à nous contacter.<div class="bub-t">SIAO</div></div>
-      </div>
-      <div class="m-comp">
-        <textarea id="msg-in" placeholder="Rédiger un message…" rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
-        <button class="send-btn" onclick="sendMsg()">➤</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!-- ██ OVERLAYS ██ -->
 <div id="conf-ov">
@@ -459,7 +432,7 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════════════════════════
 // SUPABASE CONFIG — Correct project: elzhfqxysirwqzgihkve
 // ══════════════════════════════════════════════════════════════════
@@ -551,6 +524,9 @@ async function enterStruct(s) {
     document.getElementById('ref-tel').textContent = '📞 ' + s.tel;
     document.getElementById('ref-tel').href = 'tel:' + s.tel.replace(/\s/g, '');
   }
+  document.getElementById('T-esp').style.display='flex';
+  document.getElementById('btn-logout').style.display='inline-flex';
+  document.getElementById('btn-aide').style.display='inline-flex';
   goP('esp'); goS('rdv');
   await loadCreneaux();
   subscribeRT();
@@ -559,6 +535,9 @@ async function enterStruct(s) {
 
 function doLogout() {
   currentId = null; currentStruct = null; creneaux = [];
+  document.getElementById('T-esp').style.display='none';
+  document.getElementById('btn-logout').style.display='none';
+  document.getElementById('btn-aide').style.display='none';
   goP('acc');
   document.getElementById('sel-struct').value = '';
   document.getElementById('inp-code').value = '';
@@ -626,18 +605,34 @@ function filterDispo(btn, filter) {
 
 // ── RENDER HIST ──
 function renderHist() {
-  const list = creneaux.filter(c => c.par === currentId).sort((a, b) => new Date(b.date + 'T' + b.heure) - new Date(a.date + 'T' + a.heure));
+  const list = creneaux.filter(c => c.par === currentId).sort((a,b) => new Date(b.date+'T'+b.heure) - new Date(a.date+'T'+a.heure));
   const el = document.getElementById('hist-list'); if (!el) return;
-  if (!list.length) { el.innerHTML = '<p style="color:var(--txs);font-size:13px;padding:10px 0">Aucun échange pour le moment.</p>'; return; }
-  el.innerHTML = list.map(c => {
-    const d = new Date(c.date + 'T00:00:00');
-    const past = new Date(c.date + 'T' + c.heure) < new Date();
-    return `<div class="hist">
-      <div style="width:38px;text-align:center;flex-shrink:0"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:var(--navy)">${d.getDate()}</div><div style="font-size:9px;color:var(--txs);text-transform:uppercase">${d.toLocaleDateString('fr-FR', { month: 'short' })}</div></div>
-      <div style="flex:1;margin-left:8px"><div style="font-size:13px;font-weight:500;color:var(--tx)">${c.type || 'RDV'} · ${c.mod || ''}</div><div style="font-size:11px;color:var(--txs);margin-top:1px">${c.duree || 30}min · ${past ? 'Réalisé ✅' : 'À venir'}</div></div>
-      <span class="badge bb">${(c.type || 'RDV').split(' ')[0]}</span>
-    </div>`;
-  }).join('');
+  if (!list.length) {
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--txs)"><div style="font-size:36px;opacity:.3;margin-bottom:10px">📋</div><p style="font-size:13px">Aucun rendez-vous pour le moment.</p></div>';
+    return;
+  }
+  const now = new Date();
+  const avenir = list.filter(c => new Date(c.date+'T'+c.heure) >= now);
+  const passes = list.filter(c => new Date(c.date+'T'+c.heure) < now);
+  function makeRow(c, past) {
+    const d = new Date(c.date+'T00:00:00');
+    const col = past ? 'var(--bm)' : 'var(--g)';
+    const statut = past ? '✅ Réalisé' : '🔜 À venir';
+    const badge = past ? 'bp' : 'bg';
+    return '<div class="hist" style="border-left:3px solid '+col+';padding-left:10px;margin-bottom:8px">'+
+      '<div style="width:42px;text-align:center;background:var(--sur2);border-radius:8px;padding:5px 0;flex-shrink:0">'+
+      '<div style="font-family:Sora,sans-serif;font-size:17px;font-weight:800;color:var(--navy)">'+d.getDate()+'</div>'+
+      '<div style="font-size:9px;color:var(--txs);text-transform:uppercase">'+d.toLocaleDateString('fr-FR',{month:'short'})+'</div></div>'+
+      '<div style="flex:1;margin-left:10px">'+
+      '<div style="font-size:13px;font-weight:600;color:var(--tx)">'+(c.type||'RDV')+'</div>'+
+      '<div style="font-size:11px;color:var(--txs);margin-top:2px">'+(c.heure||'')+' · '+(c.duree||30)+'min · '+(c.mod||'')+'</div>'+
+      '<div style="font-size:11px;color:'+col+';margin-top:2px;font-weight:500">'+statut+'</div></div>'+
+      '<span class="badge '+badge+'">'+(c.type||'RDV').split(' ')[0]+'</span></div>';
+  }
+  let html = '';
+  if (avenir.length) html += '<div style="font-size:10px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.06em;padding:8px 0 5px">🔜 À venir ('+avenir.length+')</div>'+avenir.map(c=>makeRow(c,false)).join('');
+  if (passes.length) html += '<div style="font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.06em;padding:10px 0 5px">✅ Passés ('+passes.length+')</div>'+passes.map(c=>makeRow(c,true)).join('');
+  el.innerHTML = html;
 }
 
 function updatePills() {
@@ -697,11 +692,11 @@ async function sendMsg() {
 
 // ── NAVIGATION ──
 function goP(id) {
+  if (id==='esp' && !currentId) return;
   document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
   document.querySelectorAll('.tb').forEach(t => t.classList.remove('on'));
   const p = document.getElementById('P-' + id); if (p) p.classList.add('on');
   const t = document.getElementById('T-' + id); if (t) t.classList.add('on');
-  if (id === 'msg') { const b = document.getElementById('msg-b'); if (b) b.style.display = 'none'; }
 }
 
 function goS(id) {
@@ -726,12 +721,17 @@ function toast(msg, type) { const w = document.getElementById('toasts'); const t
 function obn(n) { document.querySelectorAll('.ob-s').forEach(s => s.classList.remove('on')); document.querySelectorAll('.ob-dot').forEach(d => d.classList.remove('on')); document.getElementById('ob' + n).classList.add('on'); document.getElementById('ob-fill').style.width = (n / 3 * 100) + '%'; }
 function obc() { document.getElementById('ob-ov').classList.remove('open'); toast('Bienvenue ! Votre espace est prêt.', 's'); }
 
+
+function envoyerDemandeCode() {
+  const struct = document.getElementById('cp-struct').value.trim();
+  const email  = document.getElementById('cp-email').value.trim();
+  if (!struct) { toast('Veuillez indiquer le nom de votre structure','w'); return; }
+  const subj = encodeURIComponent('Demande de code d\'accès — ' + struct);
+  const body = encodeURIComponent('Bonjour,\n\nJe souhaite récupérer mon code d\'accès pour la structure : ' + struct + '\n\nEmail de contact : ' + (email||'Non renseigné') + '\n\nCordialement');
+  window.open('mailto:siaogironde@caio-bordeaux.fr?subject=' + subj + '&body=' + body);
+  closeOv('ov-code-perdu');
+  toast('Email de demande préparé ✅','s');
+}
+
 // ── INIT ──
-document.addEventListener('DOMContentLoaded', () => {
-  initStructures();
-  document.getElementById('conv-time').textContent = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  document.getElementById('conv-prev').textContent = 'Bienvenue sur votre espace...';
-});
-</script>
-</body>
-</html>
+document.add
