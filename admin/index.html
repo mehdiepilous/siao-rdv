@@ -2,10 +2,10 @@
 <html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIAO RDV — Plateforme de coordination</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIAO RDV — Administration</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ═══════════════════════════════════════════════════════════════════
    DESIGN TOKENS & THEME
@@ -421,9 +421,9 @@ select option{background:var(--surface)}
 .tag:hover{border-color:var(--primary-light);color:var(--primary)}
 .tag.active{background:var(--primary-soft);border-color:var(--primary-light);color:var(--primary)}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+
 
 <!-- ═══ TAB NAV ═══════════════════════════════════════════════════════════════ -->
 <div id="tab-bar" style="display:none">
@@ -858,7 +858,9 @@ select option{background:var(--surface)}
     </div>
   </div>
 </div>
+
 <script>
+
 // ─── THEME ─────────────────────────────────────────────────────────────────
 let isDark = false;
 function toggleTheme(){
@@ -882,7 +884,7 @@ function lighten(hex,amt){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice
 function go(id,btn){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));
-  var _el=document.getElementById(id); if(_el)_el.classList.add('active');
+  var _e=document.getElementById(id); if(_e) _e.classList.add('active');
   if(btn) btn.classList.add('active');
   if(id==='s-dashboard'){setTimeout(renderStructGrids,100)}
   if(id==='s-calendar'){setTimeout(renderWeekCal,100)}
@@ -906,15 +908,24 @@ function goStruct(pid){
 
 // ─── LOGIN ─────────────────────────────────────────────────────────────────
 function loginSIAOMain(){
-  const pwd=document.getElementById('siao-pwd-main').value;
-  const err=document.getElementById('siao-err-main');
+  var pwd=document.getElementById('siao-pwd-main').value;
+  var err=document.getElementById('siao-err-main');
   if(pwd==='siao2025'||pwd===''){
     err.style.display='none';
-    document.getElementById('tab-bar').style.display='flex';
-    go('s-dashboard',null);
-    loadAll().then(()=>subscribeRealtime());
+    var tb=document.getElementById('tab-bar');
+    if(tb) tb.style.display='flex';
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+    var dash=document.getElementById('s-dashboard');
+    if(dash) dash.classList.add('active');
+    document.querySelectorAll('.dtab').forEach(function(t){t.classList.remove('active');});
+    var tabs=document.querySelectorAll('.dtab');
+    if(tabs[1]) tabs[1].classList.add('active');
+    loadAll().then(function(){subscribeRealtime();});
     showToast('Connexion réussie — Bienvenue Admin SIAO','success');
-  }else{err.style.display='block'}
+  }else{
+    err.style.display='block';
+  }
+}
 }
 function loginStructMain(){
   const id=document.getElementById('struct-sel-main').value;
@@ -1396,17 +1407,17 @@ function openEditStructModal(id){
   document.getElementById('str-save-btn').textContent='Enregistrer';
   openModal('m-str');
 }
-async async function saveStr(){
-  const editId=document.getElementById('s-edit-id').value;
-  const nom=document.getElementById('s-nom')?.value?.trim();
-  const code=document.getElementById('s-code')?.value?.trim()?.toUpperCase();
+async async async function saveStr(){
+  var editId=document.getElementById('s-edit-id').value;
+  var nom=document.getElementById('s-nom')?.value?.trim();
+  var code=document.getElementById('s-code')?.value?.trim()?.toUpperCase();
   if(!nom){showToast('Le nom est obligatoire','warn');return;}
   if(!code){showToast("Le code d'accès est obligatoire",'warn');return;}
-  const row={
-    nom,
+  var row={
+    nom:nom,
     type:document.getElementById('s-type')?.value||'Autre',
     ville:document.getElementById('s-ville')?.value?.trim()||'',
-    code,
+    code:code,
     referent:document.getElementById('s-referent')?.value?.trim()||'',
     tel:document.getElementById('s-tel-field')?.value?.trim()||'',
     note:'',
@@ -1490,77 +1501,7 @@ updateRecap();
     }
   }catch(e){ console.error('Erreur chargement:',e); }
 })();
+
 </script>
-
-
-
-<!-- ═══ FOOTER LÉGAL ════════════════════════════════════════════════════════ -->
-<footer id="legal-footer" style="background:var(--surface);border-top:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--text-soft)">
-  <span>© 2026 CAIO — SIAO Gironde · Association loi 1901 · SIRET 377 785 290 00034</span>
-  <div style="display:flex;align-items:center;gap:16px">
-    <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Mentions légales</a>
-    <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Politique de confidentialité</a>
-    <a href="/cdn-cgi/l/email-protection#b5d6dadbc1d4d6c1f5c6dcd4da86869bd3c7" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
-  </div>
-</footer>
-
-<!-- ═══ MODAL MENTIONS LÉGALES ═══════════════════════════════════════════════ -->
-<div class="modal-ov" id="modal-mentions" style="align-items:flex-start;padding:0;overflow-y:auto">
-  <div style="background:var(--surface);width:100%;max-width:900px;margin:0 auto;min-height:100vh;padding:32px 28px 60px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;position:sticky;top:0;background:var(--surface);padding:16px 0;border-bottom:1px solid var(--border);z-index:10">
-      <div>
-        <div style="display:inline-flex;align-items:center;gap:8px;background:var(--primary-soft);border:1px solid hsl(var(--hue),72%,82%);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--primary);margin-bottom:6px">⚖️ Document légal</div>
-        <h1 style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--navy)">Mentions légales & Politique de confidentialité</h1>
-        <p style="font-size:12px;color:var(--text-soft);margin-top:3px">CAIO — SIAO Gironde · Mars 2026</p>
-      </div>
-      <button onclick="closeMentions()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:8px 16px;font-size:13px;color:var(--text-mid);cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0">✕ Fermer</button>
-    </div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="ch"><div><div class="ct">1. Éditeur & Hébergement</div><div class="cs">Loi LCEN n°2004-575 du 21 juin 2004</div></div></div>
-      <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-        <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
-          <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Éditeur</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Dénomination</span><strong>CAIO</strong></div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Forme juridique</span>Association loi 1901</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">SIRET</span>377 785 290 00034</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Adresse</span>6 rue du Noviciat, 33800 Bordeaux</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Tél.</span>05 40 54 55 00</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="/cdn-cgi/l/email-protection#294a46475d484a5d695a4048461a1a074f5b" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="385b57564c595b4c784b5159570b0b165e4a">[email&#160;protected]</span></a></div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Dir. publication</span><span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
-          <div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Hébergement</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Hébergeur</span><strong>Netlify, Inc.</strong></div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Adresse</span>512 2nd Street, San Francisco, CA 94107</div>
-          <div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Base de données</div></div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Fournisseur</span><strong>Supabase, Inc.</strong></div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Région</span>Europe West — Frankfurt</div>
-        </div>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="ch"><div><div class="ct">2. Données personnelles</div><div class="cs">RGPD (UE) 2016/679</div></div></div>
-      <div class="cb">
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:12px">Le CAIO agit en tant que <strong>responsable de traitement</strong>. Seules les données des référents professionnels des structures partenaires sont collectées. <strong>Aucune donnée relative aux personnes accompagnées n'est traitée ici.</strong></p>
-        <table style="width:100%;border-collapse:collapse;font-size:12px">
-          <thead><tr style="background:var(--surface2)">
-            <th style="padding:8px 12px;text-align:left;border:1px solid var(--border);color:var(--text-mid)">Donnée</th>
-            <th style="padding:8px 12px;text-align:left;border:1px solid var(--border);color:var(--text-mid)">Finalité</th>
-            <th style="padding:8px 12px;text-align:left;border:1px solid var(--border);color:var(--text-mid)">Base légale</th>
-            <th style="padding:8px 12px;text-align:left;border:1px solid var(--border);color:var(--text-mid)">Conservation</th>
-          </tr></thead>
-          <tbody>
-            <tr><td style="padding:8px 12px;border:1px solid var(--border)">Nom de la structure</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Identification</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Art. 6-1-e RGPD</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Convention + 2 ans</td></tr>
-            <tr style="background:var(--surface2)"><td style="padding:8px 12px;border:1px solid var(--border)">Dates et horaires RDV</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Planification</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Art. 6-1-e RGPD</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">5 ans</td></tr>
-            <tr><td style="padding:8px 12px;border:1px solid var(--border)">Messages</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Coordination</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Art. 6-1-f RGPD</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">3 ans</td></tr>
-            <tr style="background:var(--surface2)"><td style="padding:8px 12px;border:1px solid var(--border)">Journaux connexion</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Sécurité</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">Art. 6-1-c RGPD</td><td style="padding:8px 12px;border:1px solid var(--border);color:var(--text-soft)">1 an</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
-      <div class="card"><div class="ch"><div class="ct">3. Vos droits</div></div><div class="cb">
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:8px">Accès · Rectification · Effacement · Opposition (art. 15–22 RGPD)</p>
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="/cdn-cgi/l/email-protection#5a3935342e3b392e1a29333b356969743c28" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="71121e1f05101205310218101e42425f1703">[email&#160;protected]</span></a></p>
-        <p style="font-size:13px;color:var(--text-soft);margin-top:6px">DPO : <span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></p>
-        <div style="margin-top:10px;padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e">Recours possible auprès de la <a href="https://www.cnil.fr" target="_blank" style
+</body>
+</html>
