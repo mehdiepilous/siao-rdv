@@ -82,8 +82,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .color-picker-wrap input[type=color]{width:22px;height:22px;border:none;border-radius:4px;cursor:pointer;background:none;padding:0}
 
 /* ═══════════════════════════════════════════════════════════════════ APP SHELL */
-.app{display:flex;min-height:calc(100vh - 40px)}
-.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:sticky;top:40px;height:calc(100vh - 40px);overflow-y:auto;overflow-x:hidden;transition:width var(--transition)}
+.app{display:flex;min-height:100vh}
+body.logged-in .app{min-height:calc(100vh - 40px)}
+.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;transition:width var(--transition)}
+body.logged-in .sidebar{top:40px;height:calc(100vh - 40px)}
 [data-theme="dark"] .sidebar{background:#0d1525}
 .sb-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:11px}
 .sb-logo-ico{width:36px;height:36px;background:linear-gradient(135deg,hsl(var(--hue),72%,55%),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 4px 14px rgba(0,198,162,.3)}
@@ -113,7 +115,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .sb-logout{margin-left:auto;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.4);width:26px;height:26px;border-radius:7px;cursor:pointer;font-size:13px;transition:all var(--transition)}
 .sb-logout:hover{background:rgba(239,68,68,.2);color:#ff7070}
 .main-wrap{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;position:sticky;top:40px;z-index:100;gap:16px}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:16px}
+body.logged-in .topbar{top:40px}
 .tb-left{display:flex;flex-direction:column;min-width:0}
 .tb-title{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--navy);line-height:1}
 .tb-breadcrumb{font-size:10.5px;color:var(--text-soft);margin-top:1px}
@@ -423,12 +426,13 @@ select option{background:var(--surface)}
 <body>
 
 <!-- ═══ TAB NAV ═══════════════════════════════════════════════════════════════ -->
-<div id="tab-bar">
+<div id="tab-bar" style="display:none">
   <button class="dtab active" onclick="go('s-landing-siao',this)">🏛 Accueil SIAO</button>
   <button class="dtab" onclick="go('s-dashboard',this)">📊 Dashboard</button>
   <button class="dtab" onclick="go('s-calendar',this)">🗓 Calendrier</button>
   <button class="dtab" onclick="go('s-messages',this)">💬 Messagerie</button>
   <button class="dtab" onclick="go('s-new-cren',this)">➕ Créer créneau</button>
+  <button class="dtab" onclick="go('s-parametres',this)">⚙️ Paramètres</button>
   <div class="tab-divider"></div>
   <div class="color-picker-wrap">
     <span>🎨</span>
@@ -507,7 +511,7 @@ select option{background:var(--surface)}
         </button>
 
         <div style="margin-top:20px;text-align:center;font-size:12px;color:var(--text-soft)">
-          Problème de connexion ? <a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a>
+          Problème de connexion ? <a href="/cdn-cgi/l/email-protection#abc8c4c5dfcac8dfebd8c2cac4989885cdd9" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="2f4c40415b4e4c5b6f5c464e401c1c01495d">[email&#160;protected]</span></a>
         </div>
       </div>
     </div>
@@ -522,7 +526,7 @@ select option{background:var(--surface)}
   <nav class="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-ico">🏛</div>
-      <div class="sb-logo-txt"><div class="org">SIAO</div><div class="sub">Bordeaux Métropole</div><div class="live"><span class="live-dot"></span> En ligne</div></div>
+      <div class="sb-logo-txt"><div class="org">SIAO</div><div class="sub">Gironde</div><div class="live"><span class="live-dot"></span> En ligne</div></div>
     </div>
     <div class="sb-daily">
       <div class="sb-daily-lbl">Aujourd'hui</div>
@@ -532,16 +536,14 @@ select option{background:var(--surface)}
     <div class="sb-sec">Planification</div>
     <button class="nb active" onclick="goDash('d-overview')"><span class="nb-ico">📊</span> Vue d'ensemble</button>
     <button class="nb" onclick="go('s-calendar',document.querySelectorAll('.dtab')[3])"><span class="nb-ico">🗓</span> Calendrier semaine</button>
-    <button class="nb" onclick="goDash('d-creneaux')"><span class="nb-ico">📅</span> Créneaux <span class="nb-badge">3</span></button>
+    <button class="nb" onclick="goDash('d-creneaux')"><span class="nb-ico">📅</span> Créneaux <span class="nb-badge" id="badge-cren-libre">0</span></button>
     <div class="sb-sec">Structures</div>
     <button class="nb" onclick="goDash('d-structures')"><span class="nb-ico">🏠</span> Structures</button>
-    <button class="nb" onclick="goDash('d-reservations')"><span class="nb-ico">✅</span> Réservations <span class="nb-badge warn">2</span></button>
-    <button class="nb" onclick="goDash('d-inactivity')"><span class="nb-ico">🚨</span> Inactivité <span class="nb-badge">1</span></button>
+    <button class="nb" onclick="goDash('d-reservations')"><span class="nb-ico">✅</span> Réservations <span class="nb-badge warn" id="badge-resa">0</span></button>
     <div class="sb-sec">Outils</div>
-    <button class="nb" onclick="go('s-messages',document.querySelectorAll('.dtab')[6])"><span class="nb-ico">💬</span> Messagerie <span class="nb-badge green">3</span></button>
     <button class="nb" onclick="go('s-new-cren',document.querySelectorAll('.dtab')[7])"><span class="nb-ico">➕</span> Créer créneau</button>
     <div class="sb-bottom">
-      <div class="user-row"><div class="user-av">SA</div><div><div class="user-nm">SIAO Admin</div><div class="user-rl">Accès complet</div></div><button class="sb-logout" onclick="go('s-landing-siao',null)">↩</button></div>
+      <div class="user-row"><div class="user-av">SA</div><div><div class="user-nm">SIAO Admin</div><div class="user-rl">Accès complet</div></div><button class="sb-logout" onclick="document.getElementById('tab-bar').style.display='none';document.body.classList.remove('logged-in');go('s-landing-siao',null)">↩</button></div>
     </div>
   </nav>
   <div class="main-wrap">
@@ -817,6 +819,45 @@ select option{background:var(--surface)}
   </div>
 </div>
 
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<!-- ═══ SCREEN PARAMÈTRES ════════════════════════════════════════════════ -->
+<div id="s-parametres" class="screen">
+  <div style="max-width:560px;margin:0 auto;padding:32px 28px">
+    <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px">⚙️ Paramètres</div>
+    <div style="font-size:13px;color:var(--text-soft);margin-bottom:22px">Configuration de l'administration SIAO</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="ch"><div><div class="ct">🔐 Mot de passe administrateur</div><div class="cs">Modifiez le mot de passe d'accès</div></div></div>
+      <div class="cb">
+        <div class="fg"><label>Mot de passe actuel</label><input type="password" id="pwd-cur" placeholder="Mot de passe actuel"></div>
+        <div class="fg"><label>Nouveau mot de passe</label><input type="password" id="pwd-new" placeholder="Au moins 6 caractères"></div>
+        <div class="fg"><label>Confirmer</label><input type="password" id="pwd-conf" placeholder="Confirmer"></div>
+        <div id="pwd-err" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;color:#dc2626;font-size:12px;display:none;margin-bottom:10px"></div>
+        <div id="pwd-ok" style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:9px 12px;color:#059669;font-size:12px;display:none;margin-bottom:10px">✅ Mot de passe mis à jour</div>
+        <button class="btn btn-primary" onclick="changePwd()">🔐 Mettre à jour</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="ch"><div><div class="ct">🔗 Liens de la plateforme</div></div></div>
+      <div class="cb">
+        <div class="fg"><label>Interface structure</label>
+          <div style="display:flex;gap:8px"><input type="text" value="https://mehdiepilous.github.io/siao-rdv/" readonly style="background:var(--surface2);color:var(--text-mid)" onclick="this.select()"><button class="btn btn-ghost btn-sm" onclick="copyTxt('https://mehdiepilous.github.io/siao-rdv/')">📋</button></div>
+        </div>
+        <div class="fg"><label>Interface admin</label>
+          <div style="display:flex;gap:8px"><input type="text" value="https://mehdiepilous.github.io/siao-rdv/admin/" readonly style="background:var(--surface2);color:var(--text-mid)" onclick="this.select()"><button class="btn btn-ghost btn-sm" onclick="copyTxt('https://mehdiepilous.github.io/siao-rdv/admin/')">📋</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">🏛 Informations SIAO</div></div></div>
+      <div class="cb">
+        <div class="fg"><label>Organisation</label><input type="text" value="SIAO Gironde — CAIO"></div>
+        <div class="fg"><label>Email</label><input type="email" value="siaogironde@caio-bordeaux.fr"></div>
+        <div class="fg"><label>Téléphone</label><input type="tel" value="05 40 54 55 00"></div>
+        <button class="btn btn-primary" onclick="showToast('Sauvegardé ✅','success')">💾 Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
 // ─── THEME ─────────────────────────────────────────────────────────────────
 let isDark = false;
@@ -867,9 +908,12 @@ function goStruct(pid){
 function loginSIAOMain(){
   const pwd=document.getElementById('siao-pwd-main').value;
   const err=document.getElementById('siao-err-main');
-  if(pwd==='siao2025'||pwd===''){
+  if(pwd && pwd===adminPwd){
     err.style.display='none';
+    document.getElementById('tab-bar').style.display='flex';
+    document.body.classList.add('logged-in');
     go('s-dashboard',document.querySelectorAll('.dtab')[1]);
+    loadAll().then(()=>subscribeRealtime());
     showToast('Connexion réussie — Bienvenue Admin SIAO','success');
   }else{err.style.display='block'}
 }
@@ -1028,6 +1072,8 @@ function renderEnsemble(){
   const kr=document.getElementById('kpi-resa'); if(kr) kr.textContent=res;
   const kl=document.getElementById('kpi-libre'); if(kl) kl.textContent=lib;
   const ks=document.getElementById('kpi-struct'); if(ks) ks.textContent=structures.length;
+  var bcl=document.getElementById('badge-cren-libre'); if(bcl) bcl.textContent=lib;
+  var brr=document.getElementById('badge-resa'); if(brr) brr.textContent=res;
 
   // Struct count
   const lbl=document.getElementById('struct-count-label');
@@ -1400,6 +1446,28 @@ function genCode(){
   const el=document.getElementById('s-code');
   if(el) el.value=Array.from({length:8},()=>c[Math.floor(Math.random()*c.length)]).join('');
 }
+
+// ─── PARAMÈTRES — MOT DE PASSE ────────────────────────────────────────────
+let adminPwd = 'siao2025';
+
+async function changePwd(){
+  var cur  = (document.getElementById('pwd-cur')?.value||'').trim();
+  var nw   = (document.getElementById('pwd-new')?.value||'').trim();
+  var conf = (document.getElementById('pwd-conf')?.value||'').trim();
+  var err  = document.getElementById('pwd-err');
+  var ok   = document.getElementById('pwd-ok');
+  err.style.display='none'; ok.style.display='none';
+  if(cur !== adminPwd){ err.textContent='Mot de passe actuel incorrect.'; err.style.display='block'; return; }
+  if(nw.length < 6){ err.textContent='Minimum 6 caractères.'; err.style.display='block'; return; }
+  if(nw !== conf){ err.textContent='Les mots de passe ne correspondent pas.'; err.style.display='block'; return; }
+  try{ await db.from('app_settings').upsert({key:'admin_pwd',value:nw},{onConflict:'key'}); }catch(e){}
+  adminPwd = nw;
+  ok.style.display='block';
+  ['pwd-cur','pwd-new','pwd-conf'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  showToast('Mot de passe mis à jour ✅','success');
+}
+function copyTxt(txt){ navigator.clipboard.writeText(txt).then(function(){ showToast('Copié !','success'); }); }
+
 // ─── INIT ──────────────────────────────────────────────────────────────────
 updateRecap();
 (async ()=>{
@@ -1432,7 +1500,7 @@ updateRecap();
   <div style="display:flex;align-items:center;gap:16px">
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Mentions légales</a>
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Politique de confidentialité</a>
-    <a href="mailto:contact@siao33.fr" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
+    <a href="/cdn-cgi/l/email-protection#b5d6dadbc1d4d6c1f5c6dcd4da86869bd3c7" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
   </div>
 </footer>
 
@@ -1457,7 +1525,7 @@ updateRecap();
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">SIRET</span>377 785 290 00034</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Adresse</span>6 rue du Noviciat, 33800 Bordeaux</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Tél.</span>05 40 54 55 00</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a></div>
+          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="/cdn-cgi/l/email-protection#294a46475d484a5d695a4048461a1a074f5b" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="385b57564c595b4c784b5159570b0b165e4a">[email&#160;protected]</span></a></div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Dir. publication</span><span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
@@ -1493,10 +1561,6 @@ updateRecap();
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
       <div class="card"><div class="ch"><div class="ct">3. Vos droits</div></div><div class="cb">
         <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:8px">Accès · Rectification · Effacement · Opposition (art. 15–22 RGPD)</p>
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a></p>
+        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="/cdn-cgi/l/email-protection#5a3935342e3b392e1a29333b356969743c28" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="71121e1f05101205310218101e42425f1703">[email&#160;protected]</span></a></p>
         <p style="font-size:13px;color:var(--text-soft);margin-top:6px">DPO : <span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></p>
-        <div style="margin-top:10px;padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e">Recours possible auprès de la <a href="https://www.cnil.fr" target="_blank" style="color:#92400e;font-weight:700">CNIL</a>.</div>
-      </div></div>
-      <div class="card"><div class="ch"><div class="ct">4. Cookies & Sécurité</div></div><div class="cb">
-        <div style="padding:10px;background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;font-size:12px;color:#065f46;margin-bottom:12px">✅ Aucun cookie de traçage ni outil d'analytics.</div>
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Données transmises via HTTPS/TLS. Chaque structure dispose d'un accès cloisonné — auc
+        <div style="margin-top:10px;padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e">Recours possible auprès de la <a href="https://www.cnil.fr" target="_blank" style
