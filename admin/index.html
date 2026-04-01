@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIAO RDV — Plateforme de coordination</title>
+<title>SIAO RDV — Administration CAIO · Bordeaux</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -70,8 +70,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
 /* ═══════════════════════════════════════════════════════════════════ NAV TABS */
-#tab-bar{display:flex;gap:4px;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px 0;position:sticky;top:0;z-index:200;overflow-x:auto;scrollbar-width:none}
-#tab-bar::-webkit-scrollbar{display:none}
 .dtab{padding:8px 14px;border:none;background:transparent;color:var(--text-soft);border-radius:9px 9px 0 0;cursor:pointer;font-family:'Sora',sans-serif;font-size:11.5px;font-weight:500;white-space:nowrap;transition:all var(--transition);border-bottom:2px solid transparent}
 .dtab:hover{background:var(--bg2);color:var(--text)}
 .dtab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
@@ -82,8 +80,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .color-picker-wrap input[type=color]{width:22px;height:22px;border:none;border-radius:4px;cursor:pointer;background:none;padding:0}
 
 /* ═══════════════════════════════════════════════════════════════════ APP SHELL */
-.app{display:flex;min-height:calc(100vh - 40px)}
-.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:sticky;top:40px;height:calc(100vh - 40px);overflow-y:auto;overflow-x:hidden;transition:width var(--transition)}
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;transition:width var(--transition)}
 [data-theme="dark"] .sidebar{background:#0d1525}
 .sb-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:11px}
 .sb-logo-ico{width:36px;height:36px;background:linear-gradient(135deg,hsl(var(--hue),72%,55%),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 4px 14px rgba(0,198,162,.3)}
@@ -417,19 +415,99 @@ select option{background:var(--surface)}
 .tag{background:var(--surface3);color:var(--text-soft);border:1px solid var(--border);border-radius:20px;font-size:10px;padding:3px 8px;font-weight:600;cursor:pointer;transition:all var(--transition)}
 .tag:hover{border-color:var(--primary-light);color:var(--primary)}
 .tag.active{background:var(--primary-soft);border-color:var(--primary-light);color:var(--primary)}
+
+/* ── NOUVELLES FONCTIONNALITÉS v5 ─────────────────────────────────── */
+.nb-badge.blue{background:var(--primary);color:#fff}
+.nb-badge.purple{background:#8b5cf6;color:#fff}
+.kpi.purple{border-top:3px solid #8b5cf6}
+.kpi.purple .kpi-val{color:#8b5cf6}
+
+/* CTP STEPPER */
+.ctp-stepper{display:flex;align-items:flex-start;gap:0;margin:12px 0 4px;position:relative}
+.ctp-step{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;position:relative;z-index:1}
+.ctp-step-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:var(--surface2);border:2px solid var(--border-mid);color:var(--text-soft);transition:all .2s;flex-shrink:0}
+.ctp-step.done .ctp-step-dot{background:var(--success);border-color:var(--success);color:#fff}
+.ctp-step.current .ctp-step-dot{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 0 0 3px rgba(33,82,163,.18)}
+.ctp-step-lbl{font-size:9px;color:var(--text-soft);text-align:center;line-height:1.2;max-width:50px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctp-step.done .ctp-step-lbl{color:var(--success)}
+.ctp-step.current .ctp-step-lbl{color:var(--primary);font-weight:600}
+.ctp-step-line{flex:1;height:2px;background:var(--border-mid);margin-top:12px;z-index:0;min-width:4px;transition:background .3s}
+.ctp-step-line.done{background:var(--success)}
+
+/* CTP CARD */
+.ctp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;cursor:pointer;transition:all .18s;box-shadow:var(--shadow-xs)}
+.ctp-card:hover{border-color:var(--primary);box-shadow:0 0 0 3px rgba(33,82,163,.09),var(--shadow-sm)}
+
+/* AUDIT LOG */
+.audit-item{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border);transition:background .1s}
+.audit-item:hover{background:var(--surface2)}
+.audit-time{font-size:11px;color:var(--text-soft);font-family:'DM Mono',monospace;white-space:nowrap;width:88px;flex-shrink:0;padding-top:2px}
+.audit-user{font-weight:600;color:var(--primary);margin-right:4px}
+.audit-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;margin-left:8px;vertical-align:middle}
+.at-create{background:#d1fae5;color:#059669}
+.at-update{background:#dbeafe;color:#2563eb}
+.at-delete{background:#fee2e2;color:#dc2626}
+.at-login{background:#ede9fe;color:#7c3aed}
+
+/* TODAY ALERTS */
+.today-alert{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:500}
+.today-alert.warn{background:#fef3c7;border:1px solid #fde68a;color:#92400e}
+.today-alert.red{background:#fee2e2;border:1px solid #fecaca;color:#991b1b}
+
+/* PHASE PICKER (drawer) */
+.phase-opt{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:9px;border:2px solid var(--border);cursor:pointer;transition:all .15s;margin-bottom:8px}
+.phase-opt:hover{border-color:var(--primary);background:var(--surface2)}
+.phase-opt.done{border-color:var(--success);background:#f0fdf4}
+.phase-opt.current{border-color:var(--primary);background:var(--primary-soft)}
+.phase-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--surface3);color:var(--text-soft);flex-shrink:0}
+.phase-opt.done .phase-num{background:var(--success);color:#fff}
+.phase-opt.current .phase-num{background:var(--primary);color:#fff}
+
+/* NOTIF PANEL ITEMS */
+.notif-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.notif-item:hover{background:var(--surface2)}
+.notif-item.unread{background:var(--primary-soft)}
+.notif-ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+/* SEARCH DROP */
+.search-result-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;transition:background .1s}
+.search-result-item:hover{background:var(--surface2)}
+.search-section-lbl{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;padding:8px 14px 3px}
+
+/* TOPBAR SEARCH */
+.topbar .tb-right{gap:8px}
+.icon-btn{width:34px;height:34px;border-radius:8px;background:none;border:1px solid var(--border);color:var(--text-mid);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;position:relative}
+.icon-btn:hover{background:var(--surface2)}
+
+/* TOGGLE */
+.toggle-sw{width:36px;height:20px;border-radius:10px;background:var(--border-mid);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-sw::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-sw.on{background:var(--success)}
+.toggle-sw.on::after{transform:translateX(16px)}
+
+/* USER CHIPS (login) */
+.user-chips-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.uc-chip{padding:10px 12px;border-radius:10px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);cursor:pointer;text-align:left;transition:all .2s;display:flex;align-items:center;gap:10px}
+.uc-chip:hover{border-color:rgba(255,255,255,.3)}
+.uc-chip.selected{border-color:var(--primary-light);background:rgba(33,82,163,.25)}
+.uc-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.uc-nm{font-size:12.5px;font-weight:600;color:#e2e8f0;line-height:1.2}
+.uc-role{font-size:10.5px;color:#64748b}
+
+/* EXPORT BUTTON */
+.btn-export{padding:6px 14px;border-radius:8px;background:var(--surface2);border:1px solid var(--border-mid);color:var(--text-mid);font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.btn-export:hover{background:var(--surface3);color:var(--navy)}
+
+/* Animate slide up */
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* Responsive CTP grid */
+@media(max-width:768px){#ctp-grid{grid-template-columns:1fr}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<!-- ═══ TAB NAV ═══════════════════════════════════════════════════════════════ -->
-<div id="tab-bar">
-  <button class="dtab active" onclick="go('s-landing-siao',this)">🏛 Accueil SIAO</button>
-  <button class="dtab" onclick="go('s-dashboard',this)">📊 Dashboard</button>
-  <button class="dtab" onclick="go('s-calendar',this)">🗓 Calendrier</button>
-  <button class="dtab" onclick="go('s-messages',this)">💬 Messagerie</button>
-  <button class="dtab" onclick="go('s-new-cren',this)">➕ Créer créneau</button>
-  <div class="tab-divider"></div>
   <div class="color-picker-wrap">
     <span>🎨</span>
     <input type="color" id="theme-color" value="#2152a3" onchange="updateThemeColor(this.value)" title="Couleur principale">
@@ -496,16 +574,21 @@ select option{background:var(--surface)}
 
         
 
-        <div class="fg"><label>Identifiant</label><input type="text" placeholder="admin@siao.fr" value="admin@siao.fr"></div>
-        <div class="fg"><label>Mot de passe</label><input type="password" id="siao-pwd-main" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginSIAOMain()"></div>
-        <div style="display:flex;justify-content:flex-end;margin-top:-6px;margin-bottom:16px"><a href="#" style="font-size:12px;color:var(--primary)">Mot de passe oublié ?</a></div>
-
-        <div id="siao-err-main" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;color:#dc2626;font-size:12px;margin-bottom:12px;display:none">Identifiants incorrects.</div>
-
-        <button style="width:100%;background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;border:none;border-radius:11px;padding:13px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:all .2s" onclick="loginSIAOMain()" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
-          Accéder au tableau de bord →
+        <div class="fg">
+          <label>Identifiant</label>
+          <input type="text" id="siao-email" placeholder="m.epilous ou m.epilous@siao33.fr" autocomplete="username">
+        </div>
+        <div class="fg">
+          <label>Mot de passe</label>
+          <input type="password" id="siao-pwd-main" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')loginSIAOMain()">
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:-6px;margin-bottom:16px">
+          <a href="#" style="font-size:12px;color:var(--primary)" onclick="resetPassword();return false">Mot de passe oublié ?</a>
+        </div>
+        <div id="siao-err-main" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;color:#dc2626;font-size:12px;margin-bottom:12px;display:none">Email ou mot de passe incorrect.</div>
+        <button id="login-btn" style="width:100%;background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;border:none;border-radius:11px;padding:13px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px" onclick="loginSIAOMain()" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+          <span id="login-btn-text">Accéder au tableau de bord →</span>
         </button>
-
         <div style="margin-top:20px;text-align:center;font-size:12px;color:var(--text-soft)">
           Problème de connexion ? <a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a>
         </div>
@@ -531,26 +614,47 @@ select option{background:var(--surface)}
     </div>
     <div class="sb-sec">Planification</div>
     <button class="nb active" onclick="goDash('d-overview')"><span class="nb-ico">📊</span> Vue d'ensemble</button>
-    <button class="nb" onclick="go('s-calendar',document.querySelectorAll('.dtab')[3])"><span class="nb-ico">🗓</span> Calendrier semaine</button>
-    <button class="nb" onclick="goDash('d-creneaux')"><span class="nb-ico">📅</span> Créneaux <span class="nb-badge">3</span></button>
+    <button class="nb" onclick="goDash('d-today')"><span class="nb-ico">📆</span> Aujourd'hui <span class="nb-badge blue" id="today-badge">—</span></button>
+    <button class="nb" onclick="goScreen('s-calendar')"><span class="nb-ico">🗓</span> Calendrier</button>
+    <button class="nb" onclick="goDash('d-creneaux')"><span class="nb-ico">📅</span> Créneaux <span class="nb-badge" id="badge-creneaux">—</span></button>
     <div class="sb-sec">Structures</div>
     <button class="nb" onclick="goDash('d-structures')"><span class="nb-ico">🏠</span> Structures</button>
-    <button class="nb" onclick="goDash('d-reservations')"><span class="nb-ico">✅</span> Réservations <span class="nb-badge warn">2</span></button>
-    <button class="nb" onclick="goDash('d-inactivity')"><span class="nb-ico">🚨</span> Inactivité <span class="nb-badge">1</span></button>
+    <button class="nb" onclick="goDash('d-reservations')"><span class="nb-ico">✅</span> Réservations <span class="nb-badge warn" id="badge-resa">—</span></button>
+    <button class="nb" onclick="goDash('d-inactivity')"><span class="nb-ico">🚨</span> Inactivité <span class="nb-badge" id="badge-inact">—</span></button>
+    <button class="nb" onclick="goDash('d-ctp')"><span class="nb-ico">📋</span> Conventions CTP <span class="nb-badge purple" id="badge-ctp">—</span></button>
+    <div class="sb-sec">Administration</div>
+    <button class="nb" onclick="goDash('d-audit')"><span class="nb-ico">📜</span> Journal d'audit</button>
     <div class="sb-sec">Outils</div>
-    <button class="nb" onclick="go('s-messages',document.querySelectorAll('.dtab')[6])"><span class="nb-ico">💬</span> Messagerie <span class="nb-badge green">3</span></button>
-    <button class="nb" onclick="go('s-new-cren',document.querySelectorAll('.dtab')[7])"><span class="nb-ico">➕</span> Créer créneau</button>
+    <button class="nb" onclick="goScreen('s-messages')"><span class="nb-ico">💬</span> Messagerie <span class="nb-badge green" id="badge-msg">3</span></button>
+    <button class="nb" onclick="go('s-new-cren',document.querySelectorAll('.dtab')[4])"><span class="nb-ico">➕</span> Créer créneau</button>
     <div class="sb-bottom">
-      <div class="user-row"><div class="user-av">SA</div><div><div class="user-nm">SIAO Admin</div><div class="user-rl">Accès complet</div></div><button class="sb-logout" onclick="go('s-landing-siao',null)">↩</button></div>
+      <div class="user-row" style="cursor:pointer" onclick="openUserMenu()">
+        <div class="user-av" id="sb-av" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">ME</div>
+        <div><div class="user-nm" id="sb-nm">Mehdi Epilous</div><div class="user-rl" id="sb-rl">Chargé CTP</div></div>
+        <button class="sb-logout" onclick="event.stopPropagation();doLogout()" title="Déconnexion">↩</button>
+      </div>
     </div>
   </nav>
   <div class="main-wrap">
     <div class="topbar">
       <div class="tb-left"><div class="tb-title" id="dash-title">Vue d'ensemble</div><div class="tb-breadcrumb">SIAO · Planification · <span id="dash-bc">Tableau de bord</span></div></div>
       <div class="tb-right">
-        <input class="search-inp" placeholder="🔍 Rechercher…">
-        <div class="tooltip-wrap"><button class="icon-btn">🔔<span class="notif-dot"></span></button><div class="tooltip-box">3 nouvelles notifications</div></div>
-        <div class="tooltip-wrap"><button class="icon-btn">⚙️</button><div class="tooltip-box">Paramètres</div></div>
+        <div style="position:relative">
+          <input class="search-inp" id="global-search" placeholder="🔍 Rechercher… (ou /)" oninput="doSearch(this.value)" onfocus="openSearchDrop()" autocomplete="off">
+          <div id="search-drop" style="display:none;position:absolute;top:calc(100%+6px);left:0;right:0;background:var(--surface);border:1px solid var(--border-mid);border-radius:12px;box-shadow:var(--shadow-md);z-index:600;overflow:hidden;min-width:320px"></div>
+        </div>
+        <div style="position:relative">
+          <button class="icon-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications">🔔<span class="notif-dot" id="notif-dot"></span></button>
+          <div id="notif-panel" style="display:none;position:absolute;top:calc(100%+8px);right:0;width:340px;background:var(--surface);border:1px solid var(--border-mid);border-radius:14px;box-shadow:var(--shadow-lg);z-index:700;overflow:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)">
+              <div style="font-weight:700;font-size:13px;color:var(--navy)">🔔 Notifications <span id="notif-count-lbl" style="font-size:11px;color:var(--text-soft);font-weight:400"></span></div>
+              <button onclick="markAllRead()" style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer">Tout lire</button>
+            </div>
+            <div id="notif-list" style="max-height:320px;overflow-y:auto"></div>
+          </div>
+        </div>
+        <button class="icon-btn" onclick="openSettings()" title="Paramètres">⚙️</button>
+        <button class="icon-btn" onclick="toggleShortcuts()" title="Raccourcis clavier (?)">⌨️</button>
         <button class="btn-new" onclick="openModal('m-cren')">+ Nouveau créneau</button>
       </div>
     </div>
@@ -627,13 +731,199 @@ select option{background:var(--surface)}
         <div class="inactivity-row"><div class="struct-av" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);flex-shrink:0;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:12px">FS</div><div style="flex:1"><div style="font-weight:600;font-size:13px;color:var(--navy)">Foyer Soleil</div><div style="font-size:11px;color:var(--text-soft)">Dernier RDV : 10 février 2026</div></div><span class="days-badge d-blue">43 jours</span><button class="btn btn-ghost btn-sm">✉️ Relancer</button></div>
       </div>
 
+      <!-- D-TODAY -->
+      <div id="d-today" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div><div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--navy)">📆 Aujourd'hui</div><div id="today-date-str" style="font-size:12px;color:var(--text-soft);margin-top:2px"></div></div>
+          <button class="btn-new" onclick="openModal('m-cren')">+ Nouveau créneau</button>
+        </div>
+        <!-- Alertes -->
+        <div id="today-alerts" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
+        <!-- Créneaux du jour -->
+        <div class="card">
+          <div class="ch"><div class="ct">Créneaux du jour</div></div>
+          <div class="cb" id="today-slots"><div style="color:var(--text-soft);font-size:13px;padding:20px;text-align:center">Aucun créneau aujourd'hui</div></div>
+        </div>
+        <!-- KPIs du jour -->
+        <div class="kpi-grid" style="margin-top:16px">
+          <div class="kpi blue"><div class="kpi-ico">📅</div><div class="kpi-val" id="today-kpi-cren">0</div><div class="kpi-lbl">Créneaux</div></div>
+          <div class="kpi green"><div class="kpi-ico">✅</div><div class="kpi-val" id="today-kpi-resa">0</div><div class="kpi-lbl">Réservés</div></div>
+          <div class="kpi orange"><div class="kpi-ico">🟢</div><div class="kpi-val" id="today-kpi-libre">0</div><div class="kpi-lbl">Libres</div></div>
+          <div class="kpi purple"><div class="kpi-ico">🚨</div><div class="kpi-val" id="today-kpi-inact">0</div><div class="kpi-lbl">Inactifs</div></div>
+        </div>
+      </div>
+
+      <!-- D-CTP -->
+      <div id="d-ctp" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div><div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--navy)">📋 Conventions tripartites (CTP)</div><div style="font-size:12px;color:var(--text-soft);margin-top:2px">Cliquer sur une convention pour l'éditer · 6 phases · Modification en temps réel</div></div>
+          <div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="exportCSV('ctp')">📤 Exporter</button><button class="btn-new" onclick="openNewCTP()">+ Nouvelle CTP</button></div>
+        </div>
+        <!-- KPIs CTP -->
+        <div class="kpi-grid" style="margin-bottom:16px">
+          <div class="kpi green"><div class="kpi-ico">✅</div><div class="kpi-val" id="ctp-kpi-active">—</div><div class="kpi-lbl">Actives</div></div>
+          <div class="kpi orange"><div class="kpi-ico">⏳</div><div class="kpi-val" id="ctp-kpi-soon">—</div><div class="kpi-lbl">Expirent &lt;60j</div></div>
+          <div class="kpi" style="border-top:3px solid var(--danger)"><div class="kpi-ico">🚨</div><div class="kpi-val" id="ctp-kpi-exp">—</div><div class="kpi-lbl">Expirées</div></div>
+          <div class="kpi purple"><div class="kpi-ico">🔨</div><div class="kpi-val" id="ctp-kpi-wip">—</div><div class="kpi-lbl">En construction</div></div>
+        </div>
+        <!-- Filtres -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="cb" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <input style="flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;background:var(--surface2);color:var(--text)" placeholder="🔍 Rechercher une convention…" oninput="filterCTPSearch(this.value)">
+            <div style="display:flex;gap:6px;flex-wrap:wrap" id="ctp-phase-chips">
+              <span class="fb active" onclick="filterCTPPhase(-1,this)">Toutes</span>
+              <span class="fb" onclick="filterCTPPhase(0,this)">① Introductive</span>
+              <span class="fb" onclick="filterCTPPhase(1,this)">② Coconstruction</span>
+              <span class="fb" onclick="filterCTPPhase(2,this)">③ Validation</span>
+              <span class="fb" onclick="filterCTPPhase(3,this)">④ Sig. Structure</span>
+              <span class="fb" onclick="filterCTPPhase(4,this)">⑤ Sig. SIAO</span>
+              <span class="fb" onclick="filterCTPPhase(5,this)">⑥ Sig. DDETS ✅</span>
+            </div>
+          </div>
+        </div>
+        <div id="ctp-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px"></div>
+      </div>
+
+      <!-- D-AUDIT -->
+      <div id="d-audit" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div><div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--navy)">📜 Journal d'audit</div><div style="font-size:12px;color:var(--text-soft);margin-top:2px">Traçabilité complète de toutes les actions</div></div>
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV('audit')">📤 Exporter</button>
+        </div>
+        <div class="card">
+          <div class="ch" style="flex-wrap:wrap;gap:8px">
+            <input style="flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;background:var(--surface2);color:var(--text)" placeholder="🔍 Rechercher…" oninput="filterAudit(this.value)">
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="fb active" onclick="filterAuditType('all',this)">Tout</span>
+              <span class="fb" onclick="filterAuditType('create',this)">Créations</span>
+              <span class="fb" onclick="filterAuditType('update',this)">Modifications</span>
+              <span class="fb" onclick="filterAuditType('delete',this)">Suppressions</span>
+              <span class="fb" onclick="filterAuditType('login',this)">Connexions</span>
+            </div>
+          </div>
+          <div class="cb" id="audit-log" style="display:flex;flex-direction:column;gap:0"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     SCREEN 4: WEEKLY CALENDAR
+<!-- ═══ CTP DRAWER ═══════════════════════════════════════════════════════════ -->
+<div id="ctp-drawer-ov" onclick="if(event.target===this)closeCTPDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;transition:opacity .25s;opacity:0"></div>
+<div id="ctp-drawer" style="display:none;position:fixed;top:0;right:0;bottom:0;width:520px;max-width:95vw;background:var(--surface);box-shadow:-8px 0 40px rgba(0,0,0,.15);z-index:2001;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0">
+    <div><div style="font-size:15px;font-weight:700;color:var(--navy)" id="ctp-d-title">Convention</div><div style="font-size:11.5px;color:var(--text-soft);margin-top:2px">Édition en temps réel</div></div>
+    <button onclick="closeCTPDrawer()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-soft);padding:4px 8px;border-radius:6px">✕</button>
+  </div>
+  <!-- Onglets -->
+  <div style="display:flex;gap:2px;padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface2)">
+    <button onclick="ctpTab(0,this)" id="ctptab0" class="btn btn-primary btn-sm">ℹ️ Infos</button>
+    <button onclick="ctpTab(1,this)" id="ctptab1" class="btn btn-ghost btn-sm">📊 Phases</button>
+    <button onclick="ctpTab(2,this)" id="ctptab2" class="btn btn-ghost btn-sm">📜 Historique</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:20px 22px" id="ctp-d-body"></div>
+  <div style="padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:space-between;flex-shrink:0;background:var(--surface)">
+    <button class="btn btn-ghost btn-sm" onclick="closeCTPDrawer()">Fermer</button>
+    <button class="btn btn-danger btn-sm" onclick="deleteCTPEntry()">🗑 Supprimer</button>
+    <button class="btn btn-primary btn-sm" onclick="saveCTPEntry()">💾 Enregistrer</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL PARAMÈTRES ════════════════════════════════════════════════════ -->
+<div class="modal-ov" id="m-settings">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-h"><div class="modal-title">⚙️ Paramètres</div><button class="close-x" onclick="closeModal('m-settings')">✕</button></div>
+    <div style="display:flex;gap:2px;padding:0 20px 12px">
+      <button onclick="settTab(0,this)" id="stab0" class="btn btn-primary btn-sm">🎨 Apparence</button>
+      <button onclick="settTab(1,this)" id="stab1" class="btn btn-ghost btn-sm">🔔 Notifications</button>
+      <button onclick="settTab(2,this)" id="stab2" class="btn btn-ghost btn-sm">🔒 Sécurité</button>
+      <button onclick="settTab(3,this)" id="stab3" class="btn btn-ghost btn-sm">🗄 Plateforme</button>
+    </div>
+    <div class="modal-b">
+      <!-- Apparence -->
+      <div id="stab-0">
+        <div class="fg" style="margin-bottom:12px"><label>Thème</label>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="toggleTheme()">🌙 Basculer clair/sombre</button>
+          </div>
+        </div>
+        <div class="fg" style="margin-bottom:12px"><label>Couleur principale</label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="color" id="theme-color2" value="#2152a3" onchange="updateThemeColor(this.value)" style="width:40px;height:32px;border:none;cursor:pointer;border-radius:6px">
+            <div style="display:flex;gap:6px">
+              <div style="width:22px;height:22px;border-radius:50%;background:#2563eb;cursor:pointer;border:2px solid transparent" onclick="updateThemeColor('#2563eb')"></div>
+              <div style="width:22px;height:22px;border-radius:50%;background:#7c3aed;cursor:pointer;border:2px solid transparent" onclick="updateThemeColor('#7c3aed')"></div>
+              <div style="width:22px;height:22px;border-radius:50%;background:#059669;cursor:pointer;border:2px solid transparent" onclick="updateThemeColor('#059669')"></div>
+              <div style="width:22px;height:22px;border-radius:50%;background:#d97706;cursor:pointer;border:2px solid transparent" onclick="updateThemeColor('#d97706')"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fg"><label>Simulation live</label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+            <div class="toggle-sw" id="live-sim-sw" onclick="toggleLiveSim(this)" style="background:var(--success)"></div>
+            <span style="font-size:13px;color:var(--text-mid)">Activer les événements simulés (toutes les 25s)</span>
+          </label>
+        </div>
+      </div>
+      <!-- Notifications -->
+      <div id="stab-1" style="display:none">
+        <div class="fg"><label>Alertes CTP expirantes</label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer"><div class="toggle-sw on" onclick="toggleSwitch(this)"></div><span style="font-size:13px">Notifier 30 jours avant expiration</span></label>
+        </div>
+        <div class="fg"><label>Alerte inactivité structures</label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer"><div class="toggle-sw on" onclick="toggleSwitch(this)"></div><span style="font-size:13px">Notifier après 60 jours sans RDV</span></label>
+        </div>
+        <div class="fg"><label>Nouvelles réservations</label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer"><div class="toggle-sw on" onclick="toggleSwitch(this)"></div><span style="font-size:13px">Notifier à chaque nouvelle réservation</span></label>
+        </div>
+      </div>
+      <!-- Sécurité -->
+      <div id="stab-2" style="display:none">
+        <div style="padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:12px;font-size:12.5px;color:var(--text-mid)">⚠️ La régénération des codes déconnecte les structures concernées.</div>
+        <button class="btn btn-danger btn-sm" onclick="closeModal('m-settings');showToast('Tous les codes régénérés — structures notifiées','warn')">Régénérer tous les codes d'accès</button>
+      </div>
+      <!-- Plateforme -->
+      <div id="stab-3" style="display:none">
+        <div style="font-size:12.5px;color:var(--text-mid);display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between"><span>Supabase URL</span><span style="font-family:'DM Mono',monospace;font-size:11px">elzhfqxysirwqzgihkve.supabase.co</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Tables</span><span>structures, creneaux, messages, app_settings</span></div>
+          <div style="display:flex;justify-content:space-between"><span>RLS</span><span style="color:var(--success)">✅ Désactivé (anon)</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Temps réel</span><span style="color:var(--success)">✅ Actif</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Version prototype</span><span>v5 — Production</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-f"><button class="btn btn-ghost" onclick="closeModal('m-settings')">Fermer</button><button class="btn btn-primary" onclick="closeModal('m-settings');showToast('Paramètres enregistrés','success')">Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- ═══ RACCOURCIS CLAVIER ════════════════════════════════════════════════════ -->
+<div id="shortcuts-ov" onclick="if(event.target===this)toggleShortcuts()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border-radius:16px;padding:28px 32px;max-width:440px;width:90%;box-shadow:var(--shadow-xl)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--navy)">⌨️ Raccourcis clavier</div><button onclick="toggleShortcuts()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-soft)">✕</button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+      <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:7px"><span>Vue d'ensemble</span><kbd style="background:var(--surface3);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border-mid)">D</kbd></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:7px"><span>Structures</span><kbd style="background:var(--surface3);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border-mid)">S</kbd></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:7px"><span>Créneaux</span><kbd style="background:var(--surface3);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border-mid)">C</kbd></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:7px"><span>CTP</span><kbd style="background:var(--surface3);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border-mid)">T</kbd></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:7px"><span>Nouveau créneau</span><kbd style="background:var(--surface3);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border-mid)">N</kbd></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:7px"><span>Recherche</span><kbd style="background:var(--surface3);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border-mid)">/</kbd></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:7px"><span>Raccourcis</span><kbd style="background:var(--surface3);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border-mid)">?</kbd></div>
+      <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:7px"><span>Fermer</span><kbd style="background:var(--surface3);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border-mid)">Esc</kbd></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PUSH BANNER ══════════════════════════════════════════════════════════ -->
+<div id="push-banner" style="display:none;position:fixed;bottom:24px;right:24px;z-index:5000;background:var(--surface);border:1px solid var(--border-mid);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow-lg);display:flex;gap:12px;align-items:center;max-width:340px;animation:slideUp .3s ease">
+  <div id="push-ico" style="font-size:22px"></div>
+  <div style="flex:1;min-width:0"><div id="push-title" style="font-weight:700;font-size:13px;color:var(--navy)"></div><div id="push-msg" style="font-size:11.5px;color:var(--text-soft);margin-top:2px"></div></div>
+  <button onclick="hidePush()" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-soft);flex-shrink:0">✕</button>
+</div>
+
+<!-- ═══ SCREEN 4: WEEKLY CALENDAR
 ═══════════════════════════════════════════════════════════════════ -->
 <div id="s-calendar" class="screen">
 <div class="app">
@@ -649,7 +939,7 @@ select option{background:var(--surface)}
     </div>
     <div class="sb-sec">Actions</div>
     <button class="nb" onclick="openModal('m-cren')"><span class="nb-ico">➕</span> Nouveau créneau</button>
-    <button class="nb" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[2])"><span class="nb-ico">⬅</span> Retour dashboard</button>
+    <button class="nb" onclick="goScreen('s-dashboard')"><span class="nb-ico">⬅</span> Retour dashboard</button>
     <div class="sb-bottom"><div class="user-row"><div class="user-av">SA</div><div><div class="user-nm">SIAO Admin</div><div class="user-rl">Accès complet</div></div></div></div>
   </nav>
   <div class="main-wrap">
@@ -744,7 +1034,7 @@ select option{background:var(--surface)}
         <div id="recap-content">Réunion partenariale · 28 mars 2026 · 14:30 · 1h · Visioconférence · Toutes les structures</div>
       </div>
       <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
-        <button class="btn btn-ghost" onclick="go('s-dashboard',document.querySelectorAll('.dtab')[1])">Annuler</button>
+        <button class="btn btn-ghost" onclick="goScreen('s-dashboard')">Annuler</button>
         <button class="btn btn-primary" onclick="saveNewCren()">✅ Publier le créneau</button>
       </div>
     </div></div>
@@ -817,7 +1107,7 @@ select option{background:var(--surface)}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ─── THEME ─────────────────────────────────────────────────────────────────
 let isDark = false;
 function toggleTheme(){
@@ -840,20 +1130,51 @@ function lighten(hex,amt){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice
 // ─── NAVIGATION ────────────────────────────────────────────────────────────
 function go(id,btn){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(btn) btn.classList.add('active');
-  if(id==='s-dashboard'){setTimeout(renderStructGrids,100)}
-  if(id==='s-calendar'){setTimeout(renderWeekCal,100)}
+  const el=document.getElementById(id); if(el) el.classList.add('active');
+  if(id==='s-dashboard'){setTimeout(renderStructGrids,100);}
+  if(id==='s-calendar'){setTimeout(renderWeekCal,100);}
+}
+function goScreen(id){go(id,null);}
+function doLogout(){
+  sessionStorage.removeItem('siao_admin_session');
+  goScreen('s-landing-siao');
+  showToast('Déconnecté','info');
+}
+// Restaurer la session au chargement
+(async()=>{
+  initLoginChips();
+  const sessionOk = restoreSession();
+  if(sessionOk){
+    updateSidebarUser();
+    goScreen('s-dashboard');
+    await loadAll();
+    subscribeRealtime();
+    renderStructGrids(); renderEnsemble(); renderAllCreneaux();
+    await loadCTPFromSupabase();
+    const sel=document.getElementById('c-dest');
+    if(sel){
+      sel.innerHTML='<option value="">Toutes les structures</option>';
+      structures.forEach(s=>{sel.innerHTML+=`<option value="${s.id}">${s.nom}</option>`;});
+    }
   }
+})();
 function goDash(pid){
   document.querySelectorAll('#dash-page > div').forEach(d=>d.style.display='none');
   document.getElementById(pid).style.display='';
   document.querySelectorAll('.sidebar .nb').forEach(b=>b.classList.remove('active'));
   const map={
-    'd-overview':'Vue d\'ensemble','d-creneaux':'Créneaux',
-    'd-structures':'Structures','d-reservations':'Réservations','d-inactivity':'Inactivité'
+    'd-overview':"Vue d'ensemble",
+    'd-today':"Aujourd'hui",
+    'd-creneaux':'Créneaux',
+    'd-structures':'Structures',
+    'd-reservations':'Réservations',
+    'd-inactivity':'Inactivité',
+    'd-ctp':'Conventions CTP',
+    'd-audit':"Journal d'audit"
   };
+  if(pid==='d-today') renderToday();
+  if(pid==='d-ctp') renderCTPGrid();
+  if(pid==='d-audit'){loadAuditLog().then(renderAuditLog);}
   document.getElementById('dash-title').textContent=map[pid]||'Dashboard';
   document.getElementById('dash-bc').textContent=map[pid]||'';
 }
@@ -864,14 +1185,91 @@ function goStruct(pid){
 }
 
 // ─── LOGIN ─────────────────────────────────────────────────────────────────
-function loginSIAOMain(){
-  const pwd=document.getElementById('siao-pwd-main').value;
-  const err=document.getElementById('siao-err-main');
-  if(pwd==='siao2025'||pwd===''){
-    err.style.display='none';
-    go('s-dashboard',document.querySelectorAll('.dtab')[1]);
-    showToast('Connexion réussie — Bienvenue Admin SIAO','success');
-  }else{err.style.display='block'}
+// ── AUTHENTIFICATION LOCALE ──────────────────────────────────────────────────
+// Comptes admin définis dans le code — pas besoin de Supabase Auth
+// Pour changer un mot de passe : modifier le champ 'pwd' ci-dessous
+// Format : identifiant = login ou email (insensible à la casse)
+
+const ADMIN_CREDENTIALS = [
+  { login:'m.epilous', email:'m.epilous@siao33.fr', pwd:'siao2026!ME' },
+  { login:'s.baret',   email:'s.baret@siao33.fr',   pwd:'siao2026!SB' },
+  { login:'l.moreau',  email:'l.moreau@siao33.fr',  pwd:'siao2026!LM' },
+  { login:'c.durand',  email:'c.durand@siao33.fr',  pwd:'siao2026!CD' },
+];
+
+function matchCredential(identifier, pwd){
+  const id = identifier.toLowerCase().trim();
+  return ADMIN_CREDENTIALS.find(c =>
+    (c.login.toLowerCase()===id || c.email.toLowerCase()===id) && c.pwd===pwd
+  );
+}
+
+async function loginSIAOMain(){
+  const identifier = (document.getElementById('siao-email')?.value||'').trim();
+  const pwd        = document.getElementById('siao-pwd-main').value;
+  const err        = document.getElementById('siao-err-main');
+  const btn        = document.getElementById('login-btn');
+  const btnTx      = document.getElementById('login-btn-text');
+
+  if(!identifier||!pwd){
+    err.textContent='Veuillez remplir identifiant et mot de passe.';
+    err.style.display='block'; return;
+  }
+  if(btn) btn.disabled=true;
+  if(btnTx) btnTx.textContent='Vérification…';
+
+  // Simule un délai réseau (UX)
+  await new Promise(r=>setTimeout(r,400));
+
+  const cred = matchCredential(identifier, pwd);
+  if(!cred){
+    err.textContent='Identifiant ou mot de passe incorrect.';
+    err.style.display='block';
+    if(btn) btn.disabled=false;
+    if(btnTx) btnTx.textContent='Accéder au tableau de bord →';
+    return;
+  }
+
+  err.style.display='none';
+  // Charger le profil depuis ADMIN_USERS
+  const match = ADMIN_USERS.find(u =>
+    u.email.toLowerCase()===cred.email.toLowerCase() ||
+    u.login.toLowerCase()===cred.login.toLowerCase()
+  );
+  if(match) currentAdmin = match;
+
+  // Sauvegarder la session dans sessionStorage (disparaît à la fermeture du navigateur)
+  sessionStorage.setItem('siao_admin_session', JSON.stringify({
+    login: cred.login,
+    ts: Date.now()
+  }));
+
+  updateSidebarUser();
+  goScreen('s-dashboard');
+  showToast('Bienvenue ' + currentAdmin.prenom + ' — Accès complet', 'success');
+  logAudit(currentAdmin.prenom+' '+currentAdmin.nom, "s'est connecté", 'Session démarrée', 'login');
+
+  if(btn) btn.disabled=false;
+  if(btnTx) btnTx.textContent='Accéder au tableau de bord →';
+}
+
+function resetPassword(){
+  showToast("Contactez l'administrateur pour réinitialiser votre mot de passe.",'info');
+}
+
+function restoreSession(){
+  try{
+    const raw = sessionStorage.getItem('siao_admin_session');
+    if(!raw) return false;
+    const sess = JSON.parse(raw);
+    // Session valide 8h max
+    if(Date.now()-sess.ts > 8*3600*1000){
+      sessionStorage.removeItem('siao_admin_session'); return false;
+    }
+    const match = ADMIN_USERS.find(u=>u.login===sess.login||u.email===sess.login);
+    if(match){ currentAdmin=match; return true; }
+  }catch(e){}
+  return false;
 }
 function loginStructMain(){
   const id=document.getElementById('struct-sel-main').value;
@@ -881,7 +1279,7 @@ function loginStructMain(){
   if(!id){err.textContent='Veuillez sélectionner votre structure.';err.style.display='block';return}
   if(pwd===''||pwd.toUpperCase()===codes[id]){
     err.style.display='none';
-    go('s-structure',document.querySelectorAll('.dtab')[4]);
+    goScreen('s-structure');
     showOnboarding();
   }else{err.style.display='block'}
 }
@@ -976,11 +1374,15 @@ function subscribeRealtime(){
       const r = await db.from('structures').select('*').order('nom');
       if(r.data) structures = r.data;
       renderStructGrids(); renderEnsemble();
+      addNotif('🏠','Structure mise à jour','Base de données synchronisée');
     })
     .on('postgres_changes',{event:'*',schema:'public',table:'creneaux'}, async ()=>{
       const r = await db.from('creneaux').select('*').order('date').order('heure');
       if(r.data) creneaux = r.data;
       renderStructGrids(); renderEnsemble(); renderAllCreneaux();
+    })
+    .on('postgres_changes',{event:'*',schema:'public',table:'conventions_ctp'}, async ()=>{
+      await loadCTPFromSupabase();
     })
     .subscribe();
 }
@@ -1032,6 +1434,15 @@ function renderEnsemble(){
   // Struct count
   const lbl=document.getElementById('struct-count-label');
   if(lbl) lbl.textContent=structures.length+' structures actives';
+  // Mise à jour badges sidebar
+  const bc=document.getElementById('badge-creneaux'); if(bc) bc.textContent=cren.length;
+  const br=document.getElementById('badge-resa'); if(br) br.textContent=res;
+  const bi=document.getElementById('badge-inact'); if(bi) bi.textContent=getInactiveCount();
+  const bct=document.getElementById('badge-ctp'); if(bct) bct.textContent=ctpData.length;
+  // Today badge
+  const todayStr=new Date().toISOString().slice(0,10);
+  const todayCren=cren.filter(c=>c.date===todayStr);
+  const tbd=document.getElementById('today-badge'); if(tbd) tbd.textContent=todayCren.length;
 
   // Prochains créneaux (dashboard overview)
   const nextEl = document.getElementById('dash-next-slots');
@@ -1200,7 +1611,7 @@ function toggleRecur(el){
   document.getElementById('recur-sw').classList.toggle('on',recurOn);
   document.getElementById('recur-options').style.display=recurOn?'block':'none';
 }
-function toggleSwitch(el){const sw=el.querySelector('.toggle-sw');sw.classList.toggle('on')}
+// toggleSwitch défini plus bas
 
 // ─── STARS ─────────────────────────────────────────────────────────────────
 function rateStar(n){
@@ -1269,10 +1680,6 @@ document.addEventListener('click',e=>{
 function showMentions(){document.getElementById('modal-mentions').classList.add('open')}
 function closeMentions(){document.getElementById('modal-mentions').classList.remove('open')}
 
-// ─── MENTIONS LÉGALES ──────────────────────────────────────────────────────
-function showMentions(){document.getElementById('modal-mentions').classList.add('open')}
-function closeMentions(){document.getElementById('modal-mentions').classList.remove('open')}
-
 // ─── SAUVEGARDE CRÉNEAUX (Supabase) ─────────────────────────────────────────
 async function saveCren(){
   const dt = document.getElementById('c-date')?.value;
@@ -1317,7 +1724,7 @@ async function saveNewCren(){
   if(r.data) creneaux = r.data;
   renderAllCreneaux(); renderEnsemble();
   showToast('Créneau publié avec succès !','success');
-  go('s-dashboard',document.querySelectorAll('.dtab')[1]);
+  goScreen('s-dashboard');
 }
 
 // ─── STRUCTURES CRUD COMPLET ─────────────────────────────────────────────────
@@ -1400,6 +1807,545 @@ function genCode(){
   const el=document.getElementById('s-code');
   if(el) el.value=Array.from({length:8},()=>c[Math.floor(Math.random()*c.length)]).join('');
 }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// MULTI-UTILISATEURS — 4 comptes admin, mêmes droits
+// ═══════════════════════════════════════════════════════════════════
+const ADMIN_USERS = [
+  {id:'me',prenom:'Mehdi',  nom:'Epilous', login:'m.epilous',email:'m.epilous@siao33.fr',color:'#2563eb',initials:'ME',role:'Chargé de convention CTP'},
+  {id:'sb',prenom:'Sophie', nom:'Baret',   login:'s.baret',  email:'s.baret@siao33.fr',  color:'#7c3aed',initials:'SB',role:'Assistante de direction'},
+  {id:'lm',prenom:'Lucas',  nom:'Moreau',  login:'l.moreau', email:'l.moreau@siao33.fr',  color:'#059669',initials:'LM',role:'Responsable coordination'},
+  {id:'cd',prenom:'Camille',nom:'Durand',  login:'c.durand', email:'c.durand@siao33.fr',  color:'#d97706',initials:'CD',role:'Chargée de partenariat'},
+];
+let currentAdmin = ADMIN_USERS[0];
+
+function initLoginChips(){
+  // Injecter les user-chips dans le formulaire login
+  const formRight = document.querySelector('#s-landing-siao .fg');
+  if(!formRight) return;
+  // Ajouter avant le premier .fg
+  const parent = formRight.parentElement;
+  if(parent && !document.getElementById('admin-chips')){
+    const chips = document.createElement('div');
+    chips.id='admin-chips';
+    chips.innerHTML='<div style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Compte administrateur</div><div class="user-chips-grid">'+
+    ADMIN_USERS.map(u=>`<div class="uc-chip ${u.id===currentAdmin.id?'selected':''}" onclick="selectAdminUser('${u.id}',this)"><div class="uc-av" style="background:${u.color}">${u.initials}</div><div><div class="uc-nm">${u.prenom} ${u.nom}</div><div class="uc-role">${u.login}</div></div></div>`).join('')+'</div>';
+    parent.insertBefore(chips, formRight);
+  }
+}
+function selectAdminUser(id, el){
+  currentAdmin = ADMIN_USERS.find(u=>u.id===id);
+  document.querySelectorAll('.uc-chip').forEach(c=>c.classList.remove('selected'));
+  if(el) el.classList.add('selected');
+}
+function updateSidebarUser(){
+  const av = document.getElementById('sb-av');
+  const nm = document.getElementById('sb-nm');
+  const rl = document.getElementById('sb-rl');
+  if(av){av.textContent=currentAdmin.initials;av.style.background=`linear-gradient(135deg,${currentAdmin.color},${currentAdmin.color}dd)`;}
+  if(nm) nm.textContent=currentAdmin.prenom+' '+currentAdmin.nom;
+  if(rl) rl.textContent=currentAdmin.role;
+}
+
+// Login via Supabase Auth — voir loginSIAOMain()
+
+function openUserMenu(){openSettings();}
+
+// ═══════════════════════════════════════════════════════════════════
+// 6 PHASES CTP
+// ═══════════════════════════════════════════════════════════════════
+const CTP_PHASES = [
+  {short:'Introductive',  long:'Phase introductive DDETS',          icon:'📋',actor:'DDETS',     color:'#0891b2'},
+  {short:'Coconstruction',long:'Coconstruction SIAO · Structure',   icon:'🤝',actor:'SIAO+Struct',color:'#7c3aed'},
+  {short:'Validation',    long:'Validation DDETS',                  icon:'✔️',actor:'DDETS',     color:'#d97706'},
+  {short:'Sig. Structure',long:'Signature structure',               icon:'✍️',actor:'Structure', color:'#2563eb'},
+  {short:'Sig. SIAO',     long:'Signature SIAO',                    icon:'🏛',actor:'SIAO',      color:'#059669'},
+  {short:'Sig. DDETS ✅', long:'Signature DDETS — Finalisée',       icon:'🎉',actor:'DDETS',     color:'#059669'},
+];
+
+// CTP — chargées depuis Supabase (table conventions_ctp)
+let ctpData = [];
+let activeCTPId=null;
+
+async function loadCTPFromSupabase(){
+  try{
+    const {data,error}=await db.from('conventions_ctp').select('*').order('nom');
+    if(error){console.error('CTP load error:',error);return;}
+    if(data){
+      ctpData=data.map(row=>({
+        id:      row.id,
+        nom:     row.nom||'',
+        type:    row.type||'',
+        debut:   row.date_debut||'',
+        fin:     row.date_fin||'',
+        statut:  row.statut||'active',
+        phase:   typeof row.phase==='number'?row.phase:0,
+        referent:row.referent_siao||'',
+        ddets:   row.referent_ddets||'',
+        notes:   row.notes||'',
+        history: Array.isArray(row.historique)?row.historique:[],
+      }));
+      renderCTPGrid();
+      const bct=document.getElementById('badge-ctp');if(bct)bct.textContent=ctpData.length;
+    }
+  }catch(e){console.error('loadCTP exception:',e);}
+}
+
+async function saveCTPToSupabase(c){
+  const row={
+    nom:c.nom, type:c.type,
+    date_debut:c.debut, date_fin:c.fin,
+    statut:c.statut, phase:c.phase,
+    referent_siao:c.referent, referent_ddets:c.ddets,
+    notes:c.notes, historique:c.history,
+    updated_at:new Date().toISOString(),
+    updated_by:currentAdmin.prenom+' '+currentAdmin.nom,
+  };
+  if(typeof c.id==='number'&&c.id>1000000000000){
+    // Nouvel enregistrement (id = Date.now())
+    const {data,error}=await db.from('conventions_ctp').insert({...row}).select().single();
+    if(error){console.error('CTP insert error:',error);return;}
+    // Mettre à jour l'id local avec l'uuid Supabase
+    const oldId=c.id; c.id=data.id;
+    ctpData=ctpData.map(x=>x.id===oldId?c:x);
+  }else{
+    const {error}=await db.from('conventions_ctp').update(row).eq('id',c.id);
+    if(error){console.error('CTP update error:',error);}
+  }
+}
+
+async function deleteCTPFromSupabase(id){
+  const {error}=await db.from('conventions_ctp').delete().eq('id',id);
+  if(error){console.error('CTP delete error:',error);}
+}
+
+function calcDaysLeft(fin){return Math.ceil((new Date(fin)-new Date())/86400000);}
+function calcProg(debut,fin){const s=new Date(debut),e=new Date(fin),n=new Date();return Math.max(0,Math.min(100,Math.round((n-s)/(e-s)*100)));}
+
+function buildCTPStepper(phase){
+  let html='<div class="ctp-stepper">';
+  CTP_PHASES.forEach((p,i)=>{
+    const done=i<phase, curr=i===phase;
+    html+=`<div class="ctp-step ${done?'done':curr?'current':''}"><div class="ctp-step-dot">${done?'✓':i+1}</div><div class="ctp-step-lbl">${p.short}</div></div>`;
+    if(i<5) html+=`<div class="ctp-step-line ${done?'done':''}"></div>`;
+  });
+  return html+'</div>';
+}
+
+function ctpStatusBadge(s){
+  const m={active:'badge badge-green',expirante:'badge badge-warn',expirée:'badge badge-red',en_cours:'badge badge-purple'};
+  const lbl={active:'Active',expirante:'⏳ Expirante',expirée:'🚨 Expirée',en_cours:'🔨 En cours'};
+  return `<span class="${m[s]||'badge'}">${lbl[s]||s}</span>`;
+}
+
+function renderCTPGrid(phaseFilter=-1){
+  const grid=document.getElementById('ctp-grid'); if(!grid)return;
+  const kA=document.getElementById('ctp-kpi-active'),kS=document.getElementById('ctp-kpi-soon');
+  const kE=document.getElementById('ctp-kpi-exp'),kW=document.getElementById('ctp-kpi-wip');
+  if(kA) kA.textContent=ctpData.filter(c=>c.statut==='active').length;
+  if(kS) kS.textContent=ctpData.filter(c=>c.statut==='expirante').length;
+  if(kE) kE.textContent=ctpData.filter(c=>c.statut==='expirée').length;
+  if(kW) kW.textContent=ctpData.filter(c=>c.statut==='en_cours').length;
+  let data=phaseFilter>=0?ctpData.filter(c=>c.phase===phaseFilter):ctpData;
+  if(!data.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-soft)">Aucune convention pour ce filtre</div>';return;}
+  grid.innerHTML=data.map(c=>{
+    const dl=calcDaysLeft(c.fin), prog=calcProg(c.debut,c.fin);
+    const phase=CTP_PHASES[c.phase]||CTP_PHASES[0];
+    const fillCol=c.statut==='expirée'?'var(--danger)':dl<60?'var(--warn)':'var(--success)';
+    return`<div class="ctp-card" onclick="openCTPDrawer(${c.id})">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px">
+        <div><div style="font-weight:700;font-size:14px;color:var(--navy)">${c.nom}</div>
+          <div style="font-size:11.5px;color:var(--text-soft);display:flex;gap:8px;flex-wrap:wrap;margin-top:3px">
+            <span>${c.type}</span><span>📅 ${c.debut.split('-').reverse().join('/')} → ${c.fin.split('-').reverse().join('/')}</span>
+            <span style="color:${c.referent===currentAdmin.prenom+' '+currentAdmin.nom?'var(--primary)':'inherit'}">👤 ${c.referent}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          ${ctpStatusBadge(c.statut)}
+          <span style="font-size:10.5px;color:var(--text-soft)">Phase ${c.phase+1}/6</span>
+        </div>
+      </div>
+      <!-- Phase courante -->
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);margin-bottom:10px">
+        <span style="font-size:15px">${phase.icon}</span>
+        <div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--navy)">${phase.long}</div></div>
+        ${c.phase<5?`<button style="font-size:11px;color:var(--primary);background:none;border:none;cursor:pointer;font-weight:600;white-space:nowrap" onclick="event.stopPropagation();quickNextPhase(${c.id})">→ Suivante</button>`:'<span style="font-size:11px;color:var(--success);font-weight:600">✅ Finalisée</span>'}
+      </div>
+      <!-- Stepper -->
+      ${buildCTPStepper(c.phase)}
+      <!-- Barre avancement -->
+      <div style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-soft);margin-bottom:3px"><span>Avancement convention</span><span>${prog}%</span></div>
+        <div style="height:5px;background:var(--surface3);border-radius:10px;overflow:hidden"><div style="height:100%;width:${prog}%;background:${fillCol};border-radius:10px;transition:width .5s"></div></div>
+      </div>
+      ${dl>0&&dl<=60?`<div style="margin-top:8px;font-size:12px;color:var(--warn);font-weight:500">⚠️ Expire dans ${dl} jours</div>`:''}
+      ${dl<=0?`<div style="margin-top:8px;font-size:12px;color:var(--danger);font-weight:500">🚨 Convention expirée</div>`:''}
+      ${c.notes?`<div style="margin-top:10px;font-size:11.5px;color:var(--text-soft);padding:7px 9px;background:var(--surface2);border-radius:7px;border-left:3px solid ${fillCol}">💬 ${c.notes}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function quickNextPhase(id){
+  const c=ctpData.find(x=>x.id===id);if(!c||c.phase>=5)return;
+  const old=c.phase; c.phase++;
+  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  c.history.unshift({time:"Aujourd'hui "+now,user:currentAdmin.prenom+' '+currentAdmin.nom,action:`Phase ${old+1} → Phase ${c.phase+1}`,detail:`"${CTP_PHASES[old].short}" → "${CTP_PHASES[c.phase].short}"`});
+  renderCTPGrid(); showToast(`${c.nom} → Phase ${c.phase+1} · ${CTP_PHASES[c.phase].short}`,'success');
+  logAudit(currentAdmin.prenom+' '+currentAdmin.nom,'a avancé une phase CTP',c.nom+' → Phase '+(c.phase+1),'update');
+}
+
+function filterCTPSearch(q){
+  document.querySelectorAll('#ctp-grid .ctp-card').forEach(el=>{
+    el.style.display=el.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+  });
+}
+function filterCTPPhase(phase,el){
+  document.querySelectorAll('#ctp-phase-chips .fb').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderCTPGrid(phase);
+}
+async function openNewCTP(){
+  const today=new Date().toISOString().slice(0,10);
+  const fin=new Date(); fin.setFullYear(fin.getFullYear()+2);
+  const n={id:Date.now(),nom:'Nouvelle convention',type:'CHRS',debut:today,fin:fin.toISOString().slice(0,10),statut:'en_cours',phase:0,referent:currentAdmin.prenom+' '+currentAdmin.nom,ddets:'',notes:'',history:[]};
+  ctpData.push(n); renderCTPGrid(); openCTPDrawer(n.id);
+  showToast('Nouvelle CTP créée · Renseignez les informations','info');
+}
+
+// ─── CTP DRAWER ──────────────────────────────────────────────────────────
+function openCTPDrawer(id){
+  activeCTPId=id;
+  const c=ctpData.find(x=>x.id===id); if(!c)return;
+  const ov=document.getElementById('ctp-drawer-ov');
+  const dr=document.getElementById('ctp-drawer');
+  ov.style.display='block'; dr.style.display='flex';
+  setTimeout(()=>{ov.style.opacity='1';dr.style.transform='none';},10);
+  document.getElementById('ctp-d-title').textContent='✏️ '+c.nom;
+  ctpTab(0, document.getElementById('ctptab0'));
+}
+function closeCTPDrawer(){
+  const ov=document.getElementById('ctp-drawer-ov');
+  const dr=document.getElementById('ctp-drawer');
+  ov.style.opacity='0'; dr.style.transform='translateX(100%)';
+  setTimeout(()=>{ov.style.display='none';dr.style.display='none';},300);
+  activeCTPId=null;
+}
+function ctpTab(idx,btn){
+  ['ctptab0','ctptab1','ctptab2'].forEach((id,i)=>{
+    const b=document.getElementById(id);
+    if(b){b.className=i===idx?'btn btn-primary btn-sm':'btn btn-ghost btn-sm';}
+  });
+  const c=ctpData.find(x=>x.id===activeCTPId); if(!c) return;
+  const body=document.getElementById('ctp-d-body');
+  if(idx===0){
+    body.innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div><label style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px">Nom</label><input style="width:100%;padding:9px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;color:var(--navy);background:var(--surface)" id="d-nom" value="${c.nom}" oninput="ctpLiveUpdate('nom',this.value)"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px">Type</label><select style="width:100%;padding:9px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;color:var(--navy);background:var(--surface)" id="d-type" onchange="ctpLiveUpdate('type',this.value)"><option ${c.type==='CHRS'?'selected':''}>CHRS</option><option ${c.type==='Foyer'?'selected':''}>Foyer</option><option ${c.type==='CADA'?'selected':''}>CADA</option><option ${c.type==='ALT'?'selected':''}>ALT</option><option ${c.type==='Résidence'?'selected':''}>Résidence</option><option ${c.type==='Pension'?'selected':''}>Pension</option><option ${c.type==='Maison relais'?'selected':''}>Maison relais</option></select></div>
+        <div><label style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px">Référent SIAO</label><select style="width:100%;padding:9px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;color:var(--navy);background:var(--surface)" id="d-referent" onchange="ctpLiveUpdate('referent',this.value)">${ADMIN_USERS.map(u=>`<option ${c.referent===u.prenom+' '+u.nom?'selected':''}>${u.prenom} ${u.nom}</option>`).join('')}</select></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px">Début</label><input type="date" style="width:100%;padding:9px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;background:var(--surface)" id="d-debut" value="${c.debut}" onchange="ctpLiveUpdate('debut',this.value)"></div>
+        <div><label style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px">Fin</label><input type="date" style="width:100%;padding:9px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;background:var(--surface)" id="d-fin" value="${c.fin}" onchange="ctpLiveUpdate('fin',this.value)"></div>
+      </div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px">Référent DDETS</label><input style="width:100%;padding:9px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;color:var(--navy);background:var(--surface)" id="d-ddets" value="${c.ddets||''}" oninput="ctpLiveUpdate('ddets',this.value)"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px">Statut</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm ${c.statut==='active'?'btn-primary':'btn-ghost'}" onclick="ctpLiveUpdate('statut','active')">✅ Active</button>
+          <button class="btn btn-sm ${c.statut==='expirante'?'btn-primary':'btn-ghost'}" onclick="ctpLiveUpdate('statut','expirante')">⏳ Expirante</button>
+          <button class="btn btn-sm ${c.statut==='expirée'?'btn-primary':'btn-ghost'}" onclick="ctpLiveUpdate('statut','expirée')">🚨 Expirée</button>
+          <button class="btn btn-sm ${c.statut==='en_cours'?'btn-primary':'btn-ghost'}" onclick="ctpLiveUpdate('statut','en_cours')">🔨 En cours</button>
+        </div>
+      </div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px">Notes internes</label><textarea style="width:100%;padding:9px 12px;border:1px solid var(--border-mid);border-radius:8px;font-size:13px;color:var(--navy);background:var(--surface);resize:vertical" rows="3" id="d-notes" oninput="ctpLiveUpdate('notes',this.value)">${c.notes||''}</textarea></div>
+    </div>`;
+  }else if(idx===1){
+    body.innerHTML=`
+    <div style="font-size:12.5px;color:var(--text-soft);margin-bottom:14px">Cliquez sur une phase pour faire avancer la convention. Les phases précédentes sont automatiquement validées.</div>
+    <div>${buildCTPStepper(c.phase)}</div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+    ${CTP_PHASES.map((p,i)=>{
+      const done=i<c.phase, curr=i===c.phase;
+      return`<div class="phase-opt ${done?'done':curr?'current':''}" onclick="setCTPPhase(${i})">
+        <div class="phase-num">${done?'✓':i+1}</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--navy)">${p.icon} ${p.long}</div><div style="font-size:11.5px;color:var(--text-soft);margin-top:2px">${done?'✅ Complétée':curr?'▶ Phase en cours':'En attente'} · ${p.actor}</div></div>
+      </div>`;
+    }).join('')}
+    </div>`;
+  }else{
+    const hist=c.history;
+    body.innerHTML=hist.length?hist.map(h=>`<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12.5px"><div style="color:var(--text-soft);font-size:11px;font-family:'DM Mono',monospace;width:80px;flex-shrink:0;padding-top:2px">${h.time}</div><div><div style="color:var(--primary);font-weight:600">${h.user}</div><div style="color:var(--navy);margin-top:1px">${h.action}</div>${h.detail?`<div style="font-size:11.5px;color:var(--text-soft)">${h.detail}</div>`:''}</div></div>`).join(''):
+      '<div style="text-align:center;padding:30px;color:var(--text-soft);font-size:13px">Aucune modification enregistrée</div>';
+  }
+}
+function ctpLiveUpdate(field,value){
+  if(!activeCTPId)return;
+  const c=ctpData.find(x=>x.id===activeCTPId); if(!c)return;
+  c[field]=value;
+  document.getElementById('ctp-d-title').textContent='✏️ '+c.nom;
+  if(document.getElementById('d-ctp').style.display!=='none') renderCTPGrid();
+}
+async function setCTPPhase(phaseIdx){
+  if(!activeCTPId)return;
+  const c=ctpData.find(x=>x.id===activeCTPId); if(!c)return;
+  const old=c.phase; c.phase=phaseIdx;
+  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  c.history.unshift({time:"Aujourd'hui "+now,user:currentAdmin.prenom+' '+currentAdmin.nom,action:`Phase ${old+1} → Phase ${phaseIdx+1}`,detail:`"${CTP_PHASES[old].short}" → "${CTP_PHASES[phaseIdx].short}"`});
+  ctpTab(1,document.getElementById('ctptab1'));
+  if(document.getElementById('d-ctp').style.display!=='none') renderCTPGrid();
+  showToast('Phase mise à jour → '+CTP_PHASES[phaseIdx].short,'success');
+  logAudit(currentAdmin.prenom+' '+currentAdmin.nom,'a modifié la phase CTP',c.nom+' → Phase '+(phaseIdx+1),'update');
+  addNotif('📋','CTP mise à jour',c.nom+' → '+CTP_PHASES[phaseIdx].short);
+}
+async function saveCTPEntry(){
+  if(!activeCTPId)return;
+  const c=ctpData.find(x=>x.id===activeCTPId); if(!c)return;
+  const dn=document.getElementById('d-nom'); if(dn) c.nom=dn.value;
+  const dt=document.getElementById('d-ddets'); if(dt) c.ddets=dt.value;
+  const no=document.getElementById('d-notes'); if(no) c.notes=no.value;
+  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  c.history.unshift({time:"Aujourd'hui "+now,user:currentAdmin.prenom+' '+currentAdmin.nom,action:'Modifications enregistrées',detail:''});
+  await saveCTPToSupabase(c);
+  logAudit(currentAdmin.prenom+' '+currentAdmin.nom,'a modifié une CTP',c.nom,'update');
+  closeCTPDrawer(); renderCTPGrid();
+  showToast('Convention enregistrée ✅','success');
+}
+function deleteCTPEntry(){
+  const c=ctpData.find(x=>x.id===activeCTPId); if(!c)return;
+  showConfirm('Supprimer "'+c.nom+'" ?','Cette action est irréversible.',async()=>{
+    await deleteCTPFromSupabase(activeCTPId);
+    ctpData=ctpData.filter(x=>x.id!==activeCTPId);
+    closeCTPDrawer(); renderCTPGrid();
+    showToast('Convention supprimée','warn');
+    logAudit(currentAdmin.prenom+' '+currentAdmin.nom,'a supprimé une CTP',c.nom,'delete');
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// JOURNAL D'AUDIT
+// ═══════════════════════════════════════════════════════════════════
+let auditData = [];
+let auditFilter='all', auditQ='';
+
+async function loadAuditLog(){
+  try{
+    const {data,error}=await db.from('app_settings').select('value').eq('key','audit_log').single();
+    if(error&&error.code!=='PGRST116'){console.error('Audit load error:',error);return;}
+    if(data?.value){
+      auditData=Array.isArray(data.value)?data.value:[];
+      renderAuditLog();
+    }
+  }catch(e){console.error('loadAudit exception:',e);}
+}
+
+function renderAuditLog(){
+  const el=document.getElementById('audit-log'); if(!el)return;
+  let data=auditData;
+  if(auditFilter!=='all') data=data.filter(a=>a.type===auditFilter);
+  if(auditQ) data=data.filter(a=>(a.user+a.action+a.detail).toLowerCase().includes(auditQ));
+  if(!data.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-soft);font-size:13px">Aucune entrée</div>';return;}
+  el.innerHTML=data.map(a=>`<div class="audit-item"><div class="audit-time">${a.time}</div><div style="flex:1"><span class="audit-user">${a.user}</span><span style="color:var(--text-mid)"> ${a.action}</span>${a.detail?` — <span style="color:var(--text-soft);font-size:12px">${a.detail}</span>`:''}<span class="audit-badge at-${a.type}">${a.type}</span></div></div>`).join('');
+}
+function filterAudit(q){auditQ=q.toLowerCase();renderAuditLog();}
+function filterAuditType(type,el){
+  auditFilter=type;
+  document.querySelectorAll('#d-audit .fb').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderAuditLog();
+}
+async function logAudit(user,action,detail,type){
+  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  const entry={time:"Aujourd'hui "+now,user,action,detail,type,ts:new Date().toISOString()};
+  auditData.unshift(entry);
+  if(auditData.length>200) auditData=auditData.slice(0,200); // Garder les 200 derniers
+  if(document.getElementById('d-audit')&&document.getElementById('d-audit').style.display!=='none') renderAuditLog();
+  // Persister dans app_settings (non-bloquant)
+  try{
+    await db.from('app_settings').upsert({key:'audit_log',value:auditData},{onConflict:'key'});
+  }catch(e){/* non-bloquant */}
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// VUE AUJOURD'HUI
+// ═══════════════════════════════════════════════════════════════════
+function renderToday(){
+  const today=new Date();
+  const todayStr=today.toISOString().slice(0,10);
+  const dateLabel=today.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const tlbl=document.getElementById('today-date-str'); if(tlbl) tlbl.textContent=dateLabel;
+  const cren=getCren();
+  const todayCren=cren.filter(c=>c.date===todayStr);
+  const tk1=document.getElementById('today-kpi-cren'); if(tk1)tk1.textContent=todayCren.length;
+  const tk2=document.getElementById('today-kpi-resa'); if(tk2)tk2.textContent=todayCren.filter(c=>c.statut==='reserve').length;
+  const tk3=document.getElementById('today-kpi-libre'); if(tk3)tk3.textContent=todayCren.filter(c=>c.statut==='libre').length;
+  const tk4=document.getElementById('today-kpi-inact'); if(tk4)tk4.textContent=getInactiveCount();
+  // Créneaux du jour
+  const slotsEl=document.getElementById('today-slots');
+  if(slotsEl){
+    slotsEl.innerHTML=todayCren.length?todayCren.map(c=>`<div class="slot-item"><div class="slot-time"><div>${c.heure}</div><div class="slot-sub">Aujourd'hui</div></div><div class="slot-sep"></div><div class="slot-info-wrap"><div class="slot-type">${c.type}</div><div class="slot-struct">${c.mod} · ${c.duree}min</div></div>${c.statut==='reserve'?'<span class="badge badge-red">Réservé</span>':'<span class="badge badge-green">Libre</span>'}</div>`).join(''):
+    `<div style="text-align:center;padding:24px;color:var(--text-soft);font-size:13px">Aucun créneau aujourd'hui</div>`;
+  }
+  // Alertes
+  const alertsEl=document.getElementById('today-alerts'); if(!alertsEl)return;
+  const alerts=[];
+  ctpData.filter(c=>c.statut==='expirante').forEach(c=>{const dl=calcDaysLeft(c.fin);if(dl<60)alerts.push({cls:'warn',msg:`⚠️ CTP "${c.nom}" expire dans ${dl} jours`});});
+  ctpData.filter(c=>c.statut==='expirée').forEach(c=>alerts.push({cls:'red',msg:`🚨 CTP "${c.nom}" expirée — renouvellement requis`}));
+  alertsEl.innerHTML=alerts.map(a=>`<div class="today-alert ${a.cls}">${a.msg}</div>`).join('');
+}
+function getInactiveCount(){
+  const sixtyDaysAgo=new Date(); sixtyDaysAgo.setDate(sixtyDaysAgo.getDate()-60);
+  return structures.filter(s=>{
+    const rdvs=creneaux.filter(c=>c.par===s.id||c.dest===s.id);
+    if(!rdvs.length)return true;
+    const last=rdvs.map(c=>new Date(c.date)).sort((a,b)=>b-a)[0];
+    return last<sixtyDaysAgo;
+  }).length;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════════════
+let notifications=[
+  {id:1,icon:'📅',title:'Nouvelle réservation',body:'Foyer La Caravelle — créneau 24 mars',unread:true},
+  {id:2,icon:'⚠️',title:'CTP expirante',body:'CHRS Espoir — expire dans 29 jours',unread:true},
+  {id:3,icon:'🚨',title:'Inactivité',body:'ALT Horizon — 98 jours sans RDV',unread:true},
+  {id:4,icon:'✅',title:'Créneau confirmé',body:'Réunion partenariale confirmée',unread:false},
+];
+let notifOpen=false;
+
+function addNotif(icon,title,body){
+  notifications.unshift({id:Date.now(),icon,title,body,unread:true});
+  renderNotifs(); showPush(icon,title,body);
+}
+function renderNotifs(){
+  const unread=notifications.filter(n=>n.unread).length;
+  const dot=document.getElementById('notif-dot'); if(dot) dot.style.display=unread?'block':'none';
+  const lbl=document.getElementById('notif-count-lbl'); if(lbl) lbl.textContent=unread?`(${unread} non lues)`:'';
+  const list=document.getElementById('notif-list'); if(!list)return;
+  list.innerHTML=notifications.map(n=>`<div class="notif-item ${n.unread?'unread':''}" onclick="readNotif(${n.id})">
+    <div class="notif-ico" style="background:var(--surface3)">${n.icon}</div>
+    <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;color:var(--navy)">${n.title}</div><div style="font-size:12px;color:var(--text-soft)">${n.body}</div></div>
+    ${n.unread?'<div style="width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0;margin-top:4px"></div>':''}
+  </div>`).join('');
+}
+function readNotif(id){const n=notifications.find(x=>x.id===id);if(n){n.unread=false;renderNotifs();}}
+function markAllRead(){notifications.forEach(n=>n.unread=false);renderNotifs();showToast('Toutes les notifications lues','info');}
+function toggleNotifPanel(){
+  notifOpen=!notifOpen;
+  const p=document.getElementById('notif-panel'); if(!p)return;
+  p.style.display=notifOpen?'block':'none';
+  if(notifOpen) renderNotifs();
+}
+function showPush(icon,title,msg){
+  const el=document.getElementById('push-banner'); if(!el)return;
+  document.getElementById('push-ico').textContent=icon;
+  document.getElementById('push-title').textContent=title;
+  document.getElementById('push-msg').textContent=msg;
+  el.style.display='flex'; el.style.opacity='1';
+  if(el._timer) clearTimeout(el._timer);
+  el._timer=setTimeout(()=>hidePush(),6000);
+}
+function hidePush(){const el=document.getElementById('push-banner');if(el)el.style.display='none';}
+
+// ═══════════════════════════════════════════════════════════════════
+// RECHERCHE GLOBALE
+// ═══════════════════════════════════════════════════════════════════
+function openSearchDrop(){document.getElementById('search-drop').style.display='block';}
+function closeSearchDrop(){document.getElementById('search-drop').style.display='none';}
+document.addEventListener('click',e=>{if(!e.target.closest('#global-search')&&!e.target.closest('#search-drop'))closeSearchDrop();});
+
+function doSearch(q){
+  const drop=document.getElementById('search-drop'); if(!drop)return;
+  if(!q||q.length<2){drop.style.display='none';return;}
+  drop.style.display='block';
+  const hl=(t)=>t.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark style="background:var(--primary-soft);color:var(--primary);border-radius:2px;padding:0 2px">$1</mark>');
+  let html='';
+  const cs=structures.filter(s=>(s.nom||'').toLowerCase().includes(q.toLowerCase()));
+  if(cs.length){html+='<div class="search-section-lbl">Structures</div>';cs.slice(0,3).forEach(s=>{html+=`<div class="search-result-item" onclick="goDash('d-structures');closeSearchDrop()"><span>🏠</span><span>${hl(s.nom||'')}</span></div>`;});}
+  const cc=ctpData.filter(c=>c.nom.toLowerCase().includes(q.toLowerCase()));
+  if(cc.length){html+='<div class="search-section-lbl">Conventions CTP</div>';cc.slice(0,3).forEach(c=>{html+=`<div class="search-result-item" onclick="goDash('d-ctp');openCTPDrawer(${c.id});closeSearchDrop()"><span>📋</span><span>${hl(c.nom)}</span></div>`;});}
+  const cr=getCren().filter(c=>(c.type||'').toLowerCase().includes(q.toLowerCase()));
+  if(cr.length){html+='<div class="search-section-lbl">Créneaux</div>';cr.slice(0,3).forEach(c=>{html+=`<div class="search-result-item" onclick="goDash('d-creneaux');closeSearchDrop()"><span>📅</span><span>${hl(c.type)} · ${c.date}</span></div>`;});}
+  drop.innerHTML=html||'<div style="padding:14px;text-align:center;color:var(--text-soft);font-size:13px">Aucun résultat</div>';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PARAMÈTRES / RACCOURCIS
+// ═══════════════════════════════════════════════════════════════════
+function openSettings(){openModal('m-settings');}
+function settTab(idx,btn){
+  for(let i=0;i<4;i++){
+    const b=document.getElementById('stab'+i);
+    const p=document.getElementById('stab-'+i);
+    if(b) b.className=i===idx?'btn btn-primary btn-sm':'btn btn-ghost btn-sm';
+    if(p) p.style.display=i===idx?'block':'none';
+  }
+}
+function toggleShortcuts(){
+  const ov=document.getElementById('shortcuts-ov');
+  ov.style.display=ov.style.display==='flex'?'none':'flex';
+}
+function toggleSwitch(el){el.classList.toggle('on');}
+let livSimOn=true;
+function toggleLiveSim(el){
+  livSimOn=!livSimOn; el.classList.toggle('on',livSimOn);
+  showToast('Simulation live '+(livSimOn?'activée':'désactivée'),'info');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════════════════════════
+function exportCSV(type){
+  let rows=[], filename=type+'.csv';
+  if(type==='ctp'){
+    rows=[['ID','Nom','Type','Début','Fin','Statut','Phase','Référent SIAO','Référent DDETS']];
+    ctpData.forEach(c=>rows.push([c.id,c.nom,c.type,c.debut,c.fin,c.statut,c.phase+1,c.referent,c.ddets||'']));
+  }else if(type==='audit'){
+    rows=[['Heure','Utilisateur','Action','Détail','Type']];
+    auditData.forEach(a=>rows.push([a.time,a.user,a.action,a.detail,a.type]));
+  }else if(type==='structures'){
+    rows=[['Nom','Type','Ville','Code','Référent']];
+    structures.forEach(s=>rows.push([s.nom||'',s.type||'',s.ville||'',s.code||'',s.referent||'']));
+  }else{
+    showToast('Export disponible en version finale','info');return;
+  }
+  const csv=rows.map(r=>r.map(v=>'"'+(v||'').toString().replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=filename; a.click();
+  showToast('Export '+filename+' téléchargé ✅','success');
+  logAudit(currentAdmin.prenom+' '+currentAdmin.nom,'a exporté des données',type,'update');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RACCOURCIS CLAVIER
+// ═══════════════════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+  if(e.key==='Escape'){
+    closeCTPDrawer();
+    document.querySelectorAll('.modal-ov.open').forEach(m=>m.classList.remove('open'));
+    const shortcuts=document.getElementById('shortcuts-ov');
+    if(shortcuts) shortcuts.style.display='none';
+    if(notifOpen){notifOpen=false;document.getElementById('notif-panel').style.display='none';}
+  }
+  if(e.key==='?') toggleShortcuts();
+  if(e.key==='/'&&document.getElementById('s-dashboard').classList.contains('active')){e.preventDefault();const si=document.getElementById('global-search');if(si){si.focus();openSearchDrop();}}
+  if(e.key==='N'||e.key==='n'){if(document.getElementById('s-dashboard').classList.contains('active'))openModal('m-cren');}
+  if(e.key==='D'||e.key==='d'){if(document.getElementById('s-dashboard').classList.contains('active'))goDash('d-overview');}
+  if(e.key==='S'||e.key==='s'){if(document.getElementById('s-dashboard').classList.contains('active'))goDash('d-structures');}
+  if(e.key==='C'||e.key==='c'){if(document.getElementById('s-dashboard').classList.contains('active'))goDash('d-creneaux');}
+  if(e.key==='T'||e.key==='t'){if(document.getElementById('s-dashboard').classList.contains('active'))goDash('d-ctp');}
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT COMPLÉMENTAIRE
+// ═══════════════════════════════════════════════════════════════════
+// Initialiser les notifications
+renderNotifs();
+
 // ─── INIT ──────────────────────────────────────────────────────────────────
 updateRecap();
 (async ()=>{
@@ -1409,6 +2355,7 @@ updateRecap();
     renderStructGrids();
     renderEnsemble();
     renderAllCreneaux();
+    await loadCTPFromSupabase();
     // Pré-remplir les selects
     const sel = document.getElementById('c-dest');
     if(sel){
@@ -1432,7 +2379,7 @@ updateRecap();
   <div style="display:flex;align-items:center;gap:16px">
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Mentions légales</a>
     <a href="#" onclick="event.preventDefault();showMentions()" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Politique de confidentialité</a>
-    <a href="mailto:contact@siao33.fr" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
+    <a href="/cdn-cgi/l/email-protection#65060a0b1104061125160c040a56564b0317" style="color:var(--text-soft);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-soft)'">Contact</a>
   </div>
 </footer>
 
@@ -1457,7 +2404,7 @@ updateRecap();
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">SIRET</span>377 785 290 00034</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Adresse</span>6 rue du Noviciat, 33800 Bordeaux</div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Tél.</span>05 40 54 55 00</div>
-          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a></div>
+          <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Email</span><a href="/cdn-cgi/l/email-protection#1d7e7273697c7e695d6e747c722e2e337b6f" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="40232f2e34212334003329212f73736e2632">[email&#160;protected]</span></a></div>
           <div><span style="color:var(--text-soft);min-width:120px;display:inline-block">Dir. publication</span><span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
@@ -1493,10 +2440,6 @@ updateRecap();
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
       <div class="card"><div class="ch"><div class="ct">3. Vos droits</div></div><div class="cb">
         <p style="font-size:13px;color:var(--text-soft);line-height:1.7;margin-bottom:8px">Accès · Rectification · Effacement · Opposition (art. 15–22 RGPD)</p>
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="mailto:contact@siao33.fr" style="color:var(--primary)">contact@siao33.fr</a></p>
+        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Email : <a href="/cdn-cgi/l/email-protection#87e4e8e9f3e6e4f3c7f4eee6e8b4b4a9e1f5" style="color:var(--primary)"><span class="__cf_email__" data-cfemail="660509081207051226150f07095555480014">[email&#160;protected]</span></a></p>
         <p style="font-size:13px;color:var(--text-soft);margin-top:6px">DPO : <span style="background:var(--surface3);border:1px dashed var(--border-mid);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--text-soft)">[À compléter]</span></p>
-        <div style="margin-top:10px;padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e">Recours possible auprès de la <a href="https://www.cnil.fr" target="_blank" style="color:#92400e;font-weight:700">CNIL</a>.</div>
-      </div></div>
-      <div class="card"><div class="ch"><div class="ct">4. Cookies & Sécurité</div></div><div class="cb">
-        <div style="padding:10px;background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;font-size:12px;color:#065f46;margin-bottom:12px">✅ Aucun cookie de traçage ni outil d'analytics.</div>
-        <p style="font-size:13px;color:var(--text-soft);line-height:1.7">Données transmises via HTTPS/TLS. Chaque structure dispose d'un accès cloisonné — auc
+        <div style="margin-top:10px;padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e">Recours possible auprès de la <a href="https://www.cnil.fr" target="_blank" style
