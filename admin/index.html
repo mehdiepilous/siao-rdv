@@ -1021,8 +1021,9 @@ input[type="checkbox"]{width:15px;height:15px;accent-color:var(--accent);cursor:
     <div class="view" id="view-audit">
       <div class="breadcrumb">🏛 SIAO RDV <span>/</span> <b>Journal d'audit</b></div>
       <div class="page-header">
-        <div><h2>📜 Journal d'audit</h2><p>Traçabilité complète de toutes les actions</p></div>
+        <div><h2>📜 Journal d'audit</h2><p>Historique complet et permanent · Toutes les actions sont conservées</p></div>
         <div class="page-header-actions">
+          <button class="btn btn-secondary" onclick="loadAuditLog().then(()=>toast('Journal actualisé','success'))">🔄 Actualiser</button>
           <button class="btn btn-secondary" onclick="exportCSV('audit')">📤 Exporter</button>
         </div>
       </div>
@@ -1322,8 +1323,10 @@ const db = createClient(
 // COMPTES ADMIN — pour changer un mot de passe, modifier 'pwd'
 // ═══════════════════════════════════════════════════════════════
 const ADMIN_USERS = [
-  {id:'me', prenom:'Mehdi',   nom:'Epilous',  login:'m.epilous',  email:'m.epilous@siao33.fr',  color:'#2563eb', initials:'ME', role:'Chargé de convention CTP', pwd:'siao2026!ME'},
-  {id:'am', prenom:'Alice',   nom:'Mandard',  login:'a.mandard',  email:'a.mandard@siao33.fr',  color:'#dc2626', initials:'AM', role:'Directrice SIAO',          pwd:'siao2026!AM'},
+  {id:'me', prenom:'Mehdi',   nom:'Epilous', login:'m.epilous', email:'m.epilous@siao33.fr', color:'#2563eb', initials:'ME', role:'Chargé de convention CTP',    pwd:'siao2026!ME'},
+  {id:'sb', prenom:'Sophie',  nom:'Baret',   login:'s.baret',   email:'s.baret@siao33.fr',   color:'#7c3aed', initials:'SB', role:'Assistante de direction',     pwd:'siao2026!SB'},
+  {id:'lm', prenom:'Lucas',   nom:'Moreau',  login:'l.moreau',  email:'l.moreau@siao33.fr',  color:'#059669', initials:'LM', role:'Responsable coordination',    pwd:'siao2026!LM'},
+  {id:'cd', prenom:'Camille', nom:'Durand',  login:'c.durand',  email:'c.durand@siao33.fr',  color:'#d97706', initials:'CD', role:'Chargée de partenariat',      pwd:'siao2026!CD'},
 ];
 let currentAdmin = ADMIN_USERS[0];
 
@@ -1459,11 +1462,10 @@ function updateSidebarUser() {
 async function loadAll() {
   try {
     const connEl = document.getElementById('conn-text');
-    const [r1, r2, r3, r4] = await Promise.all([
+    const [r1, r2, r3] = await Promise.all([
       db.from('structures').select('*').order('nom'),
       db.from('creneaux').select('*').order('date').order('heure'),
       db.from('conventions_ctp').select('*').order('nom'),
-      db.from('app_settings').select('value').eq('key','audit_log').single()
     ]);
     if (r1.data) structures = r1.data;
     if (r2.data) creneaux   = r2.data;
@@ -1480,7 +1482,8 @@ async function loadAll() {
       notes:   row.notes || '',
       history: Array.isArray(row.historique) ? row.historique : [],
     }));
-    if (r4.data?.value) auditData = Array.isArray(r4.data.value) ? r4.data.value : [];
+    // Charger l'audit séparément (table dédiée, tri antichronologique)
+    await loadAuditLog();
     if (connEl) { connEl.textContent = 'Supabase · Connecté'; connEl.style.color = 'var(--green)'; }
     console.log(`✅ ${structures.length} structures, ${creneaux.length} créneaux, ${ctpData.length} CTP`);
   } catch(e) {
@@ -1488,6 +1491,31 @@ async function loadAll() {
     const connEl = document.getElementById('conn-text');
     if (connEl) { connEl.textContent = 'Supabase · Erreur'; connEl.style.color = 'var(--red)'; }
   }
+}
+
+async function loadAuditLog() {
+  try {
+    const { data, error } = await db
+      .from('audit_log')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(500);
+    if (error) { console.error('Audit load error:', error); return; }
+    if (data) {
+      auditData = data.map(row => ({
+        time: new Date(row.created_at).toLocaleString('fr-FR', {
+          day: '2-digit', month: '2-digit', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        }),
+        user:   row.utilisateur || '—',
+        action: row.action      || '',
+        detail: row.detail      || '',
+        type:   row.type        || 'update',
+        ts:     row.created_at,
+      }));
+      renderAudit();
+    }
+  } catch(e) { console.error('loadAuditLog error:', e); }
 }
 
 function subscribeRealtime() {
@@ -1513,6 +1541,10 @@ function subscribeRealtime() {
         notes: row.notes||'', history: Array.isArray(row.historique)?row.historique:[],
       }));
       renderCTPGrid();
+    })
+    .on('postgres_changes', {event:'INSERT', schema:'public', table:'audit_log'}, () => {
+      // Recharger l'audit dès qu'une nouvelle ligne est insérée (même depuis un autre onglet/utilisateur)
+      loadAuditLog();
     })
     .subscribe();
 }
@@ -2035,14 +2067,26 @@ function filterAuditType(type, el) {
   renderAudit();
 }
 async function logAudit(user, action, detail, type) {
-  const now = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  const entry = {time:"Aujourd'hui "+now, user, action, detail, type, ts:new Date().toISOString()};
+  // Affichage immédiat en tête de liste (sans attendre Supabase)
+  const now = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+  const entry = {
+    time:   "Aujourd'hui " + now,
+    user, action, detail, type,
+    ts: new Date().toISOString()
+  };
   auditData.unshift(entry);
-  if (auditData.length > 200) auditData = auditData.slice(0,200);
   renderAudit();
+
+  // Écriture persistante dans la table dédiée audit_log
   try {
-    await db.from('app_settings').upsert({key:'audit_log', value:auditData}, {onConflict:'key'});
-  } catch(e) {}
+    await db.from('audit_log').insert({
+      utilisateur: user,
+      action,
+      detail,
+      type,
+      created_at: new Date().toISOString()
+    });
+  } catch(e) { /* non-bloquant */ }
 }
 
 // ═══════════════════════════════════════════════════════════════
