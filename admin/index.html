@@ -1597,7 +1597,8 @@ function renderCreneaux(data) {
       <td style="font-size:12.5px">${c.duree ? c.duree+'min' : '—'}</td>
       <td style="font-size:12.5px">${c.mod||c.modalite||'—'}</td>
       <td>${badge}</td>
-      <td><div style="display:flex;gap:5px">
+      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="dupliquerCreneau('${c.id}')" title="Crée une copie libre — le créneau original n'est pas modifié">⧉ Dupliquer</button>
         ${c.statut==='reserve' ? `<button class="btn btn-secondary btn-sm" onclick="liberCren('${c.id}')">🔓 Libérer</button>` : ''}
         <button class="btn btn-danger btn-sm" onclick="deleteCreneau('${c.id}','${(c.type||'').replace(/'/g,"\\'")}')">🗑</button>
       </div></td>
@@ -2096,6 +2097,44 @@ async function liberCren(id) {
   if (idx >= 0) { creneaux[idx].statut='libre'; creneaux[idx].par=null; }
   renderAll();
   toast('Créneau libéré', 'success');
+}
+
+// ─── DUPLICATION ─────────────────────────────────────────────────────────────
+// Crée une copie LIBRE du créneau sélectionné.
+// Le créneau original n'est JAMAIS modifié — les RDV tripartites restent intacts.
+async function dupliquerCreneau(id) {
+  const src = creneaux.find(c => c.id == id || c.id === id);
+  if (!src) { toast('Créneau introuvable', 'warn'); return; }
+
+  const copie = {
+    date:   src.date   || null,
+    heure:  src.heure  || '09:00',
+    duree:  src.duree  || 60,
+    type:   src.type   || '',
+    mod:    src.mod    || src.modalite || '',
+    dest:   src.dest   || null,
+    notes:  src.notes  || '',
+    statut: 'libre',   // toujours libre — jamais réservé
+    par:    null,      // aucune structure rattachée
+    msg:    ''
+  };
+
+  const { error } = await db.from('creneaux').insert(copie);
+  if (error) { toast('Erreur lors de la duplication : ' + error.message, 'error'); return; }
+
+  // Recharger depuis Supabase sans toucher au créneau original
+  const r = await db.from('creneaux').select('*').order('date').order('heure');
+  if (r.data) creneaux = r.data;
+  renderAll();
+
+  const origInfo = (src.type || '—') + ' · ' + (src.date || '') + ' ' + (src.heure || '');
+  toast('Copie créée ✅' + (src.statut === 'reserve' ? ' — RDV original conservé' : ''), 'success');
+  logAudit(
+    currentAdmin.prenom + ' ' + currentAdmin.nom,
+    'a dupliqué un créneau',
+    origInfo + (src.statut === 'reserve' ? ' (réservé — copie libre créée)' : ' (libre)'),
+    'create'
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════
