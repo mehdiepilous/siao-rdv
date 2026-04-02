@@ -88,6 +88,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 .btn-login:hover{background:#1d4ed8}
 .login-hint{color:#475569;font-size:12px;text-align:center;margin-top:18px}
 .login-hint b{color:#64748b}
+.login-security{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:20px;padding:8px 14px;border-radius:8px;background:rgba(5,150,105,.12);border:1px solid rgba(5,150,105,.25);color:#6ee7b7;font-size:11.5px;font-weight:600;letter-spacing:.02em}
+.login-security svg{flex-shrink:0}
 
 /* ═══════════════════════════════════════════
    APP
@@ -680,13 +682,17 @@ input[type="checkbox"]{width:15px;height:15px;accent-color:var(--accent);cursor:
       <p>Administration CAIO · Bordeaux</p>
     </div>
     <label for="li-id">Identifiant</label>
-    <input type="text" id="li-id" placeholder="m.epilous ou m.epilous@siao33.fr" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+    <input type="text" id="li-id" placeholder="m.epilous ou m.epilous@caio-bordeaux.fr" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
     <label for="li-pw">Mot de passe</label>
     <input type="password" id="li-pw" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     <div class="login-error" id="login-error">Identifiant ou mot de passe incorrect.</div>
     <button class="btn-login" onclick="doLogin()" id="btn-login">
       <span id="btn-login-text">Accéder au tableau de bord →</span>
     </button>
+    <div class="login-security">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Connexion chiffrée · Supabase Auth · HTTPS
+    </div>
   </div>
 </div>
 
@@ -697,7 +703,7 @@ input[type="checkbox"]{width:15px;height:15px;accent-color:var(--accent);cursor:
   <header class="topbar">
     <div class="topbar-brand">
       <div class="brand-icon">🏛</div>
-      <div><div class="brand-name">SIAO RDV</div><div class="brand-sub">Administration</div></div>
+      <div><div class="brand-name">SIAO RDV</div><div class="brand-sub" style="display:flex;align-items:center;gap:4px"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#059669"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Administration sécurisée</div></div>
     </div>
     <div class="topbar-search">
       <span class="si">🔍</span>
@@ -1320,15 +1326,25 @@ const db = createClient(
 );
 
 // ═══════════════════════════════════════════════════════════════
-// COMPTES ADMIN — pour changer un mot de passe, modifier 'pwd'
+// COMPTES ADMIN — profils d'affichage uniquement (aucun mot de passe)
+// Mots de passe gérés dans : Supabase Dashboard > Authentication > Users
 // ═══════════════════════════════════════════════════════════════
 const ADMIN_USERS = [
-  {id:'me', prenom:'Mehdi',   nom:'Epilous', login:'m.epilous', email:'m.epilous@siao33.fr', color:'#2563eb', initials:'ME', role:'Chargé de convention CTP',    pwd:'siao2026!ME'},
-  {id:'sb', prenom:'Alice',  nom:'Mandard',   login:'a.mandard',   email:'a.mandard',   color:'#7c3aed', initials:'AM', role:'Directrice SIAO',     pwd:'siao2026!AM'},
-  {id:'lm', prenom:'Lucas',   nom:'Moreau',  login:'l.moreau',  email:'l.moreau@siao33.fr',  color:'#059669', initials:'LM', role:'Responsable coordination',    pwd:'siao2026!LM'},
-  {id:'cd', prenom:'Camille', nom:'Durand',  login:'c.durand',  email:'c.durand@siao33.fr',  color:'#d97706', initials:'CD', role:'Chargée de partenariat',      pwd:'siao2026!CD'},
+  {prenom:'Mehdi',   nom:'Epilous', email:'m.epilous@caio-bordeaux.fr', color:'#2563eb', initials:'ME', role:'Chargé de convention CTP'},
+  {prenom:'Alice',   nom:'Mandard', email:'a.mandard@caio-bordeaux.fr', color:'#7c3aed', initials:'AM', role:'Directrice SIAO'},
+  {prenom:'Lucas',   nom:'Moreau',  email:'l.moreau@caio-bordeaux.fr',  color:'#059669', initials:'LM', role:'Responsable coordination'},
+  {prenom:'Camille', nom:'Durand',  email:'c.durand@caio-bordeaux.fr',  color:'#d97706', initials:'CD', role:'Chargée de partenariat'},
 ];
-let currentAdmin = ADMIN_USERS[0];
+let currentAdmin = null;
+
+function resolveProfile(email) {
+  const p = ADMIN_USERS.find(u => u.email === email);
+  if (p) return p;
+  const parts = (email||'').split('@')[0].split('.');
+  const prenom = parts[0] ? parts[0].charAt(0).toUpperCase()+parts[0].slice(1) : 'Admin';
+  const nom    = parts[1] ? parts[1].charAt(0).toUpperCase()+parts[1].slice(1) : '';
+  return {email, prenom, nom, color:'#2563eb', initials:(prenom[0]+(nom[0]||'')).toUpperCase(), role:'Administrateur SIAO'};
+}
 
 // ═══════════════════════════════════════════════════════════════
 // DONNÉES RÉELLES
@@ -1362,51 +1378,46 @@ const CTP_PHASES = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// AUTHENTIFICATION LOCALE
+// AUTHENTIFICATION — Supabase Auth (mots de passe côté serveur)
 // ═══════════════════════════════════════════════════════════════
-function doLogin() {
+async function doLogin() {
   const identifier = (document.getElementById('li-id').value || '').trim();
   const pwd        = document.getElementById('li-pw').value;
   const btn        = document.getElementById('btn-login');
   const txt        = document.getElementById('btn-login-text');
   const err        = document.getElementById('login-error');
 
-  if (!identifier || !pwd) { err.style.display = 'block'; err.textContent = 'Veuillez remplir les deux champs.'; return; }
+  if (!identifier || !pwd) { err.style.display='block'; err.textContent='Veuillez remplir les deux champs.'; return; }
 
   btn.classList.add('btn-loading');
   txt.innerHTML = '<div class="spinner"></div> Vérification…';
 
-  setTimeout(async () => {
-    const id = identifier.toLowerCase();
-    const match = ADMIN_USERS.find(u => (u.login === id || u.email === id) && u.pwd === pwd);
-    if (match) {
-      currentAdmin = match;
-      sessionStorage.setItem('siao_session', JSON.stringify({login: match.login, ts: Date.now()}));
-      err.style.display = 'none';
-      await launchApp();
-    } else {
-      err.style.display = 'block';
-      err.textContent = 'Identifiant ou mot de passe incorrect.';
-      btn.classList.remove('btn-loading');
-      txt.textContent = 'Accéder au tableau de bord →';
-    }
-  }, 600);
+  // Accepte "m.epilous" ou "m.epilous@caio-bordeaux.fr"
+  let email = identifier.toLowerCase();
+  if (!email.includes('@')) email = email + '@caio-bordeaux.fr';
+
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pwd });
+
+  if (error || !data?.user) {
+    err.style.display = 'block';
+    err.textContent = 'Identifiant ou mot de passe incorrect.';
+    btn.classList.remove('btn-loading');
+    txt.textContent = 'Accéder au tableau de bord →';
+    return;
+  }
+
+  currentAdmin = resolveProfile(data.user.email);
+  err.style.display = 'none';
+  await launchApp();
 }
 
 function restoreSession() {
-  try {
-    const raw = sessionStorage.getItem('siao_session');
-    if (!raw) return false;
-    const sess = JSON.parse(raw);
-    if (Date.now() - sess.ts > 8 * 3600 * 1000) { sessionStorage.removeItem('siao_session'); return false; }
-    const match = ADMIN_USERS.find(u => u.login === sess.login);
-    if (match) { currentAdmin = match; return true; }
-  } catch(e) {}
-  return false;
+  return false; // géré de façon asynchrone dans le bloc INIT
 }
 
-function doLogout() {
-  sessionStorage.removeItem('siao_session');
+async function doLogout() {
+  await db.auth.signOut();
+  currentAdmin = null;
   document.getElementById('app').classList.remove('visible');
   document.getElementById('login-gate').style.display = 'flex';
   document.getElementById('li-id').value = '';
@@ -1437,7 +1448,7 @@ async function launchApp() {
   updateStructSelect();
   // Remplir la liste des admins dans les paramètres
   document.getElementById('admin-list-settings').innerHTML = ADMIN_USERS.map(u =>
-    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div class="avatar" style="background:${u.color};width:28px;height:28px;font-size:10px">${u.initials}</div><div><div style="font-weight:600;font-size:13px">${u.prenom} ${u.nom}</div><div style="font-size:11px;color:var(--text3)">${u.login} · ${u.role}</div></div></div>`
+    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div class="avatar" style="background:${u.color};width:28px;height:28px;font-size:10px">${u.initials}</div><div><div style="font-weight:600;font-size:13px">${u.prenom} ${u.nom}</div><div style="font-size:11px;color:var(--text3)">${u.email} · ${u.role}</div></div></div>`
   ).join('');
 }
 
@@ -2447,12 +2458,20 @@ const _cl = document.getElementById('cal-week-lbl');
 if(_cl) _cl.textContent = `${_wdays[0].getDate()} – ${_wdays[4].getDate()} ${_wmonths[_wdays[4].getMonth()]} ${_wdays[4].getFullYear()}`;
 
 // ═══════════════════════════════════════════════════════════════
-// INIT — restaurer session ou afficher le login
+// INIT — vérification session Supabase Auth au démarrage
 // ═══════════════════════════════════════════════════════════════
 (async () => {
-  if (restoreSession()) {
+  const { data: { session } } = await db.auth.getSession();
+  if (session?.user) {
+    currentAdmin = resolveProfile(session.user.email);
     await launchApp();
   }
+  db.auth.onAuthStateChange((event, session) => {
+    if ((event === 'SIGNED_OUT' || !session) && document.getElementById('app').classList.contains('visible')) {
+      doLogout();
+      toast('Session expirée — veuillez vous reconnecter.', 'warn');
+    }
+  });
 })();
 </script>
 </body>
