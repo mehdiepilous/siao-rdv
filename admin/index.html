@@ -1322,10 +1322,8 @@ const db = createClient(
 // COMPTES ADMIN — pour changer un mot de passe, modifier 'pwd'
 // ═══════════════════════════════════════════════════════════════
 const ADMIN_USERS = [
-  {id:'me', prenom:'Mehdi',   nom:'Epilous', login:'m.epilous', email:'m.epilous@siao33.fr', color:'#2563eb', initials:'ME', role:'Chargé de convention CTP',    pwd:'siao2026!ME'},
-  {id:'sb', prenom:'Sophie',  nom:'Baret',   login:'s.baret',   email:'s.baret@siao33.fr',   color:'#7c3aed', initials:'SB', role:'Assistante de direction',     pwd:'siao2026!SB'},
-  {id:'lm', prenom:'Lucas',   nom:'Moreau',  login:'l.moreau',  email:'l.moreau@siao33.fr',  color:'#059669', initials:'LM', role:'Responsable coordination',    pwd:'siao2026!LM'},
-  {id:'cd', prenom:'Camille', nom:'Durand',  login:'c.durand',  email:'c.durand@siao33.fr',  color:'#d97706', initials:'CD', role:'Chargée de partenariat',      pwd:'siao2026!CD'},
+  {id:'me', prenom:'Mehdi',   nom:'Epilous',  login:'m.epilous',  email:'m.epilous@siao33.fr',  color:'#2563eb', initials:'ME', role:'Chargé de convention CTP', pwd:'siao2026!ME'},
+  {id:'am', prenom:'Alice',   nom:'Mandard',  login:'a.mandard',  email:'a.mandard@siao33.fr',  color:'#dc2626', initials:'AM', role:'Directrice SIAO',          pwd:'siao2026!AM'},
 ];
 let currentAdmin = ADMIN_USERS[0];
 
@@ -1597,8 +1595,7 @@ function renderCreneaux(data) {
       <td style="font-size:12.5px">${c.duree ? c.duree+'min' : '—'}</td>
       <td style="font-size:12.5px">${c.mod||c.modalite||'—'}</td>
       <td>${badge}</td>
-      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
-        <button class="btn btn-secondary btn-sm" onclick="dupliquerCreneau('${c.id}')" title="Crée une copie libre — le créneau original n'est pas modifié">⧉ Dupliquer</button>
+      <td><div style="display:flex;gap:5px">
         ${c.statut==='reserve' ? `<button class="btn btn-secondary btn-sm" onclick="liberCren('${c.id}')">🔓 Libérer</button>` : ''}
         <button class="btn btn-danger btn-sm" onclick="deleteCreneau('${c.id}','${(c.type||'').replace(/'/g,"\\'")}')">🗑</button>
       </div></td>
@@ -2097,44 +2094,6 @@ async function liberCren(id) {
   if (idx >= 0) { creneaux[idx].statut='libre'; creneaux[idx].par=null; }
   renderAll();
   toast('Créneau libéré', 'success');
-}
-
-// ─── DUPLICATION ─────────────────────────────────────────────────────────────
-// Crée une copie LIBRE du créneau sélectionné.
-// Le créneau original n'est JAMAIS modifié — les RDV tripartites restent intacts.
-async function dupliquerCreneau(id) {
-  const src = creneaux.find(c => c.id == id || c.id === id);
-  if (!src) { toast('Créneau introuvable', 'warn'); return; }
-
-  const copie = {
-    date:   src.date   || null,
-    heure:  src.heure  || '09:00',
-    duree:  src.duree  || 60,
-    type:   src.type   || '',
-    mod:    src.mod    || src.modalite || '',
-    dest:   src.dest   || null,
-    notes:  src.notes  || '',
-    statut: 'libre',   // toujours libre — jamais réservé
-    par:    null,      // aucune structure rattachée
-    msg:    ''
-  };
-
-  const { error } = await db.from('creneaux').insert(copie);
-  if (error) { toast('Erreur lors de la duplication : ' + error.message, 'error'); return; }
-
-  // Recharger depuis Supabase sans toucher au créneau original
-  const r = await db.from('creneaux').select('*').order('date').order('heure');
-  if (r.data) creneaux = r.data;
-  renderAll();
-
-  const origInfo = (src.type || '—') + ' · ' + (src.date || '') + ' ' + (src.heure || '');
-  toast('Copie créée ✅' + (src.statut === 'reserve' ? ' — RDV original conservé' : ''), 'success');
-  logAudit(
-    currentAdmin.prenom + ' ' + currentAdmin.nom,
-    'a dupliqué un créneau',
-    origInfo + (src.statut === 'reserve' ? ' (réservé — copie libre créée)' : ' (libre)'),
-    'create'
-  );
 }
 
 // ═══════════════════════════════════════════════════════════════
