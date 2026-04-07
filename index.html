@@ -33,24 +33,22 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 
 /* ── TOPBAR ── */
 #bar{display:flex;align-items:center;background:var(--sur);border-bottom:1px solid var(--b);padding:0 16px;height:46px;position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
-.tb{display:flex;align-items:center;gap:5px;padding:7px 12px;border:none;background:transparent;color:var(--txs);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;border-radius:7px 7px 0 0;cursor:pointer;height:46px;border-bottom:2px solid transparent;transition:all var(--e);white-space:nowrap}
-.tb:hover{color:var(--tx)}
-.tb.on{color:var(--p);font-weight:600;border-bottom-color:var(--p)}
+.tb-logo{display:flex;align-items:center;gap:8px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-right:16px}
+.tb-logo-ico{width:28px;height:28px;background:linear-gradient(135deg,var(--a),#00b090);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
 .tb-gap{flex:1}
 .tbtn{background:none;border:1px solid var(--bm);border-radius:7px;padding:4px 9px;cursor:pointer;color:var(--txm);font-size:12px;font-family:'DM Sans',sans-serif}
 
 /* ── CONNEXION ── */
-.login-wrap{min-height:calc(100vh - 46px);display:flex;align-items:stretch;background:var(--bg)}
-.login-left{flex:1;padding:52px 56px;display:flex;flex-direction:column;justify-content:center;max-width:560px}
-.login-right{width:380px;background:var(--sur);border-left:1px solid var(--b);display:flex;align-items:center;justify-content:center;padding:36px 28px;flex-shrink:0}
+.login-wrap{min-height:calc(100vh - 46px);display:grid;grid-template-columns:1fr 400px;background:var(--bg)}
+.login-left{padding:52px 56px;display:flex;flex-direction:column;justify-content:center}
+.login-right{background:var(--sur);border-left:1px solid var(--b);display:flex;align-items:center;justify-content:center;padding:36px 28px}
 .step{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
 .sn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
 .ssep{width:2px;height:10px;background:var(--b);margin-left:14px;margin-bottom:3px}
-
 .fg{margin-bottom:12px}
 .fg label{display:block;font-size:11px;font-weight:700;color:var(--txm);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
-.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--b);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);background:var(--sur2);outline:none;transition:border-color var(--e)}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pl);background:var(--sur)}
+.fg input,.fg select{width:100%;padding:10px 12px;border:1.5px solid var(--b);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx);background:var(--sur2);outline:none;transition:border-color var(--e)}
+.fg input:focus,.fg select:focus{border-color:var(--pl);background:var(--sur)}
 .btn{border:none;border-radius:9px;padding:10px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:all var(--e);display:inline-flex;align-items:center;gap:5px}
 .btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--pd)}
 .btn-s{background:var(--g);color:#fff}.btn-s:hover{filter:brightness(1.08)}
@@ -60,6 +58,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .btn-full{width:100%;justify-content:center;padding:12px}
 .btn-sm{padding:5px 10px;font-size:11px;border-radius:7px}
 .err-box{background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;color:#dc2626;font-size:12px;display:none;margin-bottom:10px}
+.attempts-box{font-size:11px;color:#dc2626;text-align:center;margin-top:6px;display:none}
 
 /* ── HERO ── */
 .hero{background:linear-gradient(140deg,var(--navy) 0%,#1e3a7a 50%,#2a4f96 100%);padding:48px;text-align:center;position:relative;overflow:hidden}
@@ -73,7 +72,7 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 
 /* ── APP LAYOUT ── */
 .layout{display:flex;min-height:calc(100vh - 46px)}
-.side{width:210px;background:var(--navy);flex-shrink:0;position:sticky;top:46px;height:calc(100vh - 46px);display:flex;flex-direction:column}
+.side{width:218px;background:var(--navy);flex-shrink:0;position:sticky;top:46px;height:calc(100vh - 46px);display:flex;flex-direction:column;overflow-y:auto}
 [data-theme=dark] .side{background:#0a1120}
 .s-logo{padding:14px 14px 12px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:9px}
 .s-ico{width:30px;height:30px;background:linear-gradient(135deg,var(--a),#00b090);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
@@ -112,10 +111,17 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 
 /* ── BADGE ── */
 .badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-flex;align-items:center}
-.bg{background:#d1fae5;color:#059669}.bb{background:var(--ps);color:var(--p)}.bo{background:#fef3c7;color:#d97706}.bp{background:#ede9fe;color:#7c3aed}
+.bg{background:#d1fae5;color:#059669}.bb{background:var(--ps);color:var(--p)}.bo{background:#fef3c7;color:#d97706}.bp{background:#ede9fe;color:#7c3aed}.br{background:#fee2e2;color:#dc2626}
 
 /* ── RAPPEL ── */
 .rappel{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.22);border-radius:11px;padding:12px 14px;margin-bottom:13px;display:flex;align-items:center;gap:10px}
+
+/* ── ALERTE BANDEAUX ── */
+.alert-band{border-radius:10px;padding:11px 14px;margin-bottom:13px;display:flex;align-items:flex-start;gap:9px;font-size:12.5px}
+.alert-blue{background:rgba(33,82,163,.07);border:1px solid rgba(33,82,163,.18);color:var(--navy)}
+.alert-amber{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.22);color:#92400e}
+.alert-green{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.22);color:#065f46}
+.alert-red{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);color:#991b1b}
 
 /* ── RDV OK ── */
 .rdv-ok{display:flex;align-items:center;gap:12px;background:var(--as);border:1.5px solid rgba(0,198,162,.25);border-radius:var(--r);padding:13px 15px;margin-bottom:13px}
@@ -133,28 +139,6 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .hist{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--b)}
 .hist:last-child{border-bottom:none}
 
-/* ── MESSAGES ── */
-.msg-wrap{display:grid;grid-template-columns:240px 1fr;height:calc(100vh - 46px)}
-.clist{border-right:1px solid var(--b);background:var(--sur);overflow-y:auto}
-.c-hdr{padding:11px 13px;border-bottom:1px solid var(--b);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy)}
-.conv{display:flex;align-items:center;gap:8px;padding:11px 13px;cursor:pointer;border-bottom:1px solid var(--b);transition:background var(--e)}
-.conv:hover{background:var(--bg)}.conv.on{background:var(--ps)}
-.c-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
-.c-nm{font-size:13px;font-weight:600;color:var(--navy)}
-.c-pr{font-size:11px;color:var(--txs);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
-.unr{background:var(--d);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:8px;margin-left:auto;flex-shrink:0}
-.mpane{display:flex;flex-direction:column;background:var(--bg)}
-.m-hdr{padding:11px 14px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:9px;background:var(--sur)}
-.m-body{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:7px}
-.bub{max-width:64%;padding:8px 12px;border-radius:13px;font-size:13px;line-height:1.5}
-.bub.sent{background:var(--p);color:#fff;align-self:flex-end;border-radius:13px 13px 3px 13px}
-.bub.recv{background:var(--sur);color:var(--tx);align-self:flex-start;border-radius:13px 13px 13px 3px;border:1px solid var(--b)}
-.bub-t{font-size:10px;opacity:.6;margin-top:2px}
-.m-comp{padding:9px 12px;border-top:1px solid var(--b);display:flex;gap:7px;background:var(--sur)}
-.m-comp textarea{resize:none;min-height:38px;max-height:88px;border-radius:8px;font-size:13px;border:1.5px solid var(--b);padding:8px 11px;font-family:'DM Sans',sans-serif;color:var(--tx);background:var(--sur);outline:none;width:100%;transition:border-color var(--e)}
-.m-comp textarea:focus{border-color:var(--pl)}
-.send-btn{background:var(--p);color:#fff;border:none;border-radius:8px;padding:9px 12px;cursor:pointer;font-size:14px;flex-shrink:0}
-
 /* ── PROFIL TOGGLES ── */
 .tog-r{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--sur2);border-radius:9px;cursor:pointer;margin-bottom:7px;border:1px solid var(--b)}
 .tog-sw{width:34px;height:18px;background:var(--bm);border-radius:18px;position:relative;transition:background var(--e);flex-shrink:0}
@@ -166,6 +150,36 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);
 .filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
 .fb{padding:5px 11px;border:1.5px solid var(--b);border-radius:20px;font-size:11.5px;font-weight:500;background:var(--sur);color:var(--txs);cursor:pointer;transition:all var(--e);font-family:'DM Sans',sans-serif}
 .fb.on{background:var(--p);border-color:var(--p);color:#fff}
+
+/* ── STEPPER CTP ── */
+.ctp-stepper{display:flex;flex-direction:column;gap:0}
+.ctp-step{display:flex;align-items:flex-start;gap:14px;padding-bottom:18px;position:relative}
+.ctp-step:last-child{padding-bottom:0}
+.ctp-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.ctp-circle{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:12px;font-weight:800;flex-shrink:0;position:relative;z-index:1}
+.ctp-circle.done{background:var(--g);color:#fff}
+.ctp-circle.active{background:var(--p);color:#fff;box-shadow:0 0 0 4px rgba(33,82,163,.15)}
+.ctp-circle.pending{background:var(--sur2);border:2px solid var(--bm);color:var(--txs)}
+.ctp-line{width:2px;flex:1;min-height:16px;margin-top:2px}
+.ctp-line.done{background:var(--g)}
+.ctp-line.empty{background:var(--b)}
+.ctp-step:last-child .ctp-line{display:none}
+.ctp-content{padding-top:5px;flex:1}
+.ctp-title{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.ctp-title.pending{color:var(--txs)}
+.ctp-date{font-size:11px;color:var(--txs)}
+.ctp-date.active{color:var(--p);font-weight:500}
+
+/* ── COUNTDOWN ── */
+.cd-bar{background:var(--sur2);border-radius:10px;overflow:hidden;height:6px;margin:6px 0 4px}
+.cd-fill{height:100%;border-radius:10px;transition:width .4s}
+
+/* ── DOCUMENTS ── */
+.doc-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--b)}
+.doc-item:last-child{border-bottom:none}
+.doc-ico{width:34px;height:34px;border-radius:8px;background:var(--ps);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.upload-zone{border:2px dashed var(--bm);border-radius:11px;padding:28px 20px;text-align:center;cursor:pointer;transition:all var(--e)}
+.upload-zone:hover{border-color:var(--p);background:var(--ps)}
 
 /* ── MODAL ── */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:400;align-items:center;justify-content:center;padding:16px}
@@ -222,12 +236,13 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
 @media(max-width:768px){
   .hero{padding:28px 18px}
   .hero h1{font-size:22px}
+  .login-wrap{grid-template-columns:1fr}
+  .login-left{display:none}
+  .login-right{border-left:none;border-top:1px solid var(--b);padding:28px 20px}
   .layout{flex-direction:column}
   .side{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;padding:8px}
   .s-logo,.s-sec,.s-foot{display:none}
   .nb{margin:2px;padding:6px 10px;font-size:11px}
-  .msg-wrap{grid-template-columns:1fr}
-  .clist{display:none}
   .g2{grid-template-columns:1fr}
 }
 </style>
@@ -235,37 +250,38 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
 <body>
 <div id="toasts"></div>
 
-<!-- ██ TAB BAR ██ -->
+<!-- ██ TOPBAR ██ -->
 <div id="bar">
-  <button class="tb on" id="T-acc" onclick="goP('acc')">🏠 Accueil</button>
-  <button class="tb" id="T-esp" onclick="goP('esp')">📅 Mon espace</button>
-  <button class="tb" id="T-msg" onclick="goP('msg')">💬 Messagerie <span id="msg-b" style="background:var(--d);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:6px;margin-left:2px">1</span></button>
+  <div class="tb-logo">
+    <div class="tb-logo-ico">🤝</div>
+    SIAO RDV
+  </div>
   <div class="tb-gap"></div>
   <button class="tbtn" onclick="toggleDark()" id="th-btn">🌙</button>
 </div>
 
-<!-- ██ PAGE : ACCUEIL ██ -->
+<!-- ██ PAGE : ACCUEIL + CONNEXION ██ -->
 <div id="P-acc" class="pg on">
   <div class="hero">
     <div class="hero-tag"><span class="ldot"></span> Plateforme disponible · Créneaux ouverts</div>
     <h1>Votre espace rendez-vous<br><em>SIAO Gironde</em></h1>
-    <p>Consultez et réservez vos créneaux, suivez vos échanges et restez en contact avec votre référent. Simple, rapide, confidentiel.</p>
+    <p>Consultez et réservez vos créneaux, suivez votre convention CTP et restez en lien avec votre référent. Simple, rapide, confidentiel.</p>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 370px;min-height:calc(100vh - 270px);background:var(--bg)">
-    <div style="padding:44px 52px;display:flex;flex-direction:column;justify-content:center">
+  <div class="login-wrap">
+    <div class="login-left">
       <h2 style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:20px">Comment ça marche ?</h2>
       <div class="step"><div class="sn" style="background:var(--a)">1</div><div style="padding-top:4px"><div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px">Connectez-vous avec votre code</div><div style="font-size:12px;color:var(--txs)">Code transmis par votre SIAO — aucun compte à créer</div></div></div>
       <div class="ssep"></div>
       <div class="step"><div class="sn" style="background:var(--p)">2</div><div style="padding-top:4px"><div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px">Consultez les créneaux disponibles</div><div style="font-size:12px;color:var(--txs)">Proposés par le SIAO · Réservez en un clic</div></div></div>
       <div class="ssep"></div>
-      <div class="step"><div class="sn" style="background:#8b5cf6">3</div><div style="padding-top:4px"><div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px">Suivez vos rendez-vous</div><div style="font-size:12px;color:var(--txs)">Historique · Messagerie sécurisée avec le SIAO</div></div></div>
+      <div class="step"><div class="sn" style="background:#8b5cf6">3</div><div style="padding-top:4px"><div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px">Suivez votre convention CTP</div><div style="font-size:12px;color:var(--txs)">Progression des phases · Documents · Échéances</div></div></div>
       <div style="display:flex;gap:14px;margin-top:22px;flex-wrap:wrap">
         <span style="font-size:12px;color:var(--txm)">✅ Données confidentielles</span>
         <span style="font-size:12px;color:var(--txm)">✅ Aucune installation</span>
         <span style="font-size:12px;color:var(--txm)">✅ Accessible sur mobile</span>
       </div>
     </div>
-    <div style="background:var(--sur);border-left:1px solid var(--b);display:flex;align-items:center;justify-content:center;padding:32px 26px">
+    <div class="login-right">
       <div style="width:100%">
         <div style="text-align:center;margin-bottom:20px">
           <div style="width:48px;height:48px;background:linear-gradient(135deg,var(--a),#00b090);border-radius:12px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:22px">🤝</div>
@@ -279,13 +295,14 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
           <input type="password" id="inp-code" placeholder="Code transmis par le SIAO" onkeydown="if(event.key==='Enter')doLogin()">
         </div>
         <div class="err-box" id="login-err">Code incorrect. Vérifiez avec votre référent SIAO.</div>
+        <div class="attempts-box" id="attempts-box"></div>
         <button class="btn btn-s btn-full" onclick="doLogin()">Accéder à mon espace →</button>
         <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--txs)">Code perdu ? <a href="mailto:contact@siao33.fr" style="color:var(--a);font-weight:600">Contactez le SIAO</a></div>
       </div>
     </div>
   </div>
   <footer>
-    <span>© 2026 CAIO — SIAO Gironde · Association loi 1901 · SIRET 377 785 290 00034</span>
+    <span>© 2026 CAIO — SIAO Gironde · Association loi 1901</span>
     <div style="display:flex;gap:12px">
       <a href="#" onclick="event.preventDefault();openOv('ov-ml')">Mentions légales</a>
       <a href="mailto:contact@siao33.fr">Contact</a>
@@ -305,25 +322,29 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
       <button class="nb on" id="N-rdv" onclick="goS('rdv')"><span class="nb-ico">📅</span> Mes rendez-vous</button>
       <button class="nb" id="N-dispo" onclick="goS('dispo')"><span class="nb-ico">🟢</span> Créneaux dispo <span class="nb-b" id="dispo-nb">0</span></button>
       <button class="nb" id="N-hist" onclick="goS('hist')"><span class="nb-ico">📋</span> Historique</button>
+      <button class="nb" id="N-ctp" onclick="goS('ctp')"><span class="nb-ico">📜</span> Ma convention CTP</button>
+      <button class="nb" id="N-docs" onclick="goS('docs')"><span class="nb-ico">📁</span> Documents</button>
       <button class="nb" id="N-profil" onclick="goS('profil')"><span class="nb-ico">👤</span> Mon profil</button>
       <div class="s-foot">
         <div class="u-row">
           <div class="u-av" id="sb-av">?</div>
           <div><div class="u-nm" id="sb-nm">—</div><div class="u-rl">Espace partenaire</div></div>
-          <button class="logout" onclick="doLogout()">↩</button>
+          <button class="logout" onclick="doLogout()" title="Déconnexion">↩</button>
         </div>
       </div>
     </nav>
+
     <div class="main">
       <div class="hdr">
-        <div><h2 id="hdr-nm">👋 Bonjour</h2><p>Vos rendez-vous · visibles uniquement par vous</p></div>
+        <div><h2 id="hdr-nm">👋 Bonjour</h2><p>Vos données · visibles uniquement par vous</p></div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <div class="pill" id="pill-rdv">—</div>
           <div class="pill" style="background:rgba(249,115,22,.12);color:#f97316;border-color:rgba(249,115,22,.2)" id="pill-dispo">—</div>
         </div>
       </div>
       <div class="content">
-        <!-- RDV -->
+
+        <!-- ── MES RDV ── -->
         <div id="S-rdv" class="sp on">
           <div class="rappel" id="rappel" style="display:none">
             <span style="font-size:19px;flex-shrink:0">⏰</span>
@@ -337,29 +358,29 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
               <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--a));display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0" id="ref-init">—</div>
               <div style="flex:1">
                 <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px" id="ref-nm">—</div>
-                <div style="font-size:12px;color:var(--txs);margin-bottom:5px">Chargée de convention · SIAO Gironde</div>
+                <div style="font-size:12px;color:var(--txs);margin-bottom:5px">Chargé·e de convention · SIAO Gironde</div>
                 <div style="display:flex;gap:12px;flex-wrap:wrap">
                   <a id="ref-tel" href="tel:0540545500" style="font-size:12px;color:var(--p);text-decoration:none">📞 —</a>
                   <a href="mailto:contact@siao33.fr" style="font-size:12px;color:var(--p);text-decoration:none">✉️ contact@siao33.fr</a>
                 </div>
               </div>
-              <button class="btn btn-g btn-sm" onclick="goP('msg')">💬 Écrire</button>
             </div>
           </div>
         </div>
 
-        <!-- DISPO -->
+        <!-- ── CRÉNEAUX DISPO ── -->
         <div id="S-dispo" class="sp">
           <div class="filters">
             <button class="fb on" onclick="filterDispo(this,'all')">Tous</button>
             <button class="fb" onclick="filterDispo(this,'week')">Cette semaine</button>
             <button class="fb" onclick="filterDispo(this,'Bilan')">Bilan</button>
             <button class="fb" onclick="filterDispo(this,'Réunion')">Réunion</button>
+            <button class="fb" onclick="filterDispo(this,'Point')">Point de suivi</button>
           </div>
           <div id="dispo-list"></div>
         </div>
 
-        <!-- HIST -->
+        <!-- ── HISTORIQUE ── -->
         <div id="S-hist" class="sp">
           <div class="card">
             <div class="ch"><div class="ct">Historique des échanges</div></div>
@@ -367,60 +388,110 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
           </div>
         </div>
 
-        <!-- PROFIL -->
+        <!-- ── CONVENTION CTP ── -->
+        <div id="S-ctp" class="sp">
+          <div class="alert-band alert-blue" style="margin-bottom:14px">
+            <span style="font-size:16px;flex-shrink:0">ℹ️</span>
+            <div>Cette vue est en <strong>lecture seule</strong>. Pour toute question, contactez votre référent SIAO.</div>
+          </div>
+
+          <!-- Alerte échéance — rendu dynamique -->
+          <div id="ctp-alerte" style="display:none"></div>
+
+          <div class="g2">
+            <!-- Infos convention -->
+            <div class="card">
+              <div class="ch"><div class="ct">📋 Informations convention</div></div>
+              <div class="cb">
+                <table style="width:100%;border-collapse:collapse;font-size:13px">
+                  <tr><td style="padding:7px 0;color:var(--txs);width:130px">Référence</td><td id="ctp-ref" style="font-weight:600;color:var(--navy)">—</td></tr>
+                  <tr style="border-top:1px solid var(--b)"><td style="padding:7px 0;color:var(--txs)">Type de structure</td><td id="ctp-type" style="font-weight:600;color:var(--navy)">—</td></tr>
+                  <tr style="border-top:1px solid var(--b)"><td style="padding:7px 0;color:var(--txs)">Date de début</td><td id="ctp-debut" style="font-weight:600;color:var(--navy)">—</td></tr>
+                  <tr style="border-top:1px solid var(--b)"><td style="padding:7px 0;color:var(--txs)">Date d'échéance</td><td id="ctp-echeance" style="font-weight:600">—</td></tr>
+                  <tr style="border-top:1px solid var(--b)"><td style="padding:7px 0;color:var(--txs)">Phase actuelle</td><td id="ctp-phase-label" style="font-weight:600;color:var(--p)">—</td></tr>
+                </table>
+                <!-- Barre de progression convention -->
+                <div style="margin-top:14px" id="ctp-countdown-wrap">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txs);margin-bottom:4px">
+                    <span>Durée écoulée</span>
+                    <span id="ctp-jours-restants" style="font-weight:600">—</span>
+                  </div>
+                  <div class="cd-bar"><div class="cd-fill" id="ctp-progress" style="width:0%;background:var(--g)"></div></div>
+                  <div style="font-size:11px;color:var(--txs);margin-top:3px" id="ctp-progress-label">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stepper phases -->
+            <div class="card">
+              <div class="ch"><div class="ct">🗂 Progression des phases</div><div class="cs">6 phases · Identique à la vue admin</div></div>
+              <div class="cb">
+                <div class="ctp-stepper" id="ctp-stepper">
+                  <!-- Rendu dynamique par JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents attendus -->
+          <div class="card">
+            <div class="ch"><div class="ct">📄 Documents attendus</div><div class="cs">Par phase · Statut en temps réel</div></div>
+            <div class="cb" id="ctp-docs-list">
+              <div class="empty"><span class="ei">📄</span><h3>Aucun document renseigné</h3><p>Les documents attendus apparaîtront ici.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DOCUMENTS ── -->
+        <div id="S-docs" class="sp">
+          <div class="g2">
+            <div class="card">
+              <div class="ch"><div class="ct">📤 Déposer un document</div><div class="cs">PDF, Word, Excel · Max 10 Mo</div></div>
+              <div class="cb">
+                <div class="upload-zone" onclick="toast('Dépôt de fichier — fonctionnalité à connecter à Supabase Storage','i')">
+                  <div style="font-size:32px;margin-bottom:8px">📤</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px">Glissez un fichier ou cliquez pour parcourir</div>
+                  <div style="font-size:12px;color:var(--txs)">PDF, Word, Excel · Max 10 Mo</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ch"><div class="ct">📁 Documents déposés</div></div>
+              <div class="cb" id="docs-list">
+                <div class="empty"><span class="ei">📁</span><h3>Aucun document déposé</h3><p>Vos documents apparaîtront ici après dépôt.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PROFIL ── -->
         <div id="S-profil" class="sp">
           <div class="g2">
             <div class="card">
               <div class="ch"><div class="ct">Mon profil</div></div>
               <div class="cb">
-                <div class="fg"><label>Nom de la structure</label><input id="p-nm" value="" readonly></div>
+                <div class="fg"><label>Nom de la structure</label><input id="p-nm" value="" readonly style="cursor:not-allowed;opacity:.7"></div>
                 <div class="fg"><label>Responsable</label><input id="p-resp" value=""></div>
                 <div class="fg"><label>Email</label><input type="email" id="p-email" value=""></div>
                 <div class="fg"><label>Téléphone</label><input id="p-tel" value=""></div>
-                <button class="btn btn-p btn-sm" onclick="saveProfil()">💾 Sauvegarder</button>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                  <button class="btn btn-p btn-sm" onclick="saveProfil()">💾 Sauvegarder</button>
+                  <button class="btn btn-g btn-sm" onclick="doLogout()">↩ Déconnexion</button>
+                </div>
               </div>
             </div>
             <div class="card">
               <div class="ch"><div class="ct">Notifications</div></div>
               <div class="cb">
-                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Email · Nouveau créneau</span><div class="tog-sw on"></div></div>
-                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Email · Rappel 24h avant</span><div class="tog-sw on"></div></div>
-                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Notification · Nouveau message</span><div class="tog-sw"></div></div>
+                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Email · Nouveau créneau disponible</span><div class="tog-sw on"></div></div>
+                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Email · Rappel 24h avant RDV</span><div class="tog-sw on"></div></div>
+                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Email · Mise à jour convention CTP</span><div class="tog-sw on"></div></div>
+                <div class="tog-r" onclick="this.querySelector('.tog-sw').classList.toggle('on')"><span style="font-size:13px;flex:1">Email · Récapitulatif hebdomadaire</span><div class="tog-sw"></div></div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- ██ PAGE : MESSAGERIE ██ -->
-<div id="P-msg" class="pg">
-  <div class="msg-wrap">
-    <div class="clist">
-      <div class="c-hdr">Messagerie</div>
-      <div class="conv on">
-        <div class="c-av" style="background:linear-gradient(135deg,#2152a3,#3b72d4)">SI</div>
-        <div style="flex:1;min-width:0"><div class="c-nm">SIAO Gironde</div><div class="c-pr" id="conv-prev">—</div></div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
-          <div style="font-size:10px;color:var(--txs)" id="conv-time">—</div>
-          <div class="unr" id="unr">1</div>
-        </div>
-      </div>
-    </div>
-    <div class="mpane">
-      <div class="m-hdr">
-        <div class="c-av" style="background:linear-gradient(135deg,#2152a3,#3b72d4)">SI</div>
-        <div><div style="font-weight:600;font-size:14px;color:var(--navy)">SIAO Gironde</div><div style="font-size:11px;color:var(--txs)">Messagerie sécurisée</div></div>
-      </div>
-      <div class="m-body" id="msg-body">
-        <div style="background:var(--ps);border:1px solid #b3ccf8;border-radius:8px;padding:8px 11px;font-size:12px;color:var(--pd);margin-bottom:4px">📅 Messagerie sécurisée avec le SIAO Gironde</div>
-        <div class="bub recv">Bienvenue sur votre espace SIAO RDV. N'hésitez pas à nous contacter.<div class="bub-t">SIAO</div></div>
-      </div>
-      <div class="m-comp">
-        <textarea id="msg-in" placeholder="Rédiger un message…" rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
-        <button class="send-btn" onclick="sendMsg()">➤</button>
       </div>
     </div>
   </div>
@@ -441,10 +512,29 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
     <div class="mh"><div><div class="mt">⚖️ Mentions légales</div><div class="ms">CAIO — SIAO Gironde · 2026</div></div><button class="cx" onclick="closeOv('ov-ml')">✕</button></div>
     <div class="mb">
       <div class="g2" style="margin-bottom:12px">
-        <div style="background:var(--sur2);border-radius:9px;padding:12px;border:1px solid var(--b)"><div style="font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Éditeur</div><div style="font-size:12px;color:var(--tx);display:flex;flex-direction:column;gap:2px"><div><strong>CAIO</strong> — Asso. loi 1901</div><div>SIRET : 377 785 290 00034</div><div>6 rue du Noviciat, 33800 Bordeaux</div><div>05 40 54 55 00</div></div></div>
-        <div style="background:var(--sur2);border-radius:9px;padding:12px;border:1px solid var(--b)"><div style="font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Hébergement</div><div style="font-size:12px;color:var(--tx);display:flex;flex-direction:column;gap:2px"><div><strong>GitHub Pages</strong></div><div style="margin-top:5px"><strong>Supabase</strong> — Europe (Frankfurt)</div></div></div>
+        <div style="background:var(--sur2);border-radius:9px;padding:12px;border:1px solid var(--b)">
+          <div style="font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Éditeur</div>
+          <div style="font-size:12px;color:var(--tx);display:flex;flex-direction:column;gap:2px">
+            <div><strong>CAIO</strong> — Asso. loi 1901</div>
+            <div>SIRET : 377 785 290 00034</div>
+            <div>6 rue du Noviciat, 33800 Bordeaux</div>
+            <div>05 40 54 55 00</div>
+          </div>
+        </div>
+        <div style="background:var(--sur2);border-radius:9px;padding:12px;border:1px solid var(--b)">
+          <div style="font-size:10px;font-weight:700;color:var(--txs);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Hébergement</div>
+          <div style="font-size:12px;color:var(--tx);display:flex;flex-direction:column;gap:2px">
+            <div><strong>GitHub Pages</strong></div>
+            <div style="margin-top:5px"><strong>Supabase</strong> — Europe (Frankfurt)</div>
+          </div>
+        </div>
       </div>
-      <div style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:10px;font-size:12px;color:#065f46">✅ <strong>Aucun cookie de traçage.</strong> Seules les données professionnelles des référents sont collectées.</div>
+      <div style="background:#d1fae5;border:1px solid #6ee7b7;border-radius:8px;padding:10px;font-size:12px;color:#065f46">
+        ✅ <strong>Aucun cookie de traçage.</strong> Seules les données professionnelles des structures partenaires sont collectées dans le cadre de la mission de service public du SIAO Gironde.
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--txs);line-height:1.6">
+        Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour exercer ces droits : <a href="mailto:contact@siao33.fr" style="color:var(--p)">contact@siao33.fr</a>
+      </div>
     </div>
     <div class="mf"><button class="btn btn-g" onclick="closeOv('ov-ml')">Fermer</button></div>
   </div>
@@ -453,39 +543,64 @@ footer a{color:var(--txs);text-decoration:none}footer a:hover{color:var(--p)}
 <div class="ob-ov" id="ob-ov">
   <div class="ob-c">
     <div class="ob-bar"><div class="ob-fill" id="ob-fill" style="width:33%"></div></div>
-    <div class="ob-s on" id="ob1"><span class="ob-ico">👋</span><h2>Bienvenue sur SIAO RDV !</h2><p>Votre accès est activé. Découvrez la plateforme en 3 étapes.</p><button class="btn btn-s btn-full" onclick="obn(2)">Commencer →</button><div class="ob-dots"><div class="ob-dot on"></div><div class="ob-dot"></div><div class="ob-dot"></div></div></div>
-    <div class="ob-s" id="ob2"><span class="ob-ico">📅</span><h2>Réservez vos créneaux</h2><p>Dans <strong>"Créneaux dispo"</strong>, trouvez tous les créneaux proposés par le SIAO et réservez en un clic.</p><button class="btn btn-s btn-full" onclick="obn(3)">Suivant →</button><div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot on"></div><div class="ob-dot"></div></div></div>
-    <div class="ob-s" id="ob3"><span class="ob-ico">🎉</span><h2>C'est parti !</h2><p>Retrouvez vos RDV dans <strong>"Mes rendez-vous"</strong> et échangez via la <strong>Messagerie</strong>.</p><button class="btn btn-s btn-full" onclick="obc()">Accéder à mon espace ✓</button><div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot on"></div></div></div>
+    <div class="ob-s on" id="ob1">
+      <span class="ob-ico">👋</span>
+      <h2>Bienvenue sur SIAO RDV !</h2>
+      <p>Votre accès est activé. Découvrez la plateforme en 3 étapes.</p>
+      <button class="btn btn-s btn-full" onclick="obn(2)">Commencer →</button>
+      <div class="ob-dots"><div class="ob-dot on" id="ob-dot1"></div><div class="ob-dot" id="ob-dot2"></div><div class="ob-dot" id="ob-dot3"></div></div>
+    </div>
+    <div class="ob-s" id="ob2">
+      <span class="ob-ico">📅</span>
+      <h2>Réservez vos créneaux</h2>
+      <p>Dans <strong>"Créneaux dispo"</strong>, trouvez tous les créneaux proposés par le SIAO et réservez en un clic.</p>
+      <button class="btn btn-s btn-full" onclick="obn(3)">Suivant →</button>
+      <div class="ob-dots"><div class="ob-dot" id="ob-dot1b"></div><div class="ob-dot on" id="ob-dot2b"></div><div class="ob-dot" id="ob-dot3b"></div></div>
+    </div>
+    <div class="ob-s" id="ob3">
+      <span class="ob-ico">📜</span>
+      <h2>Suivez votre convention CTP</h2>
+      <p>Dans <strong>"Ma convention CTP"</strong>, consultez la progression des 6 phases, les documents attendus et les échéances.</p>
+      <button class="btn btn-s btn-full" onclick="obc()">Accéder à mon espace ✓</button>
+      <div class="ob-dots"><div class="ob-dot" id="ob-dot1c"></div><div class="ob-dot" id="ob-dot2c"></div><div class="ob-dot on" id="ob-dot3c"></div></div>
+    </div>
   </div>
 </div>
 
 <script>
 // ══════════════════════════════════════════════════════════════════
-// SUPABASE CONFIG — Correct project: elzhfqxysirwqzgihkve
+// SUPABASE CONFIG
 // ══════════════════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://elzhfqxysirwqzgihkve.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsemhmcXh5c2lyd3F6Z2loa3ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDkzMzMsImV4cCI6MjA4OTkyNTMzM30._nz3MIUxjmabyShRS2x8k5l7HSfIxsgv-Ct8-wQaL0Y';
 
 const { createClient } = supabase;
 let db;
-try {
-  db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} catch(e) {
-  console.error('Supabase init error:', e);
-}
+try { db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+catch(e) { console.error('Supabase init error:', e); }
 
 let currentId = null, currentStruct = null, creneaux = [], currentFilter = 'all';
+let currentCTP = null;
+let loginAttempts = 0;
 
-// ── Init structures dropdown ──
+// ══ PHASES CTP (identiques à l'admin) ══
+const CTP_PHASES = [
+  { num: 1, label: 'Introductive',   icon: '🤝' },
+  { num: 2, label: 'Coconstruction', icon: '🔨' },
+  { num: 3, label: 'Validation',     icon: '✅' },
+  { num: 4, label: 'Sig. Structure', icon: '✍️' },
+  { num: 5, label: 'Sig. SIAO',      icon: '📋' },
+  { num: 6, label: 'Sig. DDETS',     icon: '🏛' }
+];
+
+// ══ INIT STRUCTURES DROPDOWN ══
 async function initStructures() {
   try {
     const { data, error } = await db.from('structures').select('*').order('nom');
-    if (error) { console.error('Structures load error:', error); return; }
-    if (!data || !data.length) { console.warn('No structures found'); return; }
+    if (error || !data || !data.length) { console.error('Structures load error:', error); return; }
     const sel = document.getElementById('sel-struct');
     sel.innerHTML = '<option value="">— Sélectionner votre structure —</option>';
     data.forEach(s => { sel.innerHTML += `<option value="${s.id}">${s.nom}</option>`; });
-    // Auto-fill from URL params
     const params = new URLSearchParams(window.location.search);
     if (params.get('struct') && params.get('code')) {
       sel.value = params.get('struct');
@@ -494,7 +609,7 @@ async function initStructures() {
   } catch(e) { console.error('initStructures error:', e); }
 }
 
-// ── Load creneaux ──
+// ══ LOAD CRÉNEAUX ══
 async function loadCreneaux() {
   try {
     const { data, error } = await db.from('creneaux').select('*').order('date').order('heure');
@@ -504,35 +619,73 @@ async function loadCreneaux() {
   } catch(e) { console.error('loadCreneaux error:', e); }
 }
 
-// ── Realtime ──
+// ══ LOAD CONVENTION CTP ══
+async function loadCTP() {
+  if (!currentId) return;
+  try {
+    const { data, error } = await db.from('conventions_ctp').select('*').eq('structure_id', currentId).order('created_at', { ascending: false }).limit(1).single();
+    if (error) {
+      if (error.code !== 'PGRST116') console.error('CTP load error:', error);
+      currentCTP = null;
+      renderCTP();
+      return;
+    }
+    currentCTP = data;
+    renderCTP();
+  } catch(e) { console.error('loadCTP error:', e); currentCTP = null; renderCTP(); }
+}
+
+// ══ REALTIME ══
 function subscribeRT() {
   db.channel('struct-rt-' + currentId)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'creneaux' }, () => loadCreneaux())
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'structures' }, () => initStructures())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'structures' }, () => {
+      db.from('structures').select('*').eq('id', currentId).single().then(({ data }) => {
+        if (data) { currentStruct = data; updateStructInfo(data); }
+      });
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'conventions_ctp' }, () => loadCTP())
     .subscribe();
 }
 
-// ── LOGIN ──
+// ══ LOGIN ══
 async function doLogin() {
   const selId = document.getElementById('sel-struct').value;
   const code = document.getElementById('inp-code').value.trim().toUpperCase();
   const err = document.getElementById('login-err');
+  const attBox = document.getElementById('attempts-box');
   if (!selId) { err.textContent = 'Veuillez sélectionner votre structure.'; err.style.display = 'block'; return; }
   if (!code) { err.textContent = "Veuillez saisir votre code d'accès."; err.style.display = 'block'; return; }
   try {
     const { data, error } = await db.from('structures').select('*').eq('id', selId).single();
     if (error || !data) { err.textContent = 'Structure introuvable.'; err.style.display = 'block'; return; }
     if (data.code.toUpperCase() !== code) {
+      loginAttempts++;
+      if (loginAttempts >= 3) {
+        attBox.textContent = loginAttempts + ' tentative(s) échouée(s). Contactez votre référent SIAO si le problème persiste.';
+        attBox.style.display = 'block';
+      }
       err.textContent = 'Code incorrect. Vérifiez avec votre référent SIAO.';
       err.style.display = 'block'; return;
     }
+    loginAttempts = 0;
     err.style.display = 'none';
+    attBox.style.display = 'none';
     enterStruct(data);
-  } catch(e) { err.textContent = 'Erreur de connexion: ' + e.message; err.style.display = 'block'; }
+  } catch(e) { err.textContent = 'Erreur de connexion : ' + e.message; err.style.display = 'block'; }
 }
 
 async function enterStruct(s) {
   currentId = s.id; currentStruct = s;
+  updateStructInfo(s);
+  goP('esp'); goS('rdv');
+  await loadCreneaux();
+  await loadCTP();
+  subscribeRT();
+  document.getElementById('ob-ov').classList.add('open');
+}
+
+function updateStructInfo(s) {
   const nm = s.nom || '';
   const ini = nm.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
   document.getElementById('sb-org').textContent = nm;
@@ -551,21 +704,18 @@ async function enterStruct(s) {
     document.getElementById('ref-tel').textContent = '📞 ' + s.tel;
     document.getElementById('ref-tel').href = 'tel:' + s.tel.replace(/\s/g, '');
   }
-  goP('esp'); goS('rdv');
-  await loadCreneaux();
-  subscribeRT();
-  document.getElementById('ob-ov').classList.add('open');
 }
 
 function doLogout() {
-  currentId = null; currentStruct = null; creneaux = [];
+  currentId = null; currentStruct = null; creneaux = []; currentCTP = null; loginAttempts = 0;
   goP('acc');
   document.getElementById('sel-struct').value = '';
   document.getElementById('inp-code').value = '';
   document.getElementById('login-err').style.display = 'none';
+  document.getElementById('attempts-box').style.display = 'none';
 }
 
-// ── RENDER RDV ──
+// ══ RENDER RDV ══
 function renderRDV() {
   const mes = creneaux.filter(c => c.par === currentId).sort((a, b) => new Date(a.date + 'T' + a.heure) - new Date(b.date + 'T' + b.heure));
   const now = new Date();
@@ -575,9 +725,12 @@ function renderRDV() {
   if (prochain) {
     const diff = Math.round((new Date(prochain.date + 'T' + prochain.heure) - now) / 86400000);
     const d = new Date(prochain.date + 'T00:00:00');
-    document.getElementById('rappel-txt').textContent = diff <= 2 ? `Rappel — votre RDV est ${diff <= 0 ? "aujourd'hui" : diff === 1 ? "demain" : "dans " + diff + " jours"}` : `Prochain RDV : ${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`;
+    document.getElementById('rappel-txt').textContent = diff <= 2
+      ? `Rappel — votre RDV est ${diff <= 0 ? "aujourd'hui" : diff === 1 ? "demain" : "dans " + diff + " jours"}`
+      : `Prochain RDV : ${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`;
     document.getElementById('rappel-sub').textContent = `${prochain.type || ''} · ${prochain.heure} · ${prochain.mod || ''}`;
-    document.getElementById('rappel-btns').innerHTML = diff <= 2 ? `<button class="btn btn-w btn-sm" onclick="toast('Présence confirmée ✓','s')">✓ Je serai là</button><button class="btn btn-g btn-sm" onclick="toast('Le SIAO a été notifié','w')">Reporter</button>` : '';
+    document.getElementById('rappel-btns').innerHTML = diff <= 2
+      ? `<button class="btn btn-w btn-sm" onclick="toast('Présence confirmée ✓','s')">✓ Je serai là</button><button class="btn btn-g btn-sm" onclick="toast('Le SIAO a été notifié','w')">Reporter</button>` : '';
     rp.style.display = 'flex';
   } else { rp.style.display = 'none'; }
   if (!mes.length) { el.innerHTML = '<div class="empty"><span class="ei">📅</span><h3>Aucun rendez-vous confirmé</h3><p>Consultez les créneaux disponibles pour en réserver un.</p></div>'; return; }
@@ -592,11 +745,10 @@ function renderRDV() {
   }).join('');
 }
 
-// ── RENDER DISPO ──
+// ══ RENDER DISPO ══
 function renderDispo() {
   const now = new Date();
   let list = creneaux.filter(c => c.statut === 'libre' && (!c.dest || c.dest === '' || c.dest === currentId) && new Date(c.date + 'T' + c.heure) >= now);
-  // Apply filter
   if (currentFilter === 'week') {
     const weekEnd = new Date(); weekEnd.setDate(weekEnd.getDate() + 7);
     list = list.filter(c => new Date(c.date + 'T' + c.heure) <= weekEnd);
@@ -624,7 +776,7 @@ function filterDispo(btn, filter) {
   renderDispo();
 }
 
-// ── RENDER HIST ──
+// ══ RENDER HIST ══
 function renderHist() {
   const list = creneaux.filter(c => c.par === currentId).sort((a, b) => new Date(b.date + 'T' + b.heure) - new Date(a.date + 'T' + a.heure));
   const el = document.getElementById('hist-list'); if (!el) return;
@@ -640,6 +792,127 @@ function renderHist() {
   }).join('');
 }
 
+// ══ RENDER CONVENTION CTP ══
+function renderCTP() {
+  if (!currentCTP) {
+    document.getElementById('ctp-ref').textContent = '—';
+    document.getElementById('ctp-type').textContent = currentStruct ? (currentStruct.type || '—') : '—';
+    document.getElementById('ctp-debut').textContent = '—';
+    document.getElementById('ctp-echeance').textContent = '—';
+    document.getElementById('ctp-phase-label').textContent = 'Aucune convention active';
+    document.getElementById('ctp-jours-restants').textContent = '—';
+    document.getElementById('ctp-progress-label').textContent = '—';
+    document.getElementById('ctp-alerte').style.display = 'none';
+    renderCTPStepper(0);
+    return;
+  }
+  const ctp = currentCTP;
+  const phaseNum = parseInt(ctp.phase_actuelle) || 0;
+  const phaseObj = CTP_PHASES.find(p => p.num === phaseNum);
+
+  // Infos de base
+  document.getElementById('ctp-ref').textContent = ctp.reference || ctp.id?.slice(0, 8).toUpperCase() || '—';
+  document.getElementById('ctp-type').textContent = currentStruct?.type || '—';
+
+  // Dates
+  const debut = ctp.date_debut ? new Date(ctp.date_debut) : null;
+  const echeance = ctp.date_fin ? new Date(ctp.date_fin) : null;
+  document.getElementById('ctp-debut').textContent = debut ? debut.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '—';
+
+  if (echeance) {
+    const today = new Date();
+    const joursRestants = Math.ceil((echeance - today) / 86400000);
+    const joursTotal = debut ? Math.ceil((echeance - debut) / 86400000) : 365;
+    const joursEcoules = debut ? Math.ceil((today - debut) / 86400000) : 0;
+    const pct = Math.min(100, Math.max(0, Math.round(joursEcoules / joursTotal * 100)));
+
+    document.getElementById('ctp-echeance').textContent = echeance.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('ctp-echeance').style.color = joursRestants < 30 ? 'var(--d)' : joursRestants < 60 ? 'var(--w)' : 'var(--navy)';
+    document.getElementById('ctp-jours-restants').textContent = joursRestants > 0 ? joursRestants + ' jours restants' : 'Échéance dépassée';
+    document.getElementById('ctp-jours-restants').style.color = joursRestants < 30 ? 'var(--d)' : joursRestants < 60 ? 'var(--w)' : 'var(--g)';
+    document.getElementById('ctp-progress').style.width = pct + '%';
+    document.getElementById('ctp-progress').style.background = joursRestants < 30 ? 'var(--d)' : joursRestants < 60 ? 'var(--w)' : 'var(--g)';
+    document.getElementById('ctp-progress-label').textContent = pct + '% de la durée écoulée';
+
+    // Alerte échéance
+    const alerte = document.getElementById('ctp-alerte');
+    if (joursRestants < 30 && joursRestants > 0) {
+      alerte.className = 'alert-band alert-red';
+      alerte.innerHTML = `<span style="font-size:16px;flex-shrink:0">🚨</span><div>Votre convention expire dans <strong>${joursRestants} jours</strong>. Contactez votre référent SIAO pour initier le renouvellement.</div>`;
+      alerte.style.display = 'flex';
+    } else if (joursRestants < 60 && joursRestants > 0) {
+      alerte.className = 'alert-band alert-amber';
+      alerte.innerHTML = `<span style="font-size:16px;flex-shrink:0">⚠️</span><div>Votre convention expire dans <strong>${joursRestants} jours</strong>. Pensez à préparer votre renouvellement.</div>`;
+      alerte.style.display = 'flex';
+    } else {
+      alerte.style.display = 'none';
+    }
+  }
+
+  // Phase label
+  document.getElementById('ctp-phase-label').textContent = phaseObj ? `Phase ${phaseObj.num} — ${phaseObj.label}` : '—';
+
+  // Stepper
+  renderCTPStepper(phaseNum);
+
+  // Documents attendus (si champ notes/documents dans la CTP)
+  renderCTPDocs(ctp);
+}
+
+function renderCTPStepper(phaseNum) {
+  const el = document.getElementById('ctp-stepper'); if (!el) return;
+  el.innerHTML = CTP_PHASES.map((p, i) => {
+    const isDone = p.num < phaseNum;
+    const isActive = p.num === phaseNum;
+    const isPending = p.num > phaseNum;
+    const circleClass = isDone ? 'done' : isActive ? 'active' : 'pending';
+    const lineClass = isDone ? 'done' : 'empty';
+    const titleClass = isPending ? 'pending' : '';
+    const dateText = isDone ? '✓ Complétée' : isActive ? 'En cours' : 'À venir';
+    const dateColor = isDone ? 'var(--g)' : isActive ? 'var(--p)' : 'var(--txs)';
+    return `<div class="ctp-step">
+      <div class="ctp-left">
+        <div class="ctp-circle ${circleClass}">${isDone ? '✓' : p.num}</div>
+        <div class="ctp-line ${lineClass}"></div>
+      </div>
+      <div class="ctp-content">
+        <div class="ctp-title ${titleClass}">${p.icon} ${p.label}</div>
+        <div class="ctp-date" style="color:${dateColor}">${dateText}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCTPDocs(ctp) {
+  const el = document.getElementById('ctp-docs-list'); if (!el) return;
+  // Afficher les notes/informations de la convention si renseignées
+  const notes = ctp.notes_p1 || ctp.notes_p2 || ctp.notes_p3 || ctp.notes_p4 || ctp.notes_p5 || ctp.notes_p6;
+  if (!notes) {
+    el.innerHTML = '<div class="empty"><span class="ei">📄</span><h3>Aucun document renseigné</h3><p>Votre référent SIAO mettra à jour les documents attendus.</p></div>';
+    return;
+  }
+  const phaseActive = parseInt(ctp.phase_actuelle) || 1;
+  let html = '';
+  CTP_PHASES.forEach(p => {
+    const noteKey = 'notes_p' + p.num;
+    const note = ctp[noteKey];
+    if (note) {
+      const isDone = p.num < phaseActive;
+      const isActive = p.num === phaseActive;
+      html += `<div class="doc-item">
+        <div class="doc-ico">${p.icon}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:500;color:var(--navy)">Phase ${p.num} — ${p.label}</div>
+          <div style="font-size:12px;color:var(--txs);margin-top:2px">${note}</div>
+        </div>
+        <span class="badge ${isDone ? 'bg' : isActive ? 'bb' : ''}">${isDone ? '✓ Traité' : isActive ? 'En cours' : 'À venir'}</span>
+      </div>`;
+    }
+  });
+  el.innerHTML = html || '<div class="empty"><span class="ei">📄</span><h3>Aucun document renseigné</h3><p>Votre référent SIAO mettra à jour les documents attendus.</p></div>';
+}
+
+// ══ PILLS ══
 function updatePills() {
   const now = new Date();
   const confirmed = creneaux.filter(c => c.par === currentId && new Date(c.date + 'T' + c.heure) >= now).length;
@@ -650,10 +923,10 @@ function updatePills() {
   if (p2) p2.textContent = `🟢 ${dispo} créneau${dispo > 1 ? 'x' : ''} libre${dispo > 1 ? 's' : ''}`;
 }
 
-// ── ACTIONS ──
+// ══ ACTIONS ══
 async function reserver(id) {
   const { error } = await db.from('creneaux').update({ statut: 'reserve', par: currentId }).eq('id', id);
-  if (error) { toast('Erreur: ' + error.message, 'e'); return; }
+  if (error) { toast('Erreur : ' + error.message, 'e'); return; }
   await loadCreneaux();
   toast('Réservation confirmée !', 's');
   goS('rdv');
@@ -675,33 +948,14 @@ async function saveProfil() {
     telephone: document.getElementById('p-tel').value
   };
   const { error } = await db.from('structures').update(updates).eq('id', currentId);
-  if (error) { toast('Erreur: ' + error.message, 'e'); return; }
+  if (error) { toast('Erreur : ' + error.message, 'e'); return; }
   toast('Profil mis à jour', 's');
 }
 
-// ── MESSAGERIE ──
-async function sendMsg() {
-  const ta = document.getElementById('msg-in');
-  const txt = ta.value.trim(); if (!txt) return;
-  if (currentId) {
-    await db.from('messages').insert({ struct_id: currentId, contenu: txt, expediteur: 'structure' }).catch(() => {});
-  }
-  const body = document.getElementById('msg-body');
-  const bub = document.createElement('div');
-  bub.className = 'bub sent';
-  bub.innerHTML = txt + `<div class="bub-t">${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>`;
-  body.appendChild(bub); body.scrollTop = body.scrollHeight; ta.value = '';
-  document.getElementById('unr').style.display = 'none';
-  const b = document.getElementById('msg-b'); if (b) b.style.display = 'none';
-}
-
-// ── NAVIGATION ──
+// ══ NAVIGATION ══
 function goP(id) {
   document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
-  document.querySelectorAll('.tb').forEach(t => t.classList.remove('on'));
   const p = document.getElementById('P-' + id); if (p) p.classList.add('on');
-  const t = document.getElementById('T-' + id); if (t) t.classList.add('on');
-  if (id === 'msg') { const b = document.getElementById('msg-b'); if (b) b.style.display = 'none'; }
 }
 
 function goS(id) {
@@ -711,27 +965,48 @@ function goS(id) {
   const n = document.getElementById('N-' + id); if (n) n.classList.add('on');
 }
 
-// ── UTILITIES ──
-function toggleDark() { const d = document.documentElement.getAttribute('data-theme') === 'dark'; document.documentElement.setAttribute('data-theme', d ? 'light' : 'dark'); document.getElementById('th-btn').textContent = d ? '🌙' : '☀️'; }
+// ══ UTILITIES ══
+function toggleDark() {
+  const d = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', d ? 'light' : 'dark');
+  document.getElementById('th-btn').textContent = d ? '🌙' : '☀️';
+}
 function openOv(id) { document.getElementById(id).classList.add('open'); }
 function closeOv(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.ov').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
 
 let _cb = null;
-function confirm2(t, m, cb) { document.getElementById('conf-t').textContent = t; document.getElementById('conf-m').textContent = m; _cb = cb; document.getElementById('conf-ov').classList.add('open'); document.getElementById('conf-ok').onclick = () => { closeConf(); if (_cb) _cb(); }; }
+function confirm2(t, m, cb) {
+  document.getElementById('conf-t').textContent = t;
+  document.getElementById('conf-m').textContent = m;
+  _cb = cb;
+  document.getElementById('conf-ov').classList.add('open');
+  document.getElementById('conf-ok').onclick = () => { closeConf(); if (_cb) _cb(); };
+}
 function closeConf() { document.getElementById('conf-ov').classList.remove('open'); }
 
-function toast(msg, type) { const w = document.getElementById('toasts'); const t = document.createElement('div'); t.className = 'toast ' + (type || 's'); const ico = { s: '✅', w: '⚠️', e: '❌', i: 'ℹ️' }; t.innerHTML = `<span>${ico[type] || '✅'}</span><span>${msg}</span>`; w.appendChild(t); setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 3500); }
+function toast(msg, type) {
+  const w = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || 's');
+  const ico = { s: '✅', w: '⚠️', e: '❌', i: 'ℹ️' };
+  t.innerHTML = `<span>${ico[type] || '✅'}</span><span>${msg}</span>`;
+  w.appendChild(t);
+  setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 3500);
+}
 
-function obn(n) { document.querySelectorAll('.ob-s').forEach(s => s.classList.remove('on')); document.querySelectorAll('.ob-dot').forEach(d => d.classList.remove('on')); document.getElementById('ob' + n).classList.add('on'); document.getElementById('ob-fill').style.width = (n / 3 * 100) + '%'; }
-function obc() { document.getElementById('ob-ov').classList.remove('open'); toast('Bienvenue ! Votre espace est prêt.', 's'); }
+function obn(n) {
+  document.querySelectorAll('.ob-s').forEach(s => s.classList.remove('on'));
+  document.getElementById('ob' + n).classList.add('on');
+  document.getElementById('ob-fill').style.width = (n / 3 * 100) + '%';
+}
+function obc() {
+  document.getElementById('ob-ov').classList.remove('open');
+  toast('Bienvenue ! Votre espace est prêt.', 's');
+}
 
-// ── INIT ──
-document.addEventListener('DOMContentLoaded', () => {
-  initStructures();
-  document.getElementById('conv-time').textContent = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  document.getElementById('conv-prev').textContent = 'Bienvenue sur votre espace...';
-});
+// ══ INIT ══
+document.addEventListener('DOMContentLoaded', () => { initStructures(); });
 </script>
 </body>
 </html>
