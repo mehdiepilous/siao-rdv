@@ -1380,7 +1380,7 @@ const CTP_PHASES = [
 // ═══════════════════════════════════════════════════════════════
 // AUTHENTIFICATION — Supabase Auth (mots de passe côté serveur)
 // ═══════════════════════════════════════════════════════════════
-async function doLogin() {
+async async function doLogin() {
   const identifier = (document.getElementById('li-id').value || '').trim();
   const pwd        = document.getElementById('li-pw').value;
   const btn        = document.getElementById('btn-login');
@@ -1441,7 +1441,6 @@ async function launchApp() {
   subscribeRealtime();
   renderAll();
   setTimeout(initCharts, 200);
-  startLiveSimulation();
   logAudit(currentAdmin.prenom + ' ' + currentAdmin.nom, "s'est connecté", 'Session démarrée', 'login');
   toast('Bienvenue ' + currentAdmin.prenom + ' — Accès complet', 'success');
   // Remplir select structures dans le formulaire créneau
@@ -2308,11 +2307,7 @@ function startLiveSimulation() { liveTimer = setInterval(() => { const t=documen
 function stopLiveSimulation() { if(liveTimer) clearInterval(liveTimer); }
 function toggleSimulation(cb) { toast(cb.checked?'Simulation live activée':'Simulation live désactivée', 'info'); }
 function simulateLiveEvent() { fireLiveEvent(); }
-function fireLiveEvent() {
-  const ev = liveEvents[Math.floor(Math.random()*liveEvents.length)];
-  addActivity(ev.icon, ev.cls, ev.title+' — '+ev.body);
-  addNotification(ev.icon, ev.cls+' ni-blue', ev.title, ev.body);
-}
+function fireLiveEvent() { /* simulation désactivée */ }
 function addActivity(icon, cls, text) {
   const feed = document.getElementById('activity-feed'); if(!feed) return;
   const item = document.createElement('div'); item.className='activity-item new-item';
